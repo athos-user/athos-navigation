@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Athos Maps - Πλοήγηση</title>
     <meta name="theme-color" content="#2196F3">
-    <meta name="description" content="Athos Maps - Εφαρμογή πλοήγησης για το Άγιο Όρος με GPS, offline χάρτες και 140+ διαδρομές">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- Leaflet.TouchRotate - ΕΝΑΛΛΑΚΤΙΚΗ ΕΚΔΟΣΗ -->
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@0.0.3/dist/leaflet.touchrotate.min.js"></script>
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -97,7 +93,7 @@
         #sosContainer input,#sosContainer select,#sosContainer textarea{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px 8px;border-radius:5px;width:100%;font-size:11px;margin:3px 0}
         #sosContainer button{width:100%;padding:6px;border-radius:5px;border:none;font-weight:700;cursor:pointer;color:white;margin:2px 0;font-size:11px}
         
-        #codeModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center}
+        #codeModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center}
         #codeModal.active{display:flex}
         #codeModal .modal-content{background:#1a1a2e;border-radius:16px;padding:20px;max-width:340px;width:92%;border:2px solid #2980b9;color:#eee;text-align:center}
         #codeModal .modal-content h3{color:#4CAF50;font-size:16px;margin-bottom:8px}
@@ -115,30 +111,31 @@
         .leaflet-control-zoom{z-index:800!important;margin-top:76px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
-        /* Στυλ για το κουμπί περιστροφής */
-        .leaflet-control-rotate {
-            background: rgba(13,17,23,0.95) !important;
-            color: #eee !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            border-radius: 4px !important;
-            cursor: pointer !important;
-            font-size: 16px !important;
-            padding: 6px 8px !important;
-            margin-bottom: 4px !important;
-            text-align: center !important;
-            width: 30px !important;
-            height: 30px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            user-select: none !important;
-            touch-action: manipulation !important;
+        /* Κουμπί περιστροφής */
+        .rotate-btn-fixed {
+            position:fixed;
+            bottom:110px;
+            right:10px;
+            z-index:800;
+            background:rgba(13,17,23,0.95);
+            color:#eee;
+            border:2px solid #2196F3;
+            border-radius:50%;
+            width:44px;
+            height:44px;
+            font-size:18px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 2px 10px rgba(0,0,0,0.5);
+            touch-action:manipulation;
+            user-select:none;
+            transition:all 0.2s;
         }
-        .leaflet-control-rotate:hover {
-            background: rgba(255,255,255,0.15) !important;
-        }
-        .leaflet-control-rotate:active {
-            transform: scale(0.95) !important;
+        .rotate-btn-fixed:active {
+            transform:scale(0.85);
+            background:#2196F3;
         }
         
         @media(max-width:600px){
@@ -155,11 +152,15 @@
             #routeDropdown .letter-header{font-size:14px}
             .blog-link{bottom:44px;right:6px;width:28px;height:28px}
             .blog-link img{width:22px;height:22px}
+            .rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    
+    <!-- ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ -->
+    <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
@@ -261,13 +262,13 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.6
-        // ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - Custom υλοποίηση
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ ONLINE ACCESS CONTROL
+        // Ο κωδικός 10101010 είναι απαραίτητος για online λειτουργία
         // ============================================================
         
         const ACCESS_CODE = '10101010';
         let isOnlineAccessGranted = false;
-        let hasDownloadedOnce = false;
+        let mapRotation = 0;
         
         const OFF_ROUTE_THRESHOLD = 100;
         const NAV_UPDATE_INTERVAL = 300;
@@ -453,56 +454,87 @@
             alertDismissed: false, alertDisabledForever: false, audioCtx: null
         };
 
-        function showCodeModal(){document.getElementById('codeModal').classList.add('active');document.getElementById('codeInput').value='';document.getElementById('codeError').style.display='none';setTimeout(()=>document.getElementById('codeInput').focus(),200);}
-        function hideCodeModal(){document.getElementById('codeModal').classList.remove('active');}
-        function confirmCode(){const i=document.getElementById('codeInput');if(i.value.trim()===ACCESS_CODE){isOnlineAccessGranted=true;localStorage.setItem('athos_online_granted','true');hideCodeModal();showToast('✅ Online πρόσβαση ενεργοποιήθηκε','#4CAF50');}else{document.getElementById('codeError').style.display='block';i.value='';setTimeout(()=>{i.placeholder='••••••••';},1500);}}
-
-        function playAlertSound(){if(state.alertDismissed||state.alertDisabledForever)return;try{if(!state.audioCtx)state.audioCtx=new(window.AudioContext||window.webkitAudioContext)();const c=state.audioCtx,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='square';o.frequency.setValueAtTime(880,c.currentTime);o.frequency.setValueAtTime(440,c.currentTime+0.15);g.gain.setValueAtTime(0.3,c.currentTime);g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.5);o.start(c.currentTime);o.stop(c.currentTime+0.5);}catch(e){}}
-        function dismissAlert(){state.alertDismissed=true;document.getElementById('offRouteWarning').classList.remove('active');document.getElementById('offRouteStatus').classList.remove('active');showToast('🔇 Προσωρινή σίγαση','#888');}
-        function disableAlertForever(){state.alertDisabledForever=true;document.getElementById('offRouteWarning').classList.remove('active');document.getElementById('offRouteStatus').classList.remove('active');showToast('🚫 Οριστική απενεργοποίηση','#f44336');}
-
-        function openDB(){return new Promise((r,j)=>{if(state.db){r(state.db);return;}const q=indexedDB.open(DB_NAME,DB_VERSION);q.onupgradeneeded=(e)=>{const d=e.target.result;if(!d.objectStoreNames.contains('tiles')){const s=d.createObjectStore('tiles',{keyPath:'key'});s.createIndex('zoom','zoom');}};q.onsuccess=(e)=>{state.db=e.target.result;r(state.db);};q.onerror=(e)=>j(e.target.error);});}
-        function getTileFromDB(k){return openDB().then(d=>new Promise((r,j)=>{const t=d.transaction(['tiles'],'readonly');const q=t.objectStore('tiles').get(k);q.onsuccess=()=>r(q.result?q.result.data:null);q.onerror=()=>j(q.error);}));}
-        function putTileInDB(k,d,z){return openDB().then(db=>new Promise((r,j)=>{const t=db.transaction(['tiles'],'readwrite');const q=t.objectStore('tiles').put({key:k,data:d,zoom:z,timestamp:Date.now()});q.onsuccess=()=>r();q.onerror=()=>j(q.error);}));}
-        async function getTileCount(){try{const d=await openDB();const t=d.transaction(['tiles'],'readonly');return new Promise(r=>{const q=t.objectStore('tiles').count();q.onsuccess=()=>r(q.result);});}catch(e){return 0;}}
-        function getFallbackTileUrl(){return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII=';}
-
-        function createOfflineLayer(){const l=L.tileLayer('',{maxZoom:18,minZoom:3,errorTileUrl:getFallbackTileUrl(),keepBuffer:8});l.createTile=function(c,done){const t=document.createElement('img');const u=`https://tile.openstreetmap.org/${c.z}/${c.x}/${c.y}.png`;const k=`osm_${c.z}_${c.x}_${c.y}`;getTileFromDB(k).then(data=>{if(data){t.src=data;t.onerror=()=>{t.src=getFallbackTileUrl();};done(null,t);}else if(navigator.onLine&&(isOnlineAccessGranted||!hasDownloadedOnce)){t.src=u;t.onload=()=>{fetch(u).then(r=>r.blob()).then(b=>{const rd=new FileReader();rd.onload=function(e){putTileInDB(k,e.target.result,c.z).catch(()=>{});};rd.readAsDataURL(b);}).catch(()=>{});done(null,t);};t.onerror=()=>{t.src=getFallbackTileUrl();done(null,t);};}else{t.src=getFallbackTileUrl();done(null,t);}}).catch(()=>{t.src=getFallbackTileUrl();done(null,t);});return t;};return l;}
-
-        function getBoundsAround(la,ln,r){const d=r/111,dl=r/(111*Math.cos(la*Math.PI/180));return{southWest:[la-d,ln-dl],northEast:[la+d,ln+dl]};}
-        function getTilesForBounds(b,z){const t=[],p=Math.pow(2,z);for(let x=Math.floor((b.southWest[1]+180)/360*p);x<=Math.floor((b.northEast[1]+180)/360*p);x++)for(let y=Math.floor((1-Math.log(Math.tan(b.southWest[0]*Math.PI/180)+1/Math.cos(b.southWest[0]*Math.PI/180))/Math.PI)/2*p);y<=Math.floor((1-Math.log(Math.tan(b.northEast[0]*Math.PI/180)+1/Math.cos(b.northEast[0]*Math.PI/180))/Math.PI)/2*p);y++)t.push({x,y});return t;}
-        async function downloadArea(bounds){const dv=document.getElementById('downloadProgress'),f=document.getElementById('progressFill'),tx=document.getElementById('progressText');dv.style.display='block';let total=0;for(const z of ZOOM_LEVELS)total+=getTilesForBounds(bounds,z).length;const exist=new Set();let loaded=0;for(const z of ZOOM_LEVELS)for(const tl of getTilesForBounds(bounds,z)){const k=`osm_${z}_${tl.x}_${tl.y}`;if(await getTileFromDB(k)){exist.add(k);loaded++;}}const td=total-exist.size;if(td===0){tx.textContent='✅ Όλα υπάρχουν!';setTimeout(()=>dv.style.display='none',2000);return;}for(const z of ZOOM_LEVELS){const tiles=getTilesForBounds(bounds,z);let b=[];for(const tl of tiles){const k=`osm_${z}_${tl.x}_${tl.y}`;if(exist.has(k))continue;b.push({z,x:tl.x,y:tl.y,key:k});if(b.length>=BATCH_SIZE){await downloadBatch(b);loaded+=b.length;f.style.width=Math.min(100,Math.round((loaded/total)*100))+'%';tx.textContent=`📥 ${Math.round((loaded/total)*100)}%`;b=[];}}if(b.length>0){await downloadBatch(b);loaded+=b.length;f.style.width=Math.min(100,Math.round((loaded/total)*100))+'%';}}tx.textContent=`✅ ${await getTileCount()} tiles`;setTimeout(()=>dv.style.display='none',3000);}
-        async function downloadBatch(b){await Promise.allSettled(b.map(async({z,x,y,key})=>{try{if(await getTileFromDB(key))return;const r=await fetch(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);if(!r.ok)return;const bl=await r.blob(),rd=new FileReader();return new Promise(rs=>{rd.onload=async function(e){await putTileInDB(key,e.target.result,z);rs();};rd.readAsDataURL(bl);});}catch(e){}}));}
-
-        async function startDownload(){
-            if(state.isDownloading){showToast('⏳ Σε εξέλιξη...','#FF9800');return;}
-            if(!isOnlineAccessGranted&&!hasDownloadedOnce){isOnlineAccessGranted=true;hasDownloadedOnce=true;showToast('🔄 Πρώτη λήψη - επιτρέπεται','#8e44ad');}
-            if(!isOnlineAccessGranted){showCodeModal();return;}
-            const a=document.getElementById('areaSelect').value;
-            if(a==='my_area'){if(!state.lastPosition){showToast('📍 GPS πρώτα','#FF9800');return;}state.isDownloading=true;await downloadArea(getBoundsAround(state.lastPosition.lat,state.lastPosition.lng,15));state.isDownloading=false;}
-            else{const c=CITIES[a];if(!c)return;state.isDownloading=true;await downloadArea(getBoundsAround(c.lat,c.lng,c.radius));state.isDownloading=false;}
-            updateCacheBadge(await getTileCount());showToast('✅ Ολοκληρώθηκε!','#4CAF50');
+        // ============================================================
+        // ONLINE ACCESS CONTROL - Ο ΚΩΔΙΚΟΣ ΕΙΝΑΙ ΑΠΑΡΑΙΤΗΤΟΣ
+        // ============================================================
+        
+        function checkOnlineAccess() {
+            // Έλεγχος αν έχει δοθεί κωδικός
+            if (isOnlineAccessGranted) return true;
+            
+            // Έλεγχος στο localStorage
+            if (localStorage.getItem('athos_online_granted') === 'true') {
+                isOnlineAccessGranted = true;
+                return true;
+            }
+            
+            return false;
         }
 
-        async function toggleOffline(){if(state.isOffline){disableOffline();}else{await enableOffline();}}
-        async function enableOffline(){const c=await getTileCount();if(c===0){showToast('❌ Κάνε λήψη πρώτα','#f44336');return;}if(state.tileLayer&&state.map.hasLayer(state.tileLayer))state.map.removeLayer(state.tileLayer);if(state.offlineLayer&&state.map.hasLayer(state.offlineLayer))state.map.removeLayer(state.offlineLayer);state.offlineLayer=createOfflineLayer();state.map.addLayer(state.offlineLayer);state.isOffline=true;document.getElementById('offlineBtn').textContent='📴✓';document.getElementById('offlineBtn').classList.add('active');updateCacheBadge(c);}
-        function disableOffline(){if(state.offlineLayer){state.map.removeLayer(state.offlineLayer);state.offlineLayer=null;}if(!state.tileLayer||!state.map.hasLayer(state.tileLayer)){state.tileLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,crossOrigin:true});state.map.addLayer(state.tileLayer);}state.isOffline=false;document.getElementById('offlineBtn').textContent='📴';document.getElementById('offlineBtn').classList.remove('active');updateCacheBadge();}
-        async function updateCacheBadge(count){if(!count)count=await getTileCount();const b=document.getElementById('cacheBadge');b.textContent=count;b.className=count>0?'badge has-tiles':'badge';}
-
-        function updateDistProgress(){
-            const el=document.getElementById('distProgressInline');
-            if(!state.routeGeometry||!state.lastPosition||state.routeDistance===0){el.style.display='none';return;}
-            el.style.display='block';
-            let minDist=Infinity,closestIdx=0;
-            for(let i=0;i<state.routeGeometry.length;i++){const d=L.latLng(state.lastPosition.lat,state.lastPosition.lng).distanceTo(L.latLng(state.routeGeometry[i][1],state.routeGeometry[i][0]));if(d<minDist){minDist=d;closestIdx=i;}}
-            let doneDist=0;for(let i=1;i<=closestIdx;i++){doneDist+=L.latLng(state.routeGeometry[i-1][1],state.routeGeometry[i-1][0]).distanceTo(L.latLng(state.routeGeometry[i][1],state.routeGeometry[i][0]));}
-            doneDist/=1000;const remaining=Math.max(0,state.routeDistance-doneDist);
-            document.getElementById('distDone').textContent=doneDist.toFixed(2);
-            document.getElementById('distRemaining').textContent=remaining.toFixed(2);
+        function showCodeModal() {
+            document.getElementById('codeModal').classList.add('active');
+            document.getElementById('codeInput').value = '';
+            document.getElementById('codeError').style.display = 'none';
+            setTimeout(() => document.getElementById('codeInput').focus(), 200);
+        }
+        
+        function hideCodeModal() {
+            document.getElementById('codeModal').classList.remove('active');
+        }
+        
+        function confirmCode() {
+            const input = document.getElementById('codeInput');
+            if (input.value.trim() === ACCESS_CODE) {
+                isOnlineAccessGranted = true;
+                localStorage.setItem('athos_online_granted', 'true');
+                hideCodeModal();
+                showToast('✅ Online πρόσβαση ενεργοποιήθηκε', '#4CAF50');
+                // Ενεργοποίηση online λειτουργίας
+                enableOnlineMode();
+            } else {
+                document.getElementById('codeError').style.display = 'block';
+                input.value = '';
+                setTimeout(() => { input.placeholder = '••••••••'; }, 1500);
+            }
         }
 
-        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - ΠΛΗΡΗΣ ΥΛΟΠΟΙΗΣΗ ★★★
-        function initMap(){
+        function enableOnlineMode() {
+            // Αφαίρεση offline layer
+            if (state.offlineLayer && state.map.hasLayer(state.offlineLayer)) {
+                state.map.removeLayer(state.offlineLayer);
+                state.offlineLayer = null;
+            }
+            
+            // Προσθήκη online layer
+            if (!state.tileLayer || !state.map.hasLayer(state.tileLayer)) {
+                state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    crossOrigin: true
+                });
+                state.map.addLayer(state.tileLayer);
+            }
+            
+            state.isOffline = false;
+            document.getElementById('offlineBtn').textContent = '📴';
+            document.getElementById('offlineBtn').classList.remove('active');
+            document.getElementById('statusBadge').textContent = '📡 Online';
+            showToast('🌐 Online λειτουργία', '#4CAF50');
+        }
+
+        // ============================================================
+        // ΛΟΙΠΕΣ ΣΥΝΑΡΤΗΣΕΙΣ (GPS, ROUTES, OFFLINE, ΚΛΠ)
+        // ============================================================
+        
+        function showToast(msg, color = '#333') {
+            const t = document.createElement('div');
+            t.style.cssText = `position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:${color};color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600`;
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+
+        function initMap() {
+            // Αρχικός χάρτης - πάντα offline αν δεν έχει δοθεί κωδικός
             state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 crossOrigin: true
@@ -520,100 +552,24 @@
                 bearing: 0
             });
             
-            // ★★★ ΠΡΟΣΘΗΚΗ ΚΟΥΜΠΙΟΥ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
-            // Προσθέτουμε ένα κουμπί περιστροφής στα controls του χάρτη
-            const RotateControl = L.Control.extend({
-                options: { position: 'topleft' },
-                onAdd: function(map) {
-                    const container = L.DomUtil.create('div', 'leaflet-control-rotate');
-                    container.innerHTML = '↻';
-                    container.title = 'Περιστροφή χάρτη (κράτα πατημένο και σύρε)';
-                    container.style.cssText = 'background:rgba(13,17,23,0.95);color:#eee;border:1px solid rgba(255,255,255,0.1);border-radius:4px;cursor:pointer;font-size:16px;padding:6px 8px;margin-bottom:4px;text-align:center;width:30px;height:30px;display:flex;align-items:center;justify-content:center;user-select:none;touch-action:manipulation;';
-                    
-                    L.DomEvent.on(container, 'click', function(e) {
-                        // Περιστροφή κατά 90° με κάθε κλικ
-                        const currentBearing = map.getBearing() || 0;
-                        const newBearing = (currentBearing + 90) % 360;
-                        map.setBearing(newBearing, { animate: true, duration: 0.5 });
-                        showToast('🔄 Περιστροφή: ' + Math.round(newBearing) + '°', '#607D8B');
-                    });
-                    
-                    // Για παρατεταμένο πάτημα - περιστροφή με drag
-                    let isDragging = false;
-                    let startX, startY, startBearing;
-                    
-                    L.DomEvent.on(container, 'mousedown touchstart', function(e) {
-                        isDragging = true;
-                        const touch = e.touches ? e.touches[0] : e;
-                        startX = touch.clientX;
-                        startY = touch.clientY;
-                        startBearing = map.getBearing() || 0;
-                        e.preventDefault();
-                    });
-                    
-                    L.DomEvent.on(container, 'mousemove touchmove', function(e) {
-                        if (!isDragging) return;
-                        const touch = e.touches ? e.touches[0] : e;
-                        const dx = touch.clientX - startX;
-                        const dy = touch.clientY - startY;
-                        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-                        const newBearing = (startBearing + angle) % 360;
-                        map.setBearing(newBearing, { animate: false });
-                        e.preventDefault();
-                    });
-                    
-                    L.DomEvent.on(container, 'mouseup touchend', function(e) {
-                        isDragging = false;
-                    });
-                    
-                    return container;
-                }
-            });
-            
-            // Προσθήκη του κουμπιού περιστροφής στον χάρτη
-            state.map.addControl(new RotateControl());
-            
-            // ★★★ ΕΝΕΡΓΟΠΟΙΗΣΗ TOUCH ROTATE ΜΕ ΤΟ PLUGIN ★★★
-            // Προσπαθούμε να ενεργοποιήσουμε το touch rotate με διάφορους τρόπους
-            try {
-                if (typeof L.touchRotate !== 'undefined') {
-                    // Δοκιμή 1: L.touchRotate
-                    L.touchRotate(state.map, {
-                        rotate: true,
-                        touchRotate: true
-                    });
-                    showToast('✅ Touch rotate enabled', '#4CAF50');
-                } else if (state.map.touchRotate) {
-                    // Δοκιμή 2: Ενσωματωμένη μέθοδος
-                    if (typeof state.map.touchRotate.enable === 'function') {
-                        state.map.touchRotate.enable();
-                        showToast('✅ Touch rotate enabled (built-in)', '#4CAF50');
-                    } else {
-                        // Δοκιμή 3: Προσπάθεια με setBearing
-                        state.map.setBearing(0, { animate: false });
-                        // Αποθήκευση της μεθόδου setBearing
-                        const origSetView = state.map.setView;
-                        state.map.setView = function(center, zoom, options) {
-                            // Διατήρηση της περιστροφής κατά την αλλαγή θέσης
-                            const currentBearing = state.map.getBearing() || 0;
-                            origSetView.call(this, center, zoom, options);
-                            if (currentBearing !== 0) {
-                                this.setBearing(currentBearing, { animate: false });
-                            }
-                        };
-                        showToast('🔄 Touch rotate: manual mode', '#FF9800');
-                    }
-                } else {
-                    // Δοκιμή 4: Προσθήκη χειροκίνητου χειρισμού touch events
-                    setupManualTouchRotate(state.map);
-                    showToast('🔄 Touch rotate: manual mode', '#FF9800');
-                }
-            } catch(e) {
-                console.warn('Touch rotate error:', e);
-                // Fallback: manual touch rotation
-                setupManualTouchRotate(state.map);
-                showToast('🔄 Manual touch rotate enabled', '#FF9800');
+            // Έλεγχος αν έχει κωδικό
+            if (!checkOnlineAccess()) {
+                // Αν δεν έχει κωδικό, πάμε σε offline mode
+                state.map.removeLayer(state.tileLayer);
+                state.map.addLayer(createOfflineLayer());
+                state.isOffline = true;
+                document.getElementById('offlineBtn').textContent = '📴✓';
+                document.getElementById('offlineBtn').classList.add('active');
+                document.getElementById('statusBadge').textContent = '📴 Offline';
+                showToast('📴 Offline λειτουργία - Εισάγετε κωδικό για online', '#2980b9');
             }
+            
+            // Κουμπί περιστροφής
+            document.getElementById('rotateBtn').addEventListener('click', function() {
+                mapRotation = (mapRotation + 90) % 360;
+                state.map.setBearing(mapRotation, { animate: true, duration: 0.5 });
+                showToast('🔄 Περιστροφή: ' + mapRotation + '°', '#2196F3');
+            });
             
             state.map.on('movestart zoomstart', () => {
                 state.lastUserInteraction = Date.now();
@@ -629,203 +585,843 @@
             
             updateCacheBadge();
         }
+
+        function createOfflineLayer() {
+            const l = L.tileLayer('', {
+                maxZoom: 18,
+                minZoom: 3,
+                errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII=',
+                keepBuffer: 8
+            });
+            
+            l.createTile = function(c, done) {
+                const t = document.createElement('img');
+                const u = `https://tile.openstreetmap.org/${c.z}/${c.x}/${c.y}.png`;
+                const k = `osm_${c.z}_${c.x}_${c.y}`;
+                
+                getTileFromDB(k).then(data => {
+                    if (data) {
+                        t.src = data;
+                        t.onerror = () => { t.src = this.options.errorTileUrl; };
+                        done(null, t);
+                    } else {
+                        // Αν δεν υπάρχει tile και ο χρήστης έχει κωδικό, φόρτωσε από το διαδίκτυο
+                        if (checkOnlineAccess() && navigator.onLine) {
+                            t.src = u;
+                            t.onload = () => {
+                                fetch(u).then(r => r.blob()).then(b => {
+                                    const rd = new FileReader();
+                                    rd.onload = function(e) {
+                                        putTileInDB(k, e.target.result, c.z).catch(() => {});
+                                    };
+                                    rd.readAsDataURL(b);
+                                }).catch(() => {});
+                                done(null, t);
+                            };
+                            t.onerror = () => {
+                                t.src = this.options.errorTileUrl;
+                                done(null, t);
+                            };
+                        } else {
+                            t.src = this.options.errorTileUrl;
+                            done(null, t);
+                        }
+                    }
+                }).catch(() => {
+                    t.src = this.options.errorTileUrl;
+                    done(null, t);
+                });
+                return t;
+            };
+            return l;
+        }
+
+        function openDB() {
+            return new Promise((r, j) => {
+                if (state.db) { r(state.db); return; }
+                const q = indexedDB.open(DB_NAME, DB_VERSION);
+                q.onupgradeneeded = (e) => {
+                    const d = e.target.result;
+                    if (!d.objectStoreNames.contains('tiles')) {
+                        const s = d.createObjectStore('tiles', { keyPath: 'key' });
+                        s.createIndex('zoom', 'zoom');
+                    }
+                };
+                q.onsuccess = (e) => {
+                    state.db = e.target.result;
+                    r(state.db);
+                };
+                q.onerror = (e) => j(e.target.error);
+            });
+        }
+
+        function getTileFromDB(k) {
+            return openDB().then(d => new Promise((r, j) => {
+                const t = d.transaction(['tiles'], 'readonly');
+                const q = t.objectStore('tiles').get(k);
+                q.onsuccess = () => r(q.result ? q.result.data : null);
+                q.onerror = () => j(q.error);
+            }));
+        }
+
+        function putTileInDB(k, d, z) {
+            return openDB().then(db => new Promise((r, j) => {
+                const t = db.transaction(['tiles'], 'readwrite');
+                const q = t.objectStore('tiles').put({ key: k, data: d, zoom: z, timestamp: Date.now() });
+                q.onsuccess = () => r();
+                q.onerror = () => j(q.error);
+            }));
+        }
+
+        async function getTileCount() {
+            try {
+                const d = await openDB();
+                const t = d.transaction(['tiles'], 'readonly');
+                return new Promise(r => {
+                    const q = t.objectStore('tiles').count();
+                    q.onsuccess = () => r(q.result);
+                });
+            } catch (e) { return 0; }
+        }
+
+        async function updateCacheBadge(count) {
+            if (!count) count = await getTileCount();
+            const b = document.getElementById('cacheBadge');
+            b.textContent = count;
+            b.className = count > 0 ? 'badge has-tiles' : 'badge';
+        }
+
+        // ============================================================
+        // GPS, NAVIGATION, ROUTES - ΟΙ ΥΠΟΛΟΙΠΕΣ ΣΥΝΑΡΤΗΣΕΙΣ
+        // ============================================================
         
-        // ★★★ ΧΕΙΡΟΚΙΝΗΤΟΣ ΧΕΙΡΙΣΜΟΣ TOUCH ROTATE ★★★
-        function setupManualTouchRotate(map) {
-            let touchStart = null;
-            let startBearing = 0;
-            let touchId = null;
-            
-            // Αφαίρεση του default touch handler της Leaflet
-            const container = map.getContainer();
-            
-            // Προσθήκη δικών μας touch handlers
-            container.addEventListener('touchstart', function(e) {
-                if (e.touches.length === 2) {
-                    // Με δύο δάχτυλα - περιστροφή
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    touchStart = {
-                        x1: t1.clientX,
-                        y1: t1.clientY,
-                        x2: t2.clientX,
-                        y2: t2.clientY,
-                        angle: Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX)
-                    };
-                    startBearing = map.getBearing() || 0;
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            
-            container.addEventListener('touchmove', function(e) {
-                if (e.touches.length === 2 && touchStart) {
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    const currentAngle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX);
-                    const deltaAngle = (currentAngle - touchStart.angle) * (180 / Math.PI);
-                    const newBearing = (startBearing + deltaAngle) % 360;
-                    map.setBearing(newBearing, { animate: false });
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            
-            container.addEventListener('touchend', function(e) {
-                if (e.touches.length < 2) {
-                    touchStart = null;
-                }
-            }, { passive: false });
-            
-            container.addEventListener('touchcancel', function(e) {
-                touchStart = null;
-            }, { passive: false });
+        function toggleGps() {
+            if (state.isGpsOn) { stopGps(); } else { startGps(); }
         }
 
-        function toggleGps(){if(state.isGpsOn){stopGps();}else{startGps();}}
-        function startGps(){
-            if(!navigator.geolocation){showToast('⚠️ GPS μη διαθέσιμο','#f44336');return;}
-            document.getElementById('gpsBtn').textContent='📍✓';document.getElementById('gpsBtn').classList.add('active');state.isGpsOn=true;
-            navigator.geolocation.getCurrentPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);state.map.setView([p.coords.latitude,p.coords.longitude],NAV_ZOOM,{animate:false});},()=>showToast('❌ GPS','#f44336'),{enableHighAccuracy:true,timeout:10000});
-            state.gpsWatchId=navigator.geolocation.watchPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);},()=>{},{enableHighAccuracy:true,timeout:30000,maximumAge:1000});
+        function startGps() {
+            if (!navigator.geolocation) { showToast('⚠️ GPS μη διαθέσιμο', '#f44336'); return; }
+            document.getElementById('gpsBtn').textContent = '📍✓';
+            document.getElementById('gpsBtn').classList.add('active');
+            state.isGpsOn = true;
+            
+            navigator.geolocation.getCurrentPosition(
+                p => {
+                    updatePosition(p.coords.latitude, p.coords.longitude, p.coords.speed, p.coords.heading);
+                    state.map.setView([p.coords.latitude, p.coords.longitude], NAV_ZOOM, { animate: false });
+                },
+                () => showToast('❌ GPS', '#f44336'),
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+            
+            state.gpsWatchId = navigator.geolocation.watchPosition(
+                p => { updatePosition(p.coords.latitude, p.coords.longitude, p.coords.speed, p.coords.heading); },
+                () => {},
+                { enableHighAccuracy: true, timeout: 30000, maximumAge: 1000 }
+            );
         }
-        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');document.getElementById('distProgressInline').style.display='none';localStorage.setItem('athos_was_navigating','false');}
 
-        function updatePosition(lat,lng,speed,heading){
-            if(state.lastPosition)state.prevPosition={...state.lastPosition};
-            state.lastPosition={lat,lng};
-            state.currentSpeedKmh=speed!==null&&speed!==undefined?speed*3.6:(state.prevPosition?L.latLng(state.prevPosition.lat,state.prevPosition.lng).distanceTo(L.latLng(lat,lng))*3.6:0);
-            if(heading!==null&&heading!==undefined&&heading>=0&&state.currentSpeedKmh>0.5)state.currentHeading=heading;
-            else if(state.prevPosition&&state.currentSpeedKmh>0.5)state.currentHeading=calculateBearing(state.prevPosition.lat,state.prevPosition.lng,lat,lng);
-            document.getElementById('speedDisplay').textContent=state.currentSpeedKmh>0.3?`${state.currentSpeedKmh.toFixed(1)} km/h`:'';
-            updateUserMarker(lat,lng);
-            if(state.routeGeometry){checkOffRoute(lat,lng);updateDistProgress();}
+        function stopGps() {
+            if (state.gpsWatchId) {
+                navigator.geolocation.clearWatch(state.gpsWatchId);
+                state.gpsWatchId = null;
+            }
+            if (state.isNavigating) stopNavigation();
+            state.isGpsOn = false;
+            document.getElementById('gpsBtn').textContent = '📍';
+            document.getElementById('gpsBtn').classList.remove('active');
+            document.getElementById('distProgressInline').style.display = 'none';
+            localStorage.setItem('athos_was_navigating', 'false');
         }
 
-        function calculateBearing(l1,ln1,l2,ln2){const φ1=l1*Math.PI/180,φ2=l2*Math.PI/180,Δλ=(ln2-ln1)*Math.PI/180;return(Math.atan2(Math.sin(Δλ)*Math.cos(φ2),Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ))*180/Math.PI+360)%360;}
+        function updatePosition(lat, lng, speed, heading) {
+            if (state.lastPosition) state.prevPosition = { ...state.lastPosition };
+            state.lastPosition = { lat, lng };
+            
+            state.currentSpeedKmh = speed !== null && speed !== undefined ? 
+                speed * 3.6 : 
+                (state.prevPosition ? L.latLng(state.prevPosition.lat, state.prevPosition.lng).distanceTo(L.latLng(lat, lng)) * 3.6 : 0);
+            
+            if (heading !== null && heading !== undefined && heading >= 0 && state.currentSpeedKmh > 0.5) {
+                state.currentHeading = heading;
+            } else if (state.prevPosition && state.currentSpeedKmh > 0.5) {
+                state.currentHeading = calculateBearing(state.prevPosition.lat, state.prevPosition.lng, lat, lng);
+            }
+            
+            document.getElementById('speedDisplay').textContent = state.currentSpeedKmh > 0.3 ? `${state.currentSpeedKmh.toFixed(1)} km/h` : '';
+            updateUserMarker(lat, lng);
+            if (state.routeGeometry) { checkOffRoute(lat, lng); updateDistProgress(); }
+        }
 
-        function updateUserMarker(lat,lng){const h=state.currentHeading||0;const html=`<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;if(!state.userMarker){state.userMarker=L.marker([lat,lng],{icon:L.divIcon({html,className:'',iconSize:[32,32],iconAnchor:[16,20]}),zIndexOffset:1000}).addTo(state.map);}else{state.userMarker.setLatLng([lat,lng]);const el=state.userMarker.getElement();if(el){const ad=el.querySelector('.arrow-dot');if(ad)ad.style.transform=`rotate(${h}deg)`;}}}
+        function calculateBearing(l1, ln1, l2, ln2) {
+            const φ1 = l1 * Math.PI / 180, φ2 = l2 * Math.PI / 180, Δλ = (ln2 - ln1) * Math.PI / 180;
+            return (Math.atan2(Math.sin(Δλ) * Math.cos(φ2), Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ)) * 180 / Math.PI + 360) % 360;
+        }
 
-        function toggleCompass(){
-            // Επαναφορά του βορρά με κίνηση
+        function updateUserMarker(lat, lng) {
+            const h = state.currentHeading || 0;
+            const html = `<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;
+            
+            if (!state.userMarker) {
+                state.userMarker = L.marker([lat, lng], {
+                    icon: L.divIcon({ html, className: '', iconSize: [32, 32], iconAnchor: [16, 20] }),
+                    zIndexOffset: 1000
+                }).addTo(state.map);
+            } else {
+                state.userMarker.setLatLng([lat, lng]);
+                const el = state.userMarker.getElement();
+                if (el) {
+                    const ad = el.querySelector('.arrow-dot');
+                    if (ad) ad.style.transform = `rotate(${h}deg)`;
+                }
+            }
+        }
+
+        function toggleCompass() {
             state.map.setBearing(0, { animate: true, duration: 0.8 });
+            mapRotation = 0;
             showToast('🧭 Βορράς', '#888');
         }
 
-        function toggleNavigation(){if(state.isNavigating){stopNavigation();}else{startNavigation();}}
-        function startNavigation(){
-            if(!state.isGpsOn){showToast('⚠️ GPS πρώτα','#FF9800');return;}
-            document.getElementById('navBtn').textContent='🧭✓';document.getElementById('navBtn').classList.add('active');state.isNavigating=true;
-            if(state.lastPosition)state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});
-            state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});}},NAV_UPDATE_INTERVAL);
-            localStorage.setItem('athos_was_navigating','true');
-        }
-        function stopNavigation(){if(state.navIntervalId){clearInterval(state.navIntervalId);state.navIntervalId=null;}state.isNavigating=false;document.getElementById('navBtn').textContent='🧭';document.getElementById('navBtn').classList.remove('active');localStorage.setItem('athos_was_navigating','false');}
-
-        function checkOffRoute(lat,lng){if(!state.routeGeometry||state.alertDisabledForever)return;let min=Infinity;for(const c of state.routeGeometry){const d=L.latLng(lat,lng).distanceTo(L.latLng(c[1],c[0]));if(d<min)min=d;}const w=document.getElementById('offRouteWarning'),s=document.getElementById('offRouteStatus'),m=document.getElementById('offRouteMsg');if(min>OFF_ROUTE_THRESHOLD){m.textContent=`⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ! (${Math.round(min)}m)`;w.classList.add('active');s.classList.add('active');playAlertSound();if(navigator.vibrate)navigator.vibrate([200,100,200,100,200]);}else{w.classList.remove('active');s.classList.remove('active');}}
-
-        function showRoutes(){document.getElementById('routeDropdown').classList.add('active');renderRoutes('');}
-        function hideRoutes(){document.getElementById('routeDropdown').classList.remove('active');}
-        function renderRoutes(filter){const list=document.getElementById('routesList');let filtered=ROUTES;if(filter){const f=filter.toLowerCase();filtered=ROUTES.filter(r=>r.name.toLowerCase().includes(f));}document.getElementById('routeCount').textContent=filtered.length;let html='',cl='';filtered.forEach(r=>{const fl=r.name.charAt(0).toUpperCase();if(fl!==cl){cl=fl;html+=`<div class="letter-header">${cl}</div>`;}html+=`<div class="route-item" data-url="${r.url}" data-name="${r.name}" data-dist="${r.dist}" data-time="${r.time}"><span class="rname">${r.name}</span><span class="rinfo">${r.dist}km | ${r.time}</span></div>`;});list.innerHTML=html;list.querySelectorAll('.route-item').forEach(item=>{item.addEventListener('click',function(){loadRouteFromUrl(this.dataset.url,this.dataset.name,parseFloat(this.dataset.dist),this.dataset.time);hideRoutes();});});}
-
-        function loadRouteFromUrl(url,name,dist,time){
-            if(!isOnlineAccessGranted&&!hasDownloadedOnce){isOnlineAccessGranted=true;hasDownloadedOnce=true;}
-            if(!isOnlineAccessGranted){showCodeModal();return;}
-            fetch(url,{headers:{'Accept':'application/gpx+xml,application/xml,text/xml,*/*'}}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text();}).then(text=>{
-                if(!text.includes('<gpx'))throw new Error('Μη έγκυρο GPX');const data=parseGpx(text);if(data.tracks.length===0)throw new Error('Δεν βρέθηκαν');
-                if(state.routeLine)state.map.removeLayer(state.routeLine);
-                const ac=[];data.tracks.forEach(t=>t.forEach(c=>ac.push(c)));
-                state.routeGeometry=ac.map(c=>[c[1],c[0]]);state.routeDistance=dist||computeDistance(state.routeGeometry);
-                state.currentRouteName=name;state.originalTime=time||null;
-                state.alertDismissed=false;state.alertDisabledForever=false;
-                document.getElementById('offRouteWarning').classList.remove('active');
-                document.getElementById('offRouteStatus').classList.remove('active');
-                localStorage.setItem('athos_last_route',JSON.stringify({url,name,dist,time}));
-                state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);
-                state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();
-            }).catch(err=>showToast('❌ '+err.message,'#f44336'));
+        function toggleNavigation() {
+            if (state.isNavigating) { stopNavigation(); } else { startNavigation(); }
         }
 
-        function loadGpxFile(file){const r=new FileReader();r.onload=function(e){try{const t=e.target.result;if(!t.includes('<gpx'))throw new Error('Μη έγκυρο GPX');const d=parseGpx(t);if(d.tracks.length===0)throw new Error('Δεν βρέθηκαν');if(state.routeLine)state.map.removeLayer(state.routeLine);const ac=[];d.tracks.forEach(tr=>tr.forEach(c=>ac.push(c)));state.routeGeometry=ac.map(c=>[c[1],c[0]]);state.routeDistance=computeDistance(state.routeGeometry);state.currentRouteName=file.name.replace('.gpx','');state.originalTime=null;state.alertDismissed=false;state.alertDisabledForever=false;document.getElementById('offRouteWarning').classList.remove('active');document.getElementById('offRouteStatus').classList.remove('active');state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();}catch(err){showToast('❌ '+err.message,'#f44336');}};r.readAsText(file);}
-        function parseGpx(x){const p=new DOMParser(),xml=p.parseFromString(x,'text/xml');if(xml.querySelector('parsererror'))throw new Error('Μη έγκυρο GPX');const r={tracks:[]};xml.querySelectorAll('trk trkseg').forEach(s=>{const c=[];s.querySelectorAll('trkpt').forEach(pt=>{const la=parseFloat(pt.getAttribute('lat')),lo=parseFloat(pt.getAttribute('lon'));if(!isNaN(la)&&!isNaN(lo))c.push([la,lo]);});if(c.length>1)r.tracks.push(c);});return r;}
-        function computeDistance(c){let d=0;for(let i=1;i<c.length;i++)d+=L.latLng(c[i-1][1],c[i-1][0]).distanceTo(L.latLng(c[i][1],c[i][0]));return d/1000;}
-        function updateRouteInfo(){document.getElementById('distDisplay').textContent=state.routeDistance.toFixed(2);updateTimeDisplay();}
-        function updateTimeDisplay(){const timeEl=document.getElementById('timeDisplay');if(state.routeDistance>0){if(state.originalTime){timeEl.textContent=state.originalTime;timeEl.className='time excel';}else{const m=Math.round((state.routeDistance/state.currentSpeed)*60);const h=Math.floor(m/60);const mm=m%60;timeEl.textContent=h>0?`${h}h ${mm}m`:`${mm}m`;timeEl.className='time calculated';}}else{timeEl.textContent='--:--';timeEl.className='time';}}
-
-        async function toggleScreenOn(){if(state.isScreenOn){await disableWakeLock();}else{await enableWakeLock();}}
-        async function enableWakeLock(){try{if('wakeLock'in navigator){state.wakeLock=await navigator.wakeLock.request('screen');state.isScreenOn=true;const b=document.getElementById('screenBtn');b.textContent='🔆✓';b.classList.add('active');state.wakeLock.addEventListener('release',()=>{state.isScreenOn=false;b.textContent='🔆';b.classList.remove('active');});}}catch(e){}}
-        async function disableWakeLock(){if(state.wakeLock){await state.wakeLock.release();state.wakeLock=null;}state.isScreenOn=false;document.getElementById('screenBtn').textContent='🔆';document.getElementById('screenBtn').classList.remove('active');}
-
-        function openSos(){document.getElementById('sosContainer').classList.add('active');document.getElementById('sosCoords').textContent=state.lastPosition?`${state.lastPosition.lat.toFixed(6)}, ${state.lastPosition.lng.toFixed(6)}`:'Άγνωστη';}
-        function closeSos(){document.getElementById('sosContainer').classList.remove('active');}
-        function genSosMsg(){return`🆘 SOS\n👤 ${document.getElementById('sosName').value||'Ανώνυμος'}\n🆘 ${document.getElementById('sosType').value}\n📱 ${document.getElementById('sosPhone').value||'-'}\n📍 ${document.getElementById('sosCoords').textContent}`;}
-        function sendSms(){const m=genSosMsg();if(/Android|iPhone/i.test(navigator.userAgent))window.location.href='sms:6988321619?body='+encodeURIComponent(m);else navigator.clipboard.writeText(m).then(()=>showToast('✅ Αντιγράφηκε','#4CAF50'));closeSos();}
-        function sendEmail(){window.location.href='mailto:athosmaps@gmail.com?subject=SOS&body='+encodeURIComponent(genSosMsg());closeSos();}
-        function call112(){if(confirm('📞 112;'))window.location.href='tel:112';closeSos();}
-        function showToast(msg,color='#333'){const t=document.createElement('div');t.style.cssText=`position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:${color};color:white;padding:6px 14px;border-radius:10px;z-index:9999;font-size:11px;text-align:center;max-width:90%;pointer-events:none;font-weight:600`;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
-
-        function clearRoute(){
-            if(state.routeLine){state.map.removeLayer(state.routeLine);state.routeLine=null;}
-            state.routeGeometry=null;state.routeDistance=0;state.currentRouteName='';state.originalTime=null;
-            document.getElementById('distDisplay').textContent='0.00';
-            document.getElementById('timeDisplay').textContent='--:--';document.getElementById('timeDisplay').className='time';
-            document.getElementById('distProgressInline').style.display='none';
-            document.getElementById('offRouteWarning').classList.remove('active');
-            document.getElementById('offRouteStatus').classList.remove('active');
-            localStorage.removeItem('athos_last_route');
-            showToast('🗑️ Διαδρομή καθαρίστηκε','#d35400');
-        }
-
-        document.addEventListener('DOMContentLoaded',()=>{
-            if(localStorage.getItem('athos_online_granted')==='true')isOnlineAccessGranted=true;
-            initMap();
+        function startNavigation() {
+            if (!state.isGpsOn) { showToast('⚠️ GPS πρώτα', '#FF9800'); return; }
+            document.getElementById('navBtn').textContent = '🧭✓';
+            document.getElementById('navBtn').classList.add('active');
+            state.isNavigating = true;
             
-            const savedRoute=localStorage.getItem('athos_last_route');
-            const wasNavigating=localStorage.getItem('athos_was_navigating')==='true';
-            if(savedRoute){
-                try{
-                    const r=JSON.parse(savedRoute);
-                    if(r.url&&r.name){
-                        setTimeout(()=>{
-                            loadRouteFromUrl(r.url,r.name,r.dist,r.time);
-                            if(wasNavigating||confirm('🔄 Συνέχεια από την τελευταία διαδρομή;\n\n'+r.name+'\n\nΘέλεις να ενεργοποιηθεί το GPS και η πλοήγηση;')){
-                                setTimeout(()=>{startGps();setTimeout(()=>{startNavigation();toggleScreenOn();},1500);},2000);
-                            }
-                        },1000);
-                    }
-                }catch(e){}
+            if (state.lastPosition) state.map.panTo([state.lastPosition.lat, state.lastPosition.lng], { animate: false });
+            
+            state.navIntervalId = setInterval(() => {
+                if (state.isNavigating && state.lastPosition) {
+                    state.map.panTo([state.lastPosition.lat, state.lastPosition.lng], { animate: false });
+                }
+            }, NAV_UPDATE_INTERVAL);
+            
+            localStorage.setItem('athos_was_navigating', 'true');
+        }
+
+        function stopNavigation() {
+            if (state.navIntervalId) {
+                clearInterval(state.navIntervalId);
+                state.navIntervalId = null;
+            }
+            state.isNavigating = false;
+            document.getElementById('navBtn').textContent = '🧭';
+            document.getElementById('navBtn').classList.remove('active');
+            localStorage.setItem('athos_was_navigating', 'false');
+        }
+
+        function checkOffRoute(lat, lng) {
+            if (!state.routeGeometry || state.alertDisabledForever) return;
+            
+            let min = Infinity;
+            for (const c of state.routeGeometry) {
+                const d = L.latLng(lat, lng).distanceTo(L.latLng(c[1], c[0]));
+                if (d < min) min = d;
             }
             
-            document.getElementById('gpsBtn').addEventListener('click',toggleGps);
-            document.getElementById('navBtn').addEventListener('click',toggleNavigation);
-            document.getElementById('compassBtn').addEventListener('click',toggleCompass);
-            document.getElementById('routesBtn').addEventListener('click',showRoutes);
-            document.getElementById('closeRoutesBtn').addEventListener('click',hideRoutes);
-            document.getElementById('closeRoutesBtn2').addEventListener('click',hideRoutes);
-            document.getElementById('routeSearch').addEventListener('input',e=>renderRoutes(e.target.value));
-            document.getElementById('loadBtn').addEventListener('click',()=>document.getElementById('fileInput').click());
-            document.getElementById('fileInput').addEventListener('change',e=>{if(e.target.files[0]){loadGpxFile(e.target.files[0]);e.target.value='';}});
-            document.getElementById('clearRouteBtn').addEventListener('click',clearRoute);
-            document.getElementById('resumeBtn').addEventListener('click',()=>{
-                const sr=localStorage.getItem('athos_last_route');
-                if(sr){const r=JSON.parse(sr);loadRouteFromUrl(r.url,r.name,r.dist,r.time);startGps();setTimeout(()=>{startNavigation();toggleScreenOn();},1500);}
-                else{showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή','#f44336');}
+            const w = document.getElementById('offRouteWarning');
+            const s = document.getElementById('offRouteStatus');
+            const m = document.getElementById('offRouteMsg');
+            
+            if (min > OFF_ROUTE_THRESHOLD) {
+                m.textContent = `⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ! (${Math.round(min)}m)`;
+                w.classList.add('active');
+                s.classList.add('active');
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+            } else {
+                w.classList.remove('active');
+                s.classList.remove('active');
+            }
+        }
+
+        function updateDistProgress() {
+            const el = document.getElementById('distProgressInline');
+            if (!state.routeGeometry || !state.lastPosition || state.routeDistance === 0) {
+                el.style.display = 'none';
+                return;
+            }
+            
+            el.style.display = 'block';
+            let minDist = Infinity, closestIdx = 0;
+            
+            for (let i = 0; i < state.routeGeometry.length; i++) {
+                const d = L.latLng(state.lastPosition.lat, state.lastPosition.lng).distanceTo(
+                    L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
+                );
+                if (d < minDist) { minDist = d; closestIdx = i; }
+            }
+            
+            let doneDist = 0;
+            for (let i = 1; i <= closestIdx; i++) {
+                doneDist += L.latLng(state.routeGeometry[i-1][1], state.routeGeometry[i-1][0]).distanceTo(
+                    L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
+                );
+            }
+            
+            doneDist /= 1000;
+            const remaining = Math.max(0, state.routeDistance - doneDist);
+            document.getElementById('distDone').textContent = doneDist.toFixed(2);
+            document.getElementById('distRemaining').textContent = remaining.toFixed(2);
+        }
+
+        // ============================================================
+        // ROUTES
+        // ============================================================
+        
+        function showRoutes() {
+            document.getElementById('routeDropdown').classList.add('active');
+            renderRoutes('');
+        }
+
+        function hideRoutes() {
+            document.getElementById('routeDropdown').classList.remove('active');
+        }
+
+        function renderRoutes(filter) {
+            const list = document.getElementById('routesList');
+            let filtered = ROUTES;
+            
+            if (filter) {
+                const f = filter.toLowerCase();
+                filtered = ROUTES.filter(r => r.name.toLowerCase().includes(f));
+            }
+            
+            document.getElementById('routeCount').textContent = filtered.length;
+            let html = '', cl = '';
+            
+            filtered.forEach(r => {
+                const fl = r.name.charAt(0).toUpperCase();
+                if (fl !== cl) { cl = fl; html += `<div class="letter-header">${cl}</div>`; }
+                html += `<div class="route-item" data-url="${r.url}" data-name="${r.name}" data-dist="${r.dist}" data-time="${r.time}">
+                    <span class="rname">${r.name}</span>
+                    <span class="rinfo">${r.dist}km | ${r.time}</span>
+                </div>`;
             });
-            document.getElementById('downloadBtn').addEventListener('click',startDownload);
-            document.getElementById('offlineBtn').addEventListener('click',toggleOffline);
-            document.getElementById('screenBtn').addEventListener('click',toggleScreenOn);
-            document.getElementById('sosBottomBtn').addEventListener('click',openSos);
-            document.getElementById('closeSosBtn').addEventListener('click',closeSos);
-            document.getElementById('sosSendSms').addEventListener('click',sendSms);
-            document.getElementById('sosSendEmail').addEventListener('click',sendEmail);
-            document.getElementById('sosCall112').addEventListener('click',call112);
-            document.getElementById('dismissAlertBtn').addEventListener('click',dismissAlert);
-            document.getElementById('disableAlertForeverBtn').addEventListener('click',disableAlertForever);
-            document.getElementById('codeConfirm').addEventListener('click',confirmCode);
-            document.getElementById('codeCancel').addEventListener('click',hideCodeModal);
-            document.getElementById('codeInput').addEventListener('keypress',function(e){if(e.key==='Enter')confirmCode();});
-            document.getElementById('codeModal').addEventListener('click',function(e){if(e.target===this)hideCodeModal();});
-            document.querySelectorAll('.speed-btn').forEach(b=>{b.addEventListener('click',function(){state.currentSpeed=parseInt(this.dataset.speed);state.originalTime=null;document.querySelectorAll('.speed-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active');updateTimeDisplay();});});
-            document.addEventListener('dragover',e=>e.preventDefault());
-            document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f&&(f.name.endsWith('.gpx')||f.name.endsWith('.xml')))loadGpxFile(f);});
+            
+            list.innerHTML = html;
+            list.querySelectorAll('.route-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    loadRouteFromUrl(this.dataset.url, this.dataset.name, parseFloat(this.dataset.dist), this.dataset.time);
+                    hideRoutes();
+                });
+            });
+        }
+
+        function loadRouteFromUrl(url, name, dist, time) {
+            // Έλεγχος online πρόσβασης
+            if (!checkOnlineAccess()) {
+                showCodeModal();
+                return;
+            }
+            
+            fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(text => {
+                    if (!text.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                    const data = parseGpx(text);
+                    if (data.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                    
+                    if (state.routeLine) state.map.removeLayer(state.routeLine);
+                    
+                    const ac = [];
+                    data.tracks.forEach(t => t.forEach(c => ac.push(c)));
+                    state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                    state.routeDistance = dist || computeDistance(state.routeGeometry);
+                    state.currentRouteName = name;
+                    state.originalTime = time || null;
+                    state.alertDismissed = false;
+                    state.alertDisabledForever = false;
+                    
+                    document.getElementById('offRouteWarning').classList.remove('active');
+                    document.getElementById('offRouteStatus').classList.remove('active');
+                    
+                    localStorage.setItem('athos_last_route', JSON.stringify({ url, name, dist, time }));
+                    
+                    state.routeLine = L.polyline(ac, {
+                        color: '#FF5722',
+                        weight: 5,
+                        opacity: 0.9,
+                        smoothFactor: 1
+                    }).addTo(state.map);
+                    
+                    state.map.fitBounds(state.routeLine.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                    updateRouteInfo();
+                })
+                .catch(err => showToast('❌ ' + err.message, '#f44336'));
+        }
+
+        function loadGpxFile(file) {
+            const r = new FileReader();
+            r.onload = function(e) {
+                try {
+                    const t = e.target.result;
+                    if (!t.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                    const d = parseGpx(t);
+                    if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                    
+                    if (state.routeLine) state.map.removeLayer(state.routeLine);
+                    
+                    const ac = [];
+                    d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
+                    state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                    state.routeDistance = computeDistance(state.routeGeometry);
+                    state.currentRouteName = file.name.replace('.gpx', '');
+                    state.originalTime = null;
+                    state.alertDismissed = false;
+                    state.alertDisabledForever = false;
+                    
+                    document.getElementById('offRouteWarning').classList.remove('active');
+                    document.getElementById('offRouteStatus').classList.remove('active');
+                    
+                    state.routeLine = L.polyline(ac, {
+                        color: '#FF5722',
+                        weight: 5,
+                        opacity: 0.9,
+                        smoothFactor: 1
+                    }).addTo(state.map);
+                    
+                    state.map.fitBounds(state.routeLine.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                    updateRouteInfo();
+                } catch(err) {
+                    showToast('❌ ' + err.message, '#f44336');
+                }
+            };
+            r.readAsText(file);
+        }
+
+        function parseGpx(x) {
+            const p = new DOMParser();
+            const xml = p.parseFromString(x, 'text/xml');
+            if (xml.querySelector('parsererror')) throw new Error('Μη έγκυρο GPX');
+            
+            const r = { tracks: [] };
+            xml.querySelectorAll('trk trkseg').forEach(s => {
+                const c = [];
+                s.querySelectorAll('trkpt').forEach(pt => {
+                    const la = parseFloat(pt.getAttribute('lat'));
+                    const lo = parseFloat(pt.getAttribute('lon'));
+                    if (!isNaN(la) && !isNaN(lo)) c.push([la, lo]);
+                });
+                if (c.length > 1) r.tracks.push(c);
+            });
+            return r;
+        }
+
+        function computeDistance(c) {
+            let d = 0;
+            for (let i = 1; i < c.length; i++) {
+                d += L.latLng(c[i-1][1], c[i-1][0]).distanceTo(L.latLng(c[i][1], c[i][0]));
+            }
+            return d / 1000;
+        }
+
+        function updateRouteInfo() {
+            document.getElementById('distDisplay').textContent = state.routeDistance.toFixed(2);
+            updateTimeDisplay();
+        }
+
+        function updateTimeDisplay() {
+            const timeEl = document.getElementById('timeDisplay');
+            if (state.routeDistance > 0) {
+                if (state.originalTime) {
+                    timeEl.textContent = state.originalTime;
+                    timeEl.className = 'time excel';
+                } else {
+                    const m = Math.round((state.routeDistance / state.currentSpeed) * 60);
+                    const h = Math.floor(m / 60);
+                    const mm = m % 60;
+                    timeEl.textContent = h > 0 ? `${h}h ${mm}m` : `${mm}m`;
+                    timeEl.className = 'time calculated';
+                }
+            } else {
+                timeEl.textContent = '--:--';
+                timeEl.className = 'time';
+            }
+        }
+
+        function clearRoute() {
+            if (state.routeLine) {
+                state.map.removeLayer(state.routeLine);
+                state.routeLine = null;
+            }
+            state.routeGeometry = null;
+            state.routeDistance = 0;
+            state.currentRouteName = '';
+            state.originalTime = null;
+            
+            document.getElementById('distDisplay').textContent = '0.00';
+            document.getElementById('timeDisplay').textContent = '--:--';
+            document.getElementById('timeDisplay').className = 'time';
+            document.getElementById('distProgressInline').style.display = 'none';
+            document.getElementById('offRouteWarning').classList.remove('active');
+            document.getElementById('offRouteStatus').classList.remove('active');
+            
+            localStorage.removeItem('athos_last_route');
+            showToast('🗑️ Διαδρομή καθαρίστηκε', '#d35400');
+        }
+
+        // ============================================================
+        // SOS, SCREEN, OFFLINE DOWNLOAD
+        // ============================================================
+        
+        function openSos() {
+            document.getElementById('sosContainer').classList.add('active');
+            document.getElementById('sosCoords').textContent = state.lastPosition ? 
+                `${state.lastPosition.lat.toFixed(6)}, ${state.lastPosition.lng.toFixed(6)}` : 'Άγνωστη';
+        }
+
+        function closeSos() {
+            document.getElementById('sosContainer').classList.remove('active');
+        }
+
+        function genSosMsg() {
+            return `🆘 SOS\n👤 ${document.getElementById('sosName').value || 'Ανώνυμος'}\n🆘 ${document.getElementById('sosType').value}\n📱 ${document.getElementById('sosPhone').value || '-'}\n📍 ${document.getElementById('sosCoords').textContent}`;
+        }
+
+        function sendSms() {
+            const m = genSosMsg();
+            if (/Android|iPhone/i.test(navigator.userAgent)) {
+                window.location.href = 'sms:6988321619?body=' + encodeURIComponent(m);
+            } else {
+                navigator.clipboard.writeText(m).then(() => showToast('✅ Αντιγράφηκε', '#4CAF50'));
+            }
+            closeSos();
+        }
+
+        function sendEmail() {
+            window.location.href = 'mailto:athosmaps@gmail.com?subject=SOS&body=' + encodeURIComponent(genSosMsg());
+            closeSos();
+        }
+
+        function call112() {
+            if (confirm('📞 112;')) window.location.href = 'tel:112';
+            closeSos();
+        }
+
+        function dismissAlert() {
+            state.alertDismissed = true;
+            document.getElementById('offRouteWarning').classList.remove('active');
+            document.getElementById('offRouteStatus').classList.remove('active');
+            showToast('🔇 Προσωρινή σίγαση', '#888');
+        }
+
+        function disableAlertForever() {
+            state.alertDisabledForever = true;
+            document.getElementById('offRouteWarning').classList.remove('active');
+            document.getElementById('offRouteStatus').classList.remove('active');
+            showToast('🚫 Οριστική απενεργοποίηση', '#f44336');
+        }
+
+        async function toggleScreenOn() {
+            if (state.isScreenOn) {
+                await disableWakeLock();
+            } else {
+                await enableWakeLock();
+            }
+        }
+
+        async function enableWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    state.wakeLock = await navigator.wakeLock.request('screen');
+                    state.isScreenOn = true;
+                    const b = document.getElementById('screenBtn');
+                    b.textContent = '🔆✓';
+                    b.classList.add('active');
+                    state.wakeLock.addEventListener('release', () => {
+                        state.isScreenOn = false;
+                        b.textContent = '🔆';
+                        b.classList.remove('active');
+                    });
+                }
+            } catch(e) {}
+        }
+
+        async function disableWakeLock() {
+            if (state.wakeLock) {
+                await state.wakeLock.release();
+                state.wakeLock = null;
+            }
+            state.isScreenOn = false;
+            document.getElementById('screenBtn').textContent = '🔆';
+            document.getElementById('screenBtn').classList.remove('active');
+        }
+
+        // ============================================================
+        // DOWNLOAD & OFFLINE
+        // ============================================================
+        
+        function getBoundsAround(la, ln, r) {
+            const d = r / 111;
+            const dl = r / (111 * Math.cos(la * Math.PI / 180));
+            return { southWest: [la - d, ln - dl], northEast: [la + d, ln + dl] };
+        }
+
+        function getTilesForBounds(b, z) {
+            const t = [], p = Math.pow(2, z);
+            for (let x = Math.floor((b.southWest[1] + 180) / 360 * p); x <= Math.floor((b.northEast[1] + 180) / 360 * p); x++) {
+                for (let y = Math.floor((1 - Math.log(Math.tan(b.southWest[0] * Math.PI / 180) + 1 / Math.cos(b.southWest[0] * Math.PI / 180)) / Math.PI) / 2 * p);
+                     y <= Math.floor((1 - Math.log(Math.tan(b.northEast[0] * Math.PI / 180) + 1 / Math.cos(b.northEast[0] * Math.PI / 180)) / Math.PI) / 2 * p); y++) {
+                    t.push({ x, y });
+                }
+            }
+            return t;
+        }
+
+        async function downloadBatch(b) {
+            await Promise.allSettled(b.map(async ({ z, x, y, key }) => {
+                try {
+                    if (await getTileFromDB(key)) return;
+                    const r = await fetch(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);
+                    if (!r.ok) return;
+                    const bl = await r.blob();
+                    const rd = new FileReader();
+                    return new Promise(rs => {
+                        rd.onload = async function(e) {
+                            await putTileInDB(key, e.target.result, z);
+                            rs();
+                        };
+                        rd.readAsDataURL(bl);
+                    });
+                } catch(e) {}
+            }));
+        }
+
+        async function startDownload() {
+            if (state.isDownloading) { showToast('⏳ Σε εξέλιξη...', '#FF9800'); return; }
+            
+            // Έλεγχος online πρόσβασης - ΑΠΑΡΑΙΤΗΤΟΣ Ο ΚΩΔΙΚΟΣ
+            if (!checkOnlineAccess()) {
+                showCodeModal();
+                return;
+            }
+            
+            const area = document.getElementById('areaSelect').value;
+            
+            if (area === 'my_area') {
+                if (!state.lastPosition) {
+                    showToast('📍 GPS πρώτα', '#FF9800');
+                    return;
+                }
+                state.isDownloading = true;
+                await downloadArea(getBoundsAround(state.lastPosition.lat, state.lastPosition.lng, 15));
+                state.isDownloading = false;
+            } else {
+                const c = CITIES[area];
+                if (!c) return;
+                state.isDownloading = true;
+                await downloadArea(getBoundsAround(c.lat, c.lng, c.radius));
+                state.isDownloading = false;
+            }
+            
+            updateCacheBadge(await getTileCount());
+            showToast('✅ Ολοκληρώθηκε!', '#4CAF50');
+        }
+
+        async function downloadArea(bounds) {
+            const dv = document.getElementById('downloadProgress');
+            const f = document.getElementById('progressFill');
+            const tx = document.getElementById('progressText');
+            dv.style.display = 'block';
+            
+            let total = 0;
+            for (const z of ZOOM_LEVELS) total += getTilesForBounds(bounds, z).length;
+            
+            const exist = new Set();
+            let loaded = 0;
+            
+            for (const z of ZOOM_LEVELS) {
+                for (const tl of getTilesForBounds(bounds, z)) {
+                    const k = `osm_${z}_${tl.x}_${tl.y}`;
+                    if (await getTileFromDB(k)) { exist.add(k); loaded++; }
+                }
+            }
+            
+            const td = total - exist.size;
+            if (td === 0) {
+                tx.textContent = '✅ Όλα υπάρχουν!';
+                setTimeout(() => dv.style.display = 'none', 2000);
+                return;
+            }
+            
+            for (const z of ZOOM_LEVELS) {
+                const tiles = getTilesForBounds(bounds, z);
+                let b = [];
+                for (const tl of tiles) {
+                    const k = `osm_${z}_${tl.x}_${tl.y}`;
+                    if (exist.has(k)) continue;
+                    b.push({ z, x: tl.x, y: tl.y, key: k });
+                    if (b.length >= BATCH_SIZE) {
+                        await downloadBatch(b);
+                        loaded += b.length;
+                        f.style.width = Math.min(100, Math.round((loaded / total) * 100)) + '%';
+                        tx.textContent = `📥 ${Math.round((loaded / total) * 100)}%`;
+                        b = [];
+                    }
+                }
+                if (b.length > 0) {
+                    await downloadBatch(b);
+                    loaded += b.length;
+                    f.style.width = Math.min(100, Math.round((loaded / total) * 100)) + '%';
+                }
+            }
+            
+            tx.textContent = `✅ ${await getTileCount()} tiles`;
+            setTimeout(() => dv.style.display = 'none', 3000);
+        }
+
+        async function toggleOffline() {
+            if (state.isOffline) {
+                // Προσπάθεια να πάει σε online - ΑΠΑΡΑΙΤΗΤΟΣ Ο ΚΩΔΙΚΟΣ
+                if (!checkOnlineAccess()) {
+                    showCodeModal();
+                    return;
+                }
+                disableOffline();
+                enableOnlineMode();
+            } else {
+                await enableOffline();
+            }
+        }
+
+        async function enableOffline() {
+            const c = await getTileCount();
+            if (c === 0) {
+                showToast('❌ Κάνε λήψη πρώτα', '#f44336');
+                return;
+            }
+            
+            if (state.tileLayer && state.map.hasLayer(state.tileLayer)) {
+                state.map.removeLayer(state.tileLayer);
+            }
+            if (state.offlineLayer && state.map.hasLayer(state.offlineLayer)) {
+                state.map.removeLayer(state.offlineLayer);
+            }
+            
+            state.offlineLayer = createOfflineLayer();
+            state.map.addLayer(state.offlineLayer);
+            state.isOffline = true;
+            
+            document.getElementById('offlineBtn').textContent = '📴✓';
+            document.getElementById('offlineBtn').classList.add('active');
+            document.getElementById('statusBadge').textContent = '📴 Offline';
+            updateCacheBadge(c);
+            showToast('📴 Offline λειτουργία', '#27ae60');
+        }
+
+        function disableOffline() {
+            if (state.offlineLayer) {
+                state.map.removeLayer(state.offlineLayer);
+                state.offlineLayer = null;
+            }
+            state.isOffline = false;
+            document.getElementById('offlineBtn').textContent = '📴';
+            document.getElementById('offlineBtn').classList.remove('active');
+            document.getElementById('statusBadge').textContent = '📡 Online';
+        }
+
+        // ============================================================
+        // DOM READY
+        // ============================================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Έλεγχος αν έχει αποθηκευμένο κωδικό
+            if (localStorage.getItem('athos_online_granted') === 'true') {
+                isOnlineAccessGranted = true;
+            }
+            
+            initMap();
+            
+            const savedRoute = localStorage.getItem('athos_last_route');
+            const wasNavigating = localStorage.getItem('athos_was_navigating') === 'true';
+            
+            if (savedRoute) {
+                try {
+                    const r = JSON.parse(savedRoute);
+                    if (r.url && r.name) {
+                        setTimeout(() => {
+                            loadRouteFromUrl(r.url, r.name, r.dist, r.time);
+                            if (wasNavigating || confirm('🔄 Συνέχεια από την τελευταία διαδρομή;\n\n' + r.name + '\n\nΘέλεις να ενεργοποιηθεί το GPS και η πλοήγηση;')) {
+                                setTimeout(() => {
+                                    startGps();
+                                    setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
+                                }, 2000);
+                            }
+                        }, 1000);
+                    }
+                } catch(e) {}
+            }
+            
+            // Event listeners
+            document.getElementById('gpsBtn').addEventListener('click', toggleGps);
+            document.getElementById('navBtn').addEventListener('click', toggleNavigation);
+            document.getElementById('compassBtn').addEventListener('click', toggleCompass);
+            document.getElementById('routesBtn').addEventListener('click', showRoutes);
+            document.getElementById('closeRoutesBtn').addEventListener('click', hideRoutes);
+            document.getElementById('closeRoutesBtn2').addEventListener('click', hideRoutes);
+            document.getElementById('routeSearch').addEventListener('input', e => renderRoutes(e.target.value));
+            document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+            document.getElementById('fileInput').addEventListener('change', e => {
+                if (e.target.files[0]) {
+                    loadGpxFile(e.target.files[0]);
+                    e.target.value = '';
+                }
+            });
+            document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+            document.getElementById('resumeBtn').addEventListener('click', () => {
+                const sr = localStorage.getItem('athos_last_route');
+                if (sr) {
+                    const r = JSON.parse(sr);
+                    loadRouteFromUrl(r.url, r.name, r.dist, r.time);
+                    startGps();
+                    setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
+                } else {
+                    showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336');
+                }
+            });
+            document.getElementById('downloadBtn').addEventListener('click', startDownload);
+            document.getElementById('offlineBtn').addEventListener('click', toggleOffline);
+            document.getElementById('screenBtn').addEventListener('click', toggleScreenOn);
+            document.getElementById('sosBottomBtn').addEventListener('click', openSos);
+            document.getElementById('closeSosBtn').addEventListener('click', closeSos);
+            document.getElementById('sosSendSms').addEventListener('click', sendSms);
+            document.getElementById('sosSendEmail').addEventListener('click', sendEmail);
+            document.getElementById('sosCall112').addEventListener('click', call112);
+            document.getElementById('dismissAlertBtn').addEventListener('click', dismissAlert);
+            document.getElementById('disableAlertForeverBtn').addEventListener('click', disableAlertForever);
+            document.getElementById('codeConfirm').addEventListener('click', confirmCode);
+            document.getElementById('codeCancel').addEventListener('click', hideCodeModal);
+            document.getElementById('codeInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') confirmCode();
+            });
+            document.getElementById('codeModal').addEventListener('click', function(e) {
+                if (e.target === this) hideCodeModal();
+            });
+            
+            document.querySelectorAll('.speed-btn').forEach(b => {
+                b.addEventListener('click', function() {
+                    state.currentSpeed = parseInt(this.dataset.speed);
+                    state.originalTime = null;
+                    document.querySelectorAll('.speed-btn').forEach(x => x.classList.remove('active'));
+                    this.classList.add('active');
+                    updateTimeDisplay();
+                });
+            });
+            
+            document.addEventListener('dragover', e => e.preventDefault());
+            document.addEventListener('drop', e => {
+                e.preventDefault();
+                const f = e.dataTransfer.files[0];
+                if (f && (f.name.endsWith('.gpx') || f.name.endsWith('.xml'))) loadGpxFile(f);
+            });
         });
     </script>
 </body>
