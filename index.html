@@ -273,7 +273,6 @@
         const OFF_ROUTE_THRESHOLD = 100;
         const NAV_UPDATE_INTERVAL = 300;
         const NAV_ZOOM = 18;
-        const SPEEDS = { 3: '🐢 Αργή', 4: '🚶 Μέτρια', 5: '🏃 Γρήγορη' };
         const DB_NAME = 'AthosNavTilesDB';
         const DB_VERSION = 1;
         const ZOOM_LEVELS = [8,9,10,11,12,13,14,15,16,17,18];
@@ -459,15 +458,11 @@
         // ============================================================
         
         function checkOnlineAccess() {
-            // Έλεγχος αν έχει δοθεί κωδικός
             if (isOnlineAccessGranted) return true;
-            
-            // Έλεγχος στο localStorage
             if (localStorage.getItem('athos_online_granted') === 'true') {
                 isOnlineAccessGranted = true;
                 return true;
             }
-            
             return false;
         }
 
@@ -489,23 +484,18 @@
                 localStorage.setItem('athos_online_granted', 'true');
                 hideCodeModal();
                 showToast('✅ Online πρόσβαση ενεργοποιήθηκε', '#4CAF50');
-                // Ενεργοποίηση online λειτουργίας
                 enableOnlineMode();
             } else {
                 document.getElementById('codeError').style.display = 'block';
                 input.value = '';
-                setTimeout(() => { input.placeholder = '••••••••'; }, 1500);
             }
         }
 
         function enableOnlineMode() {
-            // Αφαίρεση offline layer
             if (state.offlineLayer && state.map.hasLayer(state.offlineLayer)) {
                 state.map.removeLayer(state.offlineLayer);
                 state.offlineLayer = null;
             }
-            
-            // Προσθήκη online layer
             if (!state.tileLayer || !state.map.hasLayer(state.tileLayer)) {
                 state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -513,7 +503,6 @@
                 });
                 state.map.addLayer(state.tileLayer);
             }
-            
             state.isOffline = false;
             document.getElementById('offlineBtn').textContent = '📴';
             document.getElementById('offlineBtn').classList.remove('active');
@@ -522,10 +511,10 @@
         }
 
         // ============================================================
-        // ΛΟΙΠΕΣ ΣΥΝΑΡΤΗΣΕΙΣ (GPS, ROUTES, OFFLINE, ΚΛΠ)
+        // ΑΡΧΙΚΟΠΟΙΗΣΗ ΧΑΡΤΗ
         // ============================================================
         
-        function showToast(msg, color = '#333') {
+        function showToast(msg, color) {
             const t = document.createElement('div');
             t.style.cssText = `position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:${color};color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600`;
             t.textContent = msg;
@@ -534,7 +523,6 @@
         }
 
         function initMap() {
-            // Αρχικός χάρτης - πάντα offline αν δεν έχει δοθεί κωδικός
             state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 crossOrigin: true
@@ -552,16 +540,15 @@
                 bearing: 0
             });
             
-            // Έλεγχος αν έχει κωδικό
+            // Αν δεν έχει κωδικό, πάει σε offline
             if (!checkOnlineAccess()) {
-                // Αν δεν έχει κωδικό, πάμε σε offline mode
                 state.map.removeLayer(state.tileLayer);
                 state.map.addLayer(createOfflineLayer());
                 state.isOffline = true;
                 document.getElementById('offlineBtn').textContent = '📴✓';
                 document.getElementById('offlineBtn').classList.add('active');
                 document.getElementById('statusBadge').textContent = '📴 Offline';
-                showToast('📴 Offline λειτουργία - Εισάγετε κωδικό για online', '#2980b9');
+                showToast('📴 Offline - Εισάγετε κωδικό για online', '#2980b9');
             }
             
             // Κουμπί περιστροφής
@@ -604,28 +591,25 @@
                         t.src = data;
                         t.onerror = () => { t.src = this.options.errorTileUrl; };
                         done(null, t);
-                    } else {
-                        // Αν δεν υπάρχει tile και ο χρήστης έχει κωδικό, φόρτωσε από το διαδίκτυο
-                        if (checkOnlineAccess() && navigator.onLine) {
-                            t.src = u;
-                            t.onload = () => {
-                                fetch(u).then(r => r.blob()).then(b => {
-                                    const rd = new FileReader();
-                                    rd.onload = function(e) {
-                                        putTileInDB(k, e.target.result, c.z).catch(() => {});
-                                    };
-                                    rd.readAsDataURL(b);
-                                }).catch(() => {});
-                                done(null, t);
-                            };
-                            t.onerror = () => {
-                                t.src = this.options.errorTileUrl;
-                                done(null, t);
-                            };
-                        } else {
+                    } else if (checkOnlineAccess() && navigator.onLine) {
+                        t.src = u;
+                        t.onload = () => {
+                            fetch(u).then(r => r.blob()).then(b => {
+                                const rd = new FileReader();
+                                rd.onload = function(e) {
+                                    putTileInDB(k, e.target.result, c.z).catch(() => {});
+                                };
+                                rd.readAsDataURL(b);
+                            }).catch(() => {});
+                            done(null, t);
+                        };
+                        t.onerror = () => {
                             t.src = this.options.errorTileUrl;
                             done(null, t);
-                        }
+                        };
+                    } else {
+                        t.src = this.options.errorTileUrl;
+                        done(null, t);
                     }
                 }).catch(() => {
                     t.src = this.options.errorTileUrl;
@@ -692,7 +676,7 @@
         }
 
         // ============================================================
-        // GPS, NAVIGATION, ROUTES - ΟΙ ΥΠΟΛΟΙΠΕΣ ΣΥΝΑΡΤΗΣΕΙΣ
+        // GPS & NAVIGATION
         // ============================================================
         
         function toggleGps() {
@@ -778,8 +762,8 @@
         }
 
         function toggleCompass() {
-            state.map.setBearing(0, { animate: true, duration: 0.8 });
             mapRotation = 0;
+            state.map.setBearing(0, { animate: true, duration: 0.8 });
             showToast('🧭 Βορράς', '#888');
         }
 
@@ -913,7 +897,7 @@
         }
 
         function loadRouteFromUrl(url, name, dist, time) {
-            // Έλεγχος online πρόσβασης
+            // ΑΠΑΙΤΕΙΤΑΙ ΚΩΔΙΚΟΣ
             if (!checkOnlineAccess()) {
                 showCodeModal();
                 return;
@@ -959,6 +943,7 @@
         }
 
         function loadGpxFile(file) {
+            // GPX από τοπικό αρχείο - ΔΕΝ χρειάζεται κωδικό
             const r = new FileReader();
             r.onload = function(e) {
                 try {
@@ -1198,7 +1183,7 @@
         async function startDownload() {
             if (state.isDownloading) { showToast('⏳ Σε εξέλιξη...', '#FF9800'); return; }
             
-            // Έλεγχος online πρόσβασης - ΑΠΑΡΑΙΤΗΤΟΣ Ο ΚΩΔΙΚΟΣ
+            // ΑΠΑΙΤΕΙΤΑΙ ΚΩΔΙΚΟΣ ΓΙΑ ΛΗΨΗ
             if (!checkOnlineAccess()) {
                 showCodeModal();
                 return;
@@ -1280,7 +1265,6 @@
 
         async function toggleOffline() {
             if (state.isOffline) {
-                // Προσπάθεια να πάει σε online - ΑΠΑΡΑΙΤΗΤΟΣ Ο ΚΩΔΙΚΟΣ
                 if (!checkOnlineAccess()) {
                     showCodeModal();
                     return;
@@ -1333,7 +1317,6 @@
         // ============================================================
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Έλεγχος αν έχει αποθηκευμένο κωδικό
             if (localStorage.getItem('athos_online_granted') === 'true') {
                 isOnlineAccessGranted = true;
             }
