@@ -27,7 +27,6 @@
         .header button.dl-btn{background:#673AB7;font-size:11px}
         .header button.offline-btn{background:#2980b9;font-size:11px}
         .header button.offline-btn.active{background:#27ae60}
-        .header button.sos-btn{background:#f44336;font-size:16px;min-width:32px}
         .header a.design-btn{background:#4CAF50;font-size:11px}
         .header select{background:rgba(255,255,255,0.1);color:#ddd;padding:4px 5px;border-radius:5px;font-size:9px;border:1px solid rgba(255,255,255,0.1);min-height:32px;max-width:75px}
         .header select option{color:#333}
@@ -37,6 +36,8 @@
         .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:8px 14px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:180px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px)}
         .info-bar .distance{font-size:24px;font-weight:800;color:#4CAF50}
         .info-bar .time{font-size:18px;font-weight:700;color:#FF9800}
+        .info-bar .time.excel{color:#FF9800}
+        .info-bar .time.calculated{color:#00BCD4}
         .info-bar .speed-kmh{font-size:12px;color:#00BCD4;font-weight:700;margin-top:2px}
         .info-bar .status{font-size:10px;color:#aaa;margin-top:3px}
         .info-bar .route-name{font-size:10px;color:#bb86fc;margin-top:2px}
@@ -53,6 +54,7 @@
         .bottom-bar button.speed-btn.active{background:rgba(76,175,80,0.3);color:#4CAF50}
         .bottom-bar button.screen-btn{background:rgba(255,255,255,0.08);color:#888}
         .bottom-bar button.screen-btn.active{background:rgba(26,188,156,0.3);color:#1abc9c}
+        .bottom-bar button.sos-bottom-btn{background:#f44336;font-size:12px;min-width:36px;min-height:28px;padding:4px 8px}
         .bottom-bar .dist-info{font-size:8px;color:#aaa;display:flex;gap:6px;align-items:center;padding:2px 6px;background:rgba(255,255,255,0.04);border-radius:5px}
         .bottom-bar .dist-info span{color:#4CAF50;font-weight:700}
         .bottom-bar .dist-info .remaining{color:#FF9800}
@@ -143,7 +145,6 @@
         <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
         <button id="offlineBtn" class="offline-btn" title="Offline">📴</button>
         <span class="badge" id="cacheBadge">0</span>
-        <button id="sosBtn" class="sos-btn" title="SOS">🆘</button>
         <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
 
@@ -168,6 +169,7 @@
     </div>
 
     <div class="bottom-bar">
+        <button id="sosBottomBtn" class="sos-bottom-btn" title="SOS">🆘</button>
         <button class="speed-btn" data-speed="3" title="Αργή">🐢 3</button>
         <button class="speed-btn active" data-speed="4" title="Μέτρια">🚶 4</button>
         <button class="speed-btn" data-speed="5" title="Γρήγορη">🏃 5</button>
@@ -208,8 +210,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v1.4
-        // Alert κλείνει μόνιμα, μεγαλύτερα εικονίδια, εικονίδιο blog
+        // ATHOS MAPS - NAVIGATION APP v1.5
+        // Χρόνοι από Excel, SOS κάτω αριστερά, alert κλείνει οριστικά
         // ============================================================
         
         const OFF_ROUTE_THRESHOLD = 50;
@@ -392,7 +394,7 @@
             gpsWatchId: null, navIntervalId: null,
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
-            currentRouteName: '', currentDifficulty: '', currentSpeedKmh: 0,
+            currentRouteName: '', currentDifficulty: '', currentSpeedKmh: 0, originalTime: null,
             alertDismissed: false, audioCtx: null
         };
 
@@ -483,14 +485,46 @@
         function hideRoutes(){document.getElementById('routeDropdown').classList.remove('active');}
         function renderRoutes(filter){const list=document.getElementById('routesList');let filtered=ROUTES;if(filter){const f=filter.toLowerCase();filtered=ROUTES.filter(r=>r.name.toLowerCase().includes(f));}document.getElementById('routeCount').textContent=filtered.length;let html='',cl='';filtered.forEach(r=>{const fl=r.name.charAt(0).toUpperCase();if(fl!==cl){cl=fl;html+=`<div class="letter-header">${cl}</div>`;}const dl=r.difficulty==='easy'?'🟢 Εύκολη':r.difficulty==='medium'?'🟠 Μέτρια':'🔴 Δύσκολη';html+=`<div class="route-item" data-url="${r.url}" data-name="${r.name}" data-dist="${r.dist}" data-diff="${r.difficulty}"><span class="rname">${r.name}</span><span class="rinfo">${r.dist}km</span><span class="rdiff ${r.difficulty}">${dl}</span></div>`;});list.innerHTML=html;list.querySelectorAll('.route-item').forEach(item=>{item.addEventListener('click',function(){loadRouteFromUrl(this.dataset.url,this.dataset.name,parseFloat(this.dataset.dist),this.dataset.diff);hideRoutes();});});}
 
-        function loadRouteFromUrl(url,name,dist,difficulty){fetch(url,{headers:{'Accept':'application/gpx+xml,application/xml,text/xml,*/*'}}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text();}).then(text=>{if(!text.includes('<gpx'))throw new Error('Μη έγκυρο GPX');const data=parseGpx(text);if(data.tracks.length===0)throw new Error('Δεν βρέθηκαν');if(state.routeLine)state.map.removeLayer(state.routeLine);const ac=[];data.tracks.forEach(t=>t.forEach(c=>ac.push(c)));state.routeGeometry=ac.map(c=>[c[1],c[0]]);state.routeDistance=dist||computeDistance(state.routeGeometry);state.currentRouteName=name;state.currentDifficulty=difficulty||getDifficulty(state.routeDistance);state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();}).catch(err=>showToast('❌ '+err.message,'#f44336'));}
+        function loadRouteFromUrl(url,name,dist,difficulty){
+            fetch(url,{headers:{'Accept':'application/gpx+xml,application/xml,text/xml,*/*'}}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text();}).then(text=>{
+                if(!text.includes('<gpx'))throw new Error('Μη έγκυρο GPX');const data=parseGpx(text);if(data.tracks.length===0)throw new Error('Δεν βρέθηκαν');
+                if(state.routeLine)state.map.removeLayer(state.routeLine);
+                const ac=[];data.tracks.forEach(t=>t.forEach(c=>ac.push(c)));
+                state.routeGeometry=ac.map(c=>[c[1],c[0]]);state.routeDistance=dist||computeDistance(state.routeGeometry);
+                state.currentRouteName=name;state.currentDifficulty=difficulty||getDifficulty(state.routeDistance);
+                // Αποθήκευση του χρόνου από το Excel
+                const routeData=ROUTES.find(r=>r.name===name);
+                state.originalTime=routeData?routeData.time:null;
+                state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);
+                state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();
+            }).catch(err=>showToast('❌ '+err.message,'#f44336'));
+        }
 
-        function loadGpxFile(file){const r=new FileReader();r.onload=function(e){try{const t=e.target.result;if(!t.includes('<gpx'))throw new Error('Μη έγκυρο GPX');const d=parseGpx(t);if(d.tracks.length===0)throw new Error('Δεν βρέθηκαν');if(state.routeLine)state.map.removeLayer(state.routeLine);const ac=[];d.tracks.forEach(tr=>tr.forEach(c=>ac.push(c)));state.routeGeometry=ac.map(c=>[c[1],c[0]]);state.routeDistance=computeDistance(state.routeGeometry);state.currentRouteName=file.name.replace('.gpx','');state.currentDifficulty=getDifficulty(state.routeDistance);state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();}catch(err){showToast('❌ '+err.message,'#f44336');}};r.readAsText(file);}
+        function loadGpxFile(file){const r=new FileReader();r.onload=function(e){try{const t=e.target.result;if(!t.includes('<gpx'))throw new Error('Μη έγκυρο GPX');const d=parseGpx(t);if(d.tracks.length===0)throw new Error('Δεν βρέθηκαν');if(state.routeLine)state.map.removeLayer(state.routeLine);const ac=[];d.tracks.forEach(tr=>tr.forEach(c=>ac.push(c)));state.routeGeometry=ac.map(c=>[c[1],c[0]]);state.routeDistance=computeDistance(state.routeGeometry);state.currentRouteName=file.name.replace('.gpx','');state.currentDifficulty=getDifficulty(state.routeDistance);state.originalTime=null;state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();}catch(err){showToast('❌ '+err.message,'#f44336');}};r.readAsText(file);}
         function parseGpx(x){const p=new DOMParser(),xml=p.parseFromString(x,'text/xml');if(xml.querySelector('parsererror'))throw new Error('Μη έγκυρο GPX');const r={tracks:[]};xml.querySelectorAll('trk trkseg').forEach(s=>{const c=[];s.querySelectorAll('trkpt').forEach(pt=>{const la=parseFloat(pt.getAttribute('lat')),lo=parseFloat(pt.getAttribute('lon'));if(!isNaN(la)&&!isNaN(lo))c.push([la,lo]);});if(c.length>1)r.tracks.push(c);});return r;}
         function computeDistance(c){let d=0;for(let i=1;i<c.length;i++)d+=L.latLng(c[i-1][1],c[i-1][0]).distanceTo(L.latLng(c[i][1],c[i][0]));return d/1000;}
         function getDifficulty(d){if(d<=3)return'easy';if(d<=7)return'medium';return'hard';}
-        function updateRouteInfo(){document.getElementById('distDisplay').textContent=state.routeDistance.toFixed(2);updateTimeDisplay();document.getElementById('routeNameDisplay').textContent=state.currentRouteName;const de=document.getElementById('diffDisplay');if(state.currentDifficulty){de.style.display='inline-block';de.className='difficulty '+state.currentDifficulty;de.textContent=state.currentDifficulty==='easy'?'🟢 Εύκολη':state.currentDifficulty==='medium'?'🟠 Μέτρια':'🔴 Δύσκολη';}else de.style.display='none';}
-        function updateTimeDisplay(){if(state.routeDistance>0){const m=Math.round((state.routeDistance/state.currentSpeed)*60),h=Math.floor(m/60),mm=m%60;document.getElementById('timeDisplay').textContent=h>0?`${h}h ${mm}m`:`${mm}m`;}}
+        function updateRouteInfo(){
+            document.getElementById('distDisplay').textContent=state.routeDistance.toFixed(2);
+            document.getElementById('routeNameDisplay').textContent=state.currentRouteName;
+            const de=document.getElementById('diffDisplay');
+            if(state.currentDifficulty){de.style.display='inline-block';de.className='difficulty '+state.currentDifficulty;de.textContent=state.currentDifficulty==='easy'?'🟢 Εύκολη':state.currentDifficulty==='medium'?'🟠 Μέτρια':'🔴 Δύσκολη';}else de.style.display='none';
+            updateTimeDisplay();
+        }
+        function updateTimeDisplay(){
+            const timeEl=document.getElementById('timeDisplay');
+            if(state.routeDistance>0){
+                if(state.originalTime){
+                    timeEl.textContent=state.originalTime;
+                    timeEl.className='time excel';
+                }else{
+                    const m=Math.round((state.routeDistance/state.currentSpeed)*60);
+                    const h=Math.floor(m/60);const mm=m%60;
+                    timeEl.textContent=h>0?`${h}h ${mm}m`:`${mm}m`;
+                    timeEl.className='time calculated';
+                }
+            }else{timeEl.textContent='--:--';timeEl.className='time';}
+        }
 
         async function toggleScreenOn(){if(state.isScreenOn){await disableWakeLock();}else{await enableWakeLock();}}
         async function enableWakeLock(){try{if('wakeLock'in navigator){state.wakeLock=await navigator.wakeLock.request('screen');state.isScreenOn=true;const b=document.getElementById('screenBtn');b.textContent='🔆✓';b.classList.add('active');state.wakeLock.addEventListener('release',()=>{state.isScreenOn=false;b.textContent='🔆';b.classList.remove('active');});}}catch(e){}}
@@ -518,13 +552,13 @@
             document.getElementById('downloadBtn').addEventListener('click',startDownload);
             document.getElementById('offlineBtn').addEventListener('click',toggleOffline);
             document.getElementById('screenBtn').addEventListener('click',toggleScreenOn);
-            document.getElementById('sosBtn').addEventListener('click',openSos);
+            document.getElementById('sosBottomBtn').addEventListener('click',openSos);
             document.getElementById('closeSosBtn').addEventListener('click',closeSos);
             document.getElementById('sosSendSms').addEventListener('click',sendSms);
             document.getElementById('sosSendEmail').addEventListener('click',sendEmail);
             document.getElementById('sosCall112').addEventListener('click',call112);
             document.getElementById('dismissAlertBtn').addEventListener('click',dismissAlert);
-            document.querySelectorAll('.speed-btn').forEach(b=>{b.addEventListener('click',function(){state.currentSpeed=parseInt(this.dataset.speed);document.querySelectorAll('.speed-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active');updateTimeDisplay();});});
+            document.querySelectorAll('.speed-btn').forEach(b=>{b.addEventListener('click',function(){state.currentSpeed=parseInt(this.dataset.speed);state.originalTime=null;document.querySelectorAll('.speed-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active');updateTimeDisplay();});});
             document.addEventListener('dragover',e=>e.preventDefault());
             document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f&&(f.name.endsWith('.gpx')||f.name.endsWith('.xml')))loadGpxFile(f);});
         });
