@@ -13,25 +13,25 @@
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         #map{height:100vh;width:100vw;z-index:1;background:#0d1117}
         
-        .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;backdrop-filter:blur(8px);border-bottom:2px solid #2196F3;max-height:70px;overflow:hidden}
-        .header button,.header a{padding:5px 8px;font-size:10px;border-radius:6px;border:none;color:white;cursor:pointer;min-height:30px;font-weight:600;transition:all 0.2s;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+        .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;backdrop-filter:blur(8px);border-bottom:2px solid #2196F3;max-height:72px;overflow:hidden}
+        .header button,.header a{padding:5px 8px;font-size:10px;border-radius:6px;border:none;color:white;cursor:pointer;min-height:32px;font-weight:600;transition:all 0.2s;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
         .header button:active,.header a:active{transform:scale(0.94)}
-        .header button.gps-btn{background:#2196F3;font-size:14px}
+        .header button.gps-btn{background:#2196F3;font-size:16px}
         .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
-        .header button.nav-btn{background:#FF9800;font-size:14px}
+        .header button.nav-btn{background:#FF9800;font-size:16px}
         .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,0.5)}
-        .header button.compass-btn{background:#607D8B;font-size:14px}
+        .header button.compass-btn{background:#607D8B;font-size:16px}
         .header button.compass-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
-        .header button.route-btn{background:#8e44ad;font-size:10px}
-        .header button.load-btn{background:#4CAF50;font-size:10px}
-        .header button.dl-btn{background:#673AB7;font-size:10px}
-        .header button.offline-btn{background:#2980b9;font-size:10px}
+        .header button.route-btn{background:#8e44ad;font-size:11px}
+        .header button.load-btn{background:#4CAF50;font-size:11px}
+        .header button.dl-btn{background:#673AB7;font-size:11px}
+        .header button.offline-btn{background:#2980b9;font-size:11px}
         .header button.offline-btn.active{background:#27ae60}
-        .header button.sos-btn{background:#f44336;font-size:14px;min-width:30px}
-        .header a.design-btn{background:#4CAF50;font-size:10px}
-        .header select{background:rgba(255,255,255,0.1);color:#ddd;padding:4px 5px;border-radius:5px;font-size:9px;border:1px solid rgba(255,255,255,0.1);min-height:30px;max-width:75px}
+        .header button.sos-btn{background:#f44336;font-size:16px;min-width:32px}
+        .header a.design-btn{background:#4CAF50;font-size:11px}
+        .header select{background:rgba(255,255,255,0.1);color:#ddd;padding:4px 5px;border-radius:5px;font-size:9px;border:1px solid rgba(255,255,255,0.1);min-height:32px;max-width:75px}
         .header select option{color:#333}
-        .header .badge{font-size:7px;background:rgba(255,255,255,0.1);padding:2px 5px;border-radius:5px;color:#aaa}
+        .header .badge{font-size:7px;background:rgba(255,255,255,0.1);padding:2px 5px;border-radius:5px;color:#aaa;min-height:20px;display:inline-flex;align-items:center}
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
         
         .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:8px 14px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:180px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px)}
@@ -57,14 +57,13 @@
         .bottom-bar .dist-info span{color:#4CAF50;font-weight:700}
         .bottom-bar .dist-info .remaining{color:#FF9800}
         
-        .offroute-warning{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:1001;background:#f44336;color:white;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;box-shadow:0 4px 20px rgba(244,67,54,0.6);animation:blink 1s infinite;flex-direction:column;align-items:center;gap:8px}
+        .offroute-warning{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:1001;background:#f44336;color:white;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;box-shadow:0 4px 20px rgba(244,67,54,0.6);flex-direction:column;align-items:center;gap:8px}
         .offroute-warning.active{display:flex}
-        .offroute-warning .dismiss-btn{background:white;color:#f44336;border:none;padding:6px 16px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
-        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.5}}
+        .offroute-warning .dismiss-btn{background:white;color:#f44336;border:none;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;margin-top:4px}
         
-        .blog-link{position:fixed;bottom:40px;right:8px;z-index:850;background:rgba(13,17,23,0.85);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;text-decoration:none;backdrop-filter:blur(4px)}
+        .blog-link{position:fixed;bottom:40px;right:8px;z-index:850;background:rgba(13,17,23,0.85);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;text-decoration:none;backdrop-filter:blur(4px);overflow:hidden}
         .blog-link:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.3)}
-        .blog-link img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+        .blog-link img{width:30px;height:30px;border-radius:50%;object-fit:cover}
         
         #downloadProgress{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);z-index:999;background:rgba(0,0,0,0.92);color:white;padding:6px 14px;border-radius:12px;font-size:9px;display:none;min-width:150px;text-align:center}
         #downloadProgress .bar{width:100%;height:3px;background:#333;border-radius:2px;margin-top:3px;overflow:hidden}
@@ -97,15 +96,15 @@
         #sosContainer input,#sosContainer select,#sosContainer textarea{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px 8px;border-radius:5px;width:100%;font-size:11px;margin:3px 0}
         #sosContainer button{width:100%;padding:6px;border-radius:5px;border:none;font-weight:700;cursor:pointer;color:white;margin:2px 0;font-size:11px}
         
-        .status-badge{position:fixed;top:74px;right:4px;z-index:999;background:rgba(0,0,0,0.8);color:white;padding:2px 6px;border-radius:6px;font-size:7px;font-weight:600;pointer-events:none}
+        .status-badge{position:fixed;top:76px;right:4px;z-index:999;background:rgba(0,0,0,0.8);color:white;padding:2px 6px;border-radius:6px;font-size:7px;font-weight:600;pointer-events:none}
         
-        .leaflet-control-zoom{z-index:800!important;margin-top:74px!important}
+        .leaflet-control-zoom{z-index:800!important;margin-top:76px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
         @media(max-width:600px){
             .header{padding:4px 5px;gap:2px;max-height:64px}
             .header button,.header a{padding:4px 6px;font-size:9px;min-height:28px;min-width:26px}
-            .header button.gps-btn,.header button.nav-btn,.header button.compass-btn{font-size:12px}
+            .header button.gps-btn,.header button.nav-btn,.header button.compass-btn{font-size:14px}
             .header select{font-size:8px;min-height:28px;max-width:60px}
             .info-bar{padding:6px 10px;bottom:48px}
             .info-bar .distance{font-size:20px}
@@ -124,7 +123,7 @@
     <div id="map"></div>
     
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23bb86fc' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E" alt="Blog" loading="lazy">
+        <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
     <div class="header">
@@ -150,7 +149,7 @@
 
     <div class="offroute-warning" id="offRouteWarning">
         <span id="offRouteMsg">⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ!</span>
-        <button class="dismiss-btn" id="dismissAlertBtn">🔇 ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ (5min)</button>
+        <button class="dismiss-btn" id="dismissAlertBtn">🔇 ΚΛΕΙΣΙΜΟ</button>
     </div>
 
     <div id="downloadProgress">
@@ -209,8 +208,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v1.3 FINAL
-        // Native setBearing, setView κάθε 500ms, alert με 5λεπτη σίγαση
+        // ATHOS MAPS - NAVIGATION APP v1.4
+        // Alert κλείνει μόνιμα, μεγαλύτερα εικονίδια, εικονίδιο blog
         // ============================================================
         
         const OFF_ROUTE_THRESHOLD = 50;
@@ -398,7 +397,7 @@
         };
 
         function playAlertSound(){if(state.alertDismissed)return;try{if(!state.audioCtx)state.audioCtx=new(window.AudioContext||window.webkitAudioContext)();const c=state.audioCtx,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='square';o.frequency.setValueAtTime(880,c.currentTime);o.frequency.setValueAtTime(440,c.currentTime+0.15);g.gain.setValueAtTime(0.3,c.currentTime);g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.5);o.start(c.currentTime);o.stop(c.currentTime+0.5);}catch(e){}}
-        function dismissAlert(){state.alertDismissed=true;document.getElementById('offRouteWarning').classList.remove('active');document.getElementById('offRouteStatus').classList.remove('active');showToast('🔇 Απενεργοποιήθηκε για 5 λεπτά','#888');setTimeout(()=>{state.alertDismissed=false;showToast('🔔 Ειδοποίηση ενεργή ξανά','#4CAF50');},300000);}
+        function dismissAlert(){state.alertDismissed=true;document.getElementById('offRouteWarning').classList.remove('active');document.getElementById('offRouteStatus').classList.remove('active');showToast('🔇 Η ειδοποίηση έκλεισε οριστικά','#888');}
 
         function openDB(){return new Promise((r,j)=>{if(state.db){r(state.db);return;}const q=indexedDB.open(DB_NAME,DB_VERSION);q.onupgradeneeded=(e)=>{const d=e.target.result;if(!d.objectStoreNames.contains('tiles')){const s=d.createObjectStore('tiles',{keyPath:'key'});s.createIndex('zoom','zoom');}};q.onsuccess=(e)=>{state.db=e.target.result;r(state.db);};q.onerror=(e)=>j(e.target.error);});}
         function getTileFromDB(k){return openDB().then(d=>new Promise((r,j)=>{const t=d.transaction(['tiles'],'readonly');const q=t.objectStore('tiles').get(k);q.onsuccess=()=>r(q.result?q.result.data:null);q.onerror=()=>j(q.error);}));}
