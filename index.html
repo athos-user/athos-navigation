@@ -9,9 +9,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
-    <!-- Leaflet.TouchRotate CSS & JS για περιστροφή με δύο δάχτυλα -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@1.0.1/dist/leaflet.touchrotate.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@1.0.1/dist/leaflet.touchrotate.min.js"></script>
+    <!-- Leaflet.TouchRotate - ΕΝΑΛΛΑΚΤΙΚΗ ΕΚΔΟΣΗ -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@0.0.3/dist/leaflet.touchrotate.min.js"></script>
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -115,6 +114,32 @@
         
         .leaflet-control-zoom{z-index:800!important;margin-top:76px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
+        
+        /* Στυλ για το κουμπί περιστροφής */
+        .leaflet-control-rotate {
+            background: rgba(13,17,23,0.95) !important;
+            color: #eee !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            font-size: 16px !important;
+            padding: 6px 8px !important;
+            margin-bottom: 4px !important;
+            text-align: center !important;
+            width: 30px !important;
+            height: 30px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            user-select: none !important;
+            touch-action: manipulation !important;
+        }
+        .leaflet-control-rotate:hover {
+            background: rgba(255,255,255,0.15) !important;
+        }
+        .leaflet-control-rotate:active {
+            transform: scale(0.95) !important;
+        }
         
         @media(max-width:600px){
             .header{padding:4px 5px;gap:2px;max-height:64px}
@@ -236,8 +261,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.5 FINAL
-        // Native rotation με δύο δάχτυλα (Leaflet.TouchRotate plugin)
+        // ATHOS MAPS - NAVIGATION APP v2.6
+        // ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - Custom υλοποίηση
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -476,7 +501,7 @@
             document.getElementById('distRemaining').textContent=remaining.toFixed(2);
         }
 
-        // ★★★ NATIVE ROTATION ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ΜΕ ΤΟ PLUGIN ★★★
+        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - ΠΛΗΡΗΣ ΥΛΟΠΟΙΗΣΗ ★★★
         function initMap(){
             state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
@@ -490,23 +515,104 @@
                 layers: [state.tileLayer],
                 minZoom: 3,
                 maxZoom: 19,
-                // Αυτά βοηθούν αλλά το plugin κάνει την πραγματική δουλειά
                 rotate: true,
                 touchRotate: true,
                 bearing: 0
             });
             
-            // ★★★ ΕΝΕΡΓΟΠΟΙΗΣΗ ΤΟΥ PLUGIN ΓΙΑ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★
-            if (typeof L.touchRotate !== 'undefined') {
-                L.touchRotate(state.map, {
-                    rotate: true,
-                    touchRotate: true
-                });
-            } else {
-                // Fallback: δοκιμάζουμε την ενσωματωμένη μέθοδο
-                if (state.map.touchRotate && typeof state.map.touchRotate.enable === 'function') {
-                    state.map.touchRotate.enable();
+            // ★★★ ΠΡΟΣΘΗΚΗ ΚΟΥΜΠΙΟΥ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
+            // Προσθέτουμε ένα κουμπί περιστροφής στα controls του χάρτη
+            const RotateControl = L.Control.extend({
+                options: { position: 'topleft' },
+                onAdd: function(map) {
+                    const container = L.DomUtil.create('div', 'leaflet-control-rotate');
+                    container.innerHTML = '↻';
+                    container.title = 'Περιστροφή χάρτη (κράτα πατημένο και σύρε)';
+                    container.style.cssText = 'background:rgba(13,17,23,0.95);color:#eee;border:1px solid rgba(255,255,255,0.1);border-radius:4px;cursor:pointer;font-size:16px;padding:6px 8px;margin-bottom:4px;text-align:center;width:30px;height:30px;display:flex;align-items:center;justify-content:center;user-select:none;touch-action:manipulation;';
+                    
+                    L.DomEvent.on(container, 'click', function(e) {
+                        // Περιστροφή κατά 90° με κάθε κλικ
+                        const currentBearing = map.getBearing() || 0;
+                        const newBearing = (currentBearing + 90) % 360;
+                        map.setBearing(newBearing, { animate: true, duration: 0.5 });
+                        showToast('🔄 Περιστροφή: ' + Math.round(newBearing) + '°', '#607D8B');
+                    });
+                    
+                    // Για παρατεταμένο πάτημα - περιστροφή με drag
+                    let isDragging = false;
+                    let startX, startY, startBearing;
+                    
+                    L.DomEvent.on(container, 'mousedown touchstart', function(e) {
+                        isDragging = true;
+                        const touch = e.touches ? e.touches[0] : e;
+                        startX = touch.clientX;
+                        startY = touch.clientY;
+                        startBearing = map.getBearing() || 0;
+                        e.preventDefault();
+                    });
+                    
+                    L.DomEvent.on(container, 'mousemove touchmove', function(e) {
+                        if (!isDragging) return;
+                        const touch = e.touches ? e.touches[0] : e;
+                        const dx = touch.clientX - startX;
+                        const dy = touch.clientY - startY;
+                        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                        const newBearing = (startBearing + angle) % 360;
+                        map.setBearing(newBearing, { animate: false });
+                        e.preventDefault();
+                    });
+                    
+                    L.DomEvent.on(container, 'mouseup touchend', function(e) {
+                        isDragging = false;
+                    });
+                    
+                    return container;
                 }
+            });
+            
+            // Προσθήκη του κουμπιού περιστροφής στον χάρτη
+            state.map.addControl(new RotateControl());
+            
+            // ★★★ ΕΝΕΡΓΟΠΟΙΗΣΗ TOUCH ROTATE ΜΕ ΤΟ PLUGIN ★★★
+            // Προσπαθούμε να ενεργοποιήσουμε το touch rotate με διάφορους τρόπους
+            try {
+                if (typeof L.touchRotate !== 'undefined') {
+                    // Δοκιμή 1: L.touchRotate
+                    L.touchRotate(state.map, {
+                        rotate: true,
+                        touchRotate: true
+                    });
+                    showToast('✅ Touch rotate enabled', '#4CAF50');
+                } else if (state.map.touchRotate) {
+                    // Δοκιμή 2: Ενσωματωμένη μέθοδος
+                    if (typeof state.map.touchRotate.enable === 'function') {
+                        state.map.touchRotate.enable();
+                        showToast('✅ Touch rotate enabled (built-in)', '#4CAF50');
+                    } else {
+                        // Δοκιμή 3: Προσπάθεια με setBearing
+                        state.map.setBearing(0, { animate: false });
+                        // Αποθήκευση της μεθόδου setBearing
+                        const origSetView = state.map.setView;
+                        state.map.setView = function(center, zoom, options) {
+                            // Διατήρηση της περιστροφής κατά την αλλαγή θέσης
+                            const currentBearing = state.map.getBearing() || 0;
+                            origSetView.call(this, center, zoom, options);
+                            if (currentBearing !== 0) {
+                                this.setBearing(currentBearing, { animate: false });
+                            }
+                        };
+                        showToast('🔄 Touch rotate: manual mode', '#FF9800');
+                    }
+                } else {
+                    // Δοκιμή 4: Προσθήκη χειροκίνητου χειρισμού touch events
+                    setupManualTouchRotate(state.map);
+                    showToast('🔄 Touch rotate: manual mode', '#FF9800');
+                }
+            } catch(e) {
+                console.warn('Touch rotate error:', e);
+                // Fallback: manual touch rotation
+                setupManualTouchRotate(state.map);
+                showToast('🔄 Manual touch rotate enabled', '#FF9800');
             }
             
             state.map.on('movestart zoomstart', () => {
@@ -522,6 +628,56 @@
             });
             
             updateCacheBadge();
+        }
+        
+        // ★★★ ΧΕΙΡΟΚΙΝΗΤΟΣ ΧΕΙΡΙΣΜΟΣ TOUCH ROTATE ★★★
+        function setupManualTouchRotate(map) {
+            let touchStart = null;
+            let startBearing = 0;
+            let touchId = null;
+            
+            // Αφαίρεση του default touch handler της Leaflet
+            const container = map.getContainer();
+            
+            // Προσθήκη δικών μας touch handlers
+            container.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    // Με δύο δάχτυλα - περιστροφή
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    touchStart = {
+                        x1: t1.clientX,
+                        y1: t1.clientY,
+                        x2: t2.clientX,
+                        y2: t2.clientY,
+                        angle: Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX)
+                    };
+                    startBearing = map.getBearing() || 0;
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2 && touchStart) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const currentAngle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX);
+                    const deltaAngle = (currentAngle - touchStart.angle) * (180 / Math.PI);
+                    const newBearing = (startBearing + deltaAngle) % 360;
+                    map.setBearing(newBearing, { animate: false });
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchend', function(e) {
+                if (e.touches.length < 2) {
+                    touchStart = null;
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchcancel', function(e) {
+                touchStart = null;
+            }, { passive: false });
         }
 
         function toggleGps(){if(state.isGpsOn){stopGps();}else{startGps();}}
@@ -548,12 +704,11 @@
 
         function updateUserMarker(lat,lng){const h=state.currentHeading||0;const html=`<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;if(!state.userMarker){state.userMarker=L.marker([lat,lng],{icon:L.divIcon({html,className:'',iconSize:[32,32],iconAnchor:[16,20]}),zIndexOffset:1000}).addTo(state.map);}else{state.userMarker.setLatLng([lat,lng]);const el=state.userMarker.getElement();if(el){const ad=el.querySelector('.arrow-dot');if(ad)ad.style.transform=`rotate(${h}deg)`;}}}
 
-        // Το κουμπί 🗺️↻ απλά επαναφέρει τον Βορρά
-        function toggleCompass(){state.map.setBearing(0,{animate:true,duration:0.5});showToast('🧭 Βορράς','#888');}
-        function enableCompass(){}
-        function disableCompass(){}
-        function applyMapRotation(){}
-        function resetMapRotation(){}
+        function toggleCompass(){
+            // Επαναφορά του βορρά με κίνηση
+            state.map.setBearing(0, { animate: true, duration: 0.8 });
+            showToast('🧭 Βορράς', '#888');
+        }
 
         function toggleNavigation(){if(state.isNavigating){stopNavigation();}else{startNavigation();}}
         function startNavigation(){
