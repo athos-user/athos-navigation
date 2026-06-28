@@ -11,7 +11,7 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
-        #map{height:100vh;width:100vw;z-index:1;background:#0d1117;transition:transform 0.3s ease-out}
+        #map{height:100vh;width:100vw;z-index:1;background:#0d1117}
         
         .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;backdrop-filter:blur(8px);border-bottom:2px solid #2196F3;max-height:72px;overflow:hidden}
         .header button,.header a{padding:5px 8px;font-size:10px;border-radius:6px;border:none;color:white;cursor:pointer;min-height:32px;font-weight:600;transition:all 0.2s;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
@@ -138,7 +138,7 @@
     <div class="header">
         <button id="gpsBtn" class="gps-btn" title="GPS">📍</button>
         <button id="navBtn" class="nav-btn" title="Πλοήγηση">🧭</button>
-        <button id="compassBtn" class="compass-btn" title="Περιστροφή χάρτη">🗺️↻</button>
+        <button id="compassBtn" class="compass-btn" title="Κατεύθυνση βέλους">🗺️↻</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="loadBtn" class="load-btn" title="GPX">📂</button>
         <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός διαδρομής">🗑️</button>
@@ -231,8 +231,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.2 FINAL
-        // 200vw/200vh = ΜΗΔΕΝΙΚΑ ΚΕΝΑ στην περιστροφή
+        // ATHOS MAPS - NAVIGATION APP v2.3 FINAL
+        // Χωρίς περιστροφή χάρτη - μόνο το βέλος δείχνει κατεύθυνση
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -475,7 +475,7 @@
             state.tileLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,crossOrigin:true});
             state.map=L.map('map',{center:[40.16,24.32],zoom:12,zoomControl:true,layers:[state.tileLayer],minZoom:3,maxZoom:19});
             state.map.on('movestart zoomstart',()=>{state.lastUserInteraction=Date.now();});
-            document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state.isNavigating&&state.lastPosition){setTimeout(()=>{state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});if(state.isCompassOn)applyMapRotation();},200);}});
+            document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state.isNavigating&&state.lastPosition){setTimeout(()=>{state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});},200);}});
             updateCacheBadge();
         }
 
@@ -486,7 +486,7 @@
             navigator.geolocation.getCurrentPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);state.map.setView([p.coords.latitude,p.coords.longitude],NAV_ZOOM,{animate:false});},()=>showToast('❌ GPS','#f44336'),{enableHighAccuracy:true,timeout:10000});
             state.gpsWatchId=navigator.geolocation.watchPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);},()=>{},{enableHighAccuracy:true,timeout:30000,maximumAge:1000});
         }
-        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();if(state.isCompassOn)disableCompass();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');resetMapRotation();document.getElementById('distProgressInline').style.display='none';localStorage.setItem('athos_was_navigating','false');}
+        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');document.getElementById('distProgressInline').style.display='none';localStorage.setItem('athos_was_navigating','false');}
 
         function updatePosition(lat,lng,speed,heading){
             if(state.lastPosition)state.prevPosition={...state.lastPosition};
@@ -503,11 +503,12 @@
 
         function updateUserMarker(lat,lng){const h=state.currentHeading||0;const html=`<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;if(!state.userMarker){state.userMarker=L.marker([lat,lng],{icon:L.divIcon({html,className:'',iconSize:[32,32],iconAnchor:[16,20]}),zIndexOffset:1000}).addTo(state.map);}else{state.userMarker.setLatLng([lat,lng]);const el=state.userMarker.getElement();if(el){const ad=el.querySelector('.arrow-dot');if(ad)ad.style.transform=`rotate(${h}deg)`;}}}
 
+        // ΜΟΝΟ ΤΟ ΒΕΛΟΣ ΠΕΡΙΣΤΡΕΦΕΤΑΙ - ΟΧΙ Ο ΧΑΡΤΗΣ
         function toggleCompass(){if(state.isCompassOn){disableCompass();}else{enableCompass();}}
-        function enableCompass(){state.isCompassOn=true;document.getElementById('compassBtn').textContent='🗺️↻✓';document.getElementById('compassBtn').classList.add('active');applyMapRotation();}
-        function disableCompass(){state.isCompassOn=false;document.getElementById('compassBtn').textContent='🗺️↻';document.getElementById('compassBtn').classList.remove('active');resetMapRotation();}
-        function applyMapRotation(){if(!state.isCompassOn)return;const m=document.getElementById('map');const heading=state.currentHeading||0;m.style.transform=`rotate(${-heading}deg)`;m.style.transformOrigin='center center';m.style.width='200vw';m.style.height='200vh';m.style.position='fixed';m.style.top='-50vh';m.style.left='-50vw';}
-        function resetMapRotation(){const m=document.getElementById('map');m.style.transform='rotate(0deg)';m.style.width='100vw';m.style.height='100vh';m.style.top='0';m.style.left='0';}
+        function enableCompass(){state.isCompassOn=true;document.getElementById('compassBtn').textContent='🗺️↻✓';document.getElementById('compassBtn').classList.add('active');showToast('🧭 Το βέλος δείχνει την κατεύθυνση','#00BCD4');}
+        function disableCompass(){state.isCompassOn=false;document.getElementById('compassBtn').textContent='🗺️↻';document.getElementById('compassBtn').classList.remove('active');showToast('🧭 Ο χάρτης σταθερός στον Βορρά','#888');}
+        function applyMapRotation(){}
+        function resetMapRotation(){}
 
         function toggleNavigation(){if(state.isNavigating){stopNavigation();}else{startNavigation();}}
         function startNavigation(){
@@ -515,7 +516,7 @@
             document.getElementById('navBtn').textContent='🧭✓';document.getElementById('navBtn').classList.add('active');state.isNavigating=true;
             if(!state.isCompassOn)enableCompass();
             if(state.lastPosition)state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});
-            state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});applyMapRotation();}},NAV_UPDATE_INTERVAL);
+            state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});}},NAV_UPDATE_INTERVAL);
             localStorage.setItem('athos_was_navigating','true');
         }
         function stopNavigation(){if(state.navIntervalId){clearInterval(state.navIntervalId);state.navIntervalId=null;}state.isNavigating=false;document.getElementById('navBtn').textContent='🧭';document.getElementById('navBtn').classList.remove('active');localStorage.setItem('athos_was_navigating','false');}
