@@ -12,7 +12,6 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         
-        /* ★★★ CONTAINER ΜΕΓΕΘΥΜΕΝΟ ΓΙΑ ΝΑ ΚΑΛΥΠΤΕΙ ΤΙΣ ΓΩΝΙΕΣ ★★★ */
         #map-wrapper {
             position:fixed;
             top:50%;
@@ -26,27 +25,11 @@
             will-change: transform;
             pointer-events: none;
         }
-        /* ★★★ Ο ΧΑΡΤΗΣ ΜΕΣΑ ΣΤΟ ΜΕΓΑΛΥΤΕΡΟ CONTAINER ★★★ */
         #map {
             width:100%;
             height:100%;
             background:#0d1117;
             pointer-events: auto;
-        }
-        
-        /* ★★★ OVERLAY ΓΙΑ ΝΑ ΠΙΑΝΕΙ ΤΑ TOUCH EVENTS ★★★ */
-        #touch-overlay {
-            position:fixed;
-            top:0;
-            left:0;
-            width:100vw;
-            height:100vh;
-            z-index:2;
-            pointer-events: none;
-        }
-        #touch-overlay.active {
-            pointer-events: auto;
-            touch-action: none;
         }
         
         .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;backdrop-filter:blur(8px);border-bottom:2px solid #2196F3;max-height:72px;overflow:hidden}
@@ -56,8 +39,6 @@
         .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
         .header button.nav-btn{background:#FF9800;font-size:16px}
         .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,0.5)}
-        .header button.compass-btn{background:#607D8B;font-size:16px}
-        .header button.compass-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
         .header button.route-btn{background:#8e44ad;font-size:11px}
         .header button.load-btn{background:#4CAF50;font-size:11px}
         .header button.clear-btn{background:#d35400;font-size:11px}
@@ -147,7 +128,7 @@
         .leaflet-control-zoom{z-index:800!important;margin-top:76px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
-        /* ★★★ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ ★★★ */
+        /* ★★★ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ - ΜΟΝΟ ΑΥΤΟ ★★★ */
         .rotate-btn-fixed {
             position:fixed;
             bottom:110px;
@@ -174,7 +155,6 @@
             background:#2196F3;
         }
         
-        /* ★★★ ΕΝΔΕΙΞΗ ΓΩΝΙΑΣ ΠΕΡΙΣΤΡΟΦΗΣ ★★★ */
         .rotation-indicator {
             position:fixed;
             top:76px;
@@ -198,7 +178,7 @@
         @media(max-width:600px){
             .header{padding:4px 5px;gap:2px;max-height:64px}
             .header button,.header a{padding:4px 6px;font-size:9px;min-height:28px;min-width:26px}
-            .header button.gps-btn,.header button.nav-btn,.header button.compass-btn{font-size:14px}
+            .header button.gps-btn,.header button.nav-btn{font-size:14px}
             .header select{font-size:8px;min-height:28px;max-width:60px}
             .info-bar{padding:6px 10px;bottom:48px}
             .info-bar .distance{font-size:20px}
@@ -215,10 +195,6 @@
     </style>
 </head>
 <body>
-    <!-- ★★★ TOUCH OVERLAY ΓΙΑ ΧΕΙΡΙΣΜΟ ★★★ -->
-    <div id="touch-overlay"></div>
-    
-    <!-- ★★★ CONTAINER ΓΙΑ ΠΕΡΙΣΤΡΟΦΗ - ΜΕΓΕΘΥΜΕΝΟ ★★★ -->
     <div id="map-wrapper">
         <div id="map"></div>
     </div>
@@ -226,7 +202,7 @@
     <!-- ΕΝΔΕΙΞΗ ΓΩΝΙΑΣ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     
-    <!-- ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ -->
+    <!-- ★★★ ΜΟΝΟ ΤΟ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ ★★★ -->
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
@@ -234,9 +210,8 @@
     </a>
     
     <div class="header">
-        <button id="gpsBtn" class="gps-btn" title="GPS">📍</button>
-        <button id="navBtn" class="nav-btn" title="Πλοήγηση">🧭</button>
-        <button id="compassBtn" class="compass-btn" title="Επαναφορά Βορρά">🗺️↻</button>
+        <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍 Θέση</button>
+        <button id="navBtn" class="nav-btn" title="Πλοήγηση (ο χάρτης ακολουθεί)">🧭 Follow</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="loadBtn" class="load-btn" title="GPX">📂</button>
         <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός διαδρομής">🗑️</button>
@@ -329,7 +304,7 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΕΡΙΣΤΡΟΦΗ ΜΕ 3D TRANSFORM + ΜΕΓΕΘΥΝΣΗ
+        // ATHOS MAPS - ΜΟΝΟ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ (ΟΧΙ TOUCH)
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -370,8 +345,7 @@
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
             currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null,
-            isRotating: false
+            alertDismissed: false, alertDisabledForever: false, audioCtx: null
         };
 
         // ============================================================
@@ -412,17 +386,14 @@
         }
 
         // ============================================================
-        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ 3D TRANSFORM - ΜΕΓΕΘΥΝΣΗ ΓΙΑ ΝΑ ΜΗΝ ΑΦΗΝΕΙ ΚΕΝΑ ★★★
+        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ CSS ★★★
         // ============================================================
         
         function setRotation(angle) {
             currentRotation = ((angle % 360) + 360) % 360;
             const wrapper = document.getElementById('map-wrapper');
-            
-            // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ CSS ★★★
             wrapper.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
             
-            // Ενημέρωση ένδειξης
             const indicator = document.getElementById('rotationIndicator');
             if (Math.abs(currentRotation) > 1) {
                 indicator.textContent = `🔄 ${Math.round(currentRotation)}°`;
@@ -431,70 +402,12 @@
                 indicator.classList.remove('active');
             }
             
-            // Προσπάθεια ενημέρωσης του χάρτη
-            if (state.map && state.map.setBearing) {
-                try {
-                    state.map.setBearing(currentRotation, { animate: false });
-                } catch(e) {}
-            }
-            
             localStorage.setItem('athos_rotation', currentRotation);
-        }
-
-        function resetRotation() {
-            setRotation(0);
-            showToast('🧭 Βορράς', '#888');
         }
 
         function rotateBy(degrees) {
             setRotation(currentRotation + degrees);
             showToast(`🔄 ${Math.round(currentRotation)}°`, '#2196F3');
-        }
-
-        // ★★★ ΧΕΙΡΙΣΜΟΣ ΠΕΡΙΣΤΡΟΦΗΣ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★
-        function setupTouchRotation() {
-            const overlay = document.getElementById('touch-overlay');
-            let touchData = null;
-            let startRotation = 0;
-            
-            // Ενεργοποίηση του overlay όταν αρχίζει η αφή
-            overlay.addEventListener('touchstart', function(e) {
-                if (e.touches.length === 2) {
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    const angle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX) * (180 / Math.PI);
-                    touchData = {
-                        angle: angle,
-                        startRotation: currentRotation
-                    };
-                    this.classList.add('active');
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            
-            overlay.addEventListener('touchmove', function(e) {
-                if (e.touches.length === 2 && touchData) {
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    const currentAngle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX) * (180 / Math.PI);
-                    const deltaAngle = currentAngle - touchData.angle;
-                    const newRotation = (touchData.startRotation + deltaAngle) % 360;
-                    setRotation(newRotation);
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            
-            overlay.addEventListener('touchend', function(e) {
-                if (e.touches.length < 2) {
-                    touchData = null;
-                    this.classList.remove('active');
-                }
-            }, { passive: false });
-            
-            overlay.addEventListener('touchcancel', function(e) {
-                touchData = null;
-                this.classList.remove('active');
-            }, { passive: false });
         }
 
         // ============================================================
@@ -510,7 +423,6 @@
         }
 
         function initMap() {
-            // Δημιουργία χάρτη
             state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 crossOrigin: true
@@ -525,9 +437,6 @@
                 maxZoom: 19
             });
             
-            // ★★★ ΕΝΕΡΓΟΠΟΙΗΣΗ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
-            setupTouchRotation();
-            
             // Φόρτωση αποθηκευμένης περιστροφής
             const savedRotation = localStorage.getItem('athos_rotation');
             if (savedRotation) {
@@ -538,9 +447,6 @@
             document.getElementById('rotateBtn').addEventListener('click', function() {
                 rotateBy(90);
             });
-            
-            // ★★★ ΚΟΥΜΠΙ ΕΠΑΝΑΦΟΡΑΣ ΒΟΡΡΑ ★★★
-            document.getElementById('compassBtn').addEventListener('click', resetRotation);
             
             state.map.on('movestart zoomstart', () => {
                 state.lastUserInteraction = Date.now();
@@ -556,7 +462,7 @@
             
             updateCacheBadge();
             document.getElementById('statusBadge').textContent = '📡 Online';
-            showToast('🌐 Online - Περιστροφή με 2 δάχτυλα', '#4CAF50');
+            showToast('🌐 Online - Πατήστε 🔄 για περιστροφή', '#4CAF50');
         }
 
         function createOfflineLayer() {
@@ -662,7 +568,7 @@
         }
 
         // ============================================================
-        // GPS & NAVIGATION
+        // GPS
         // ============================================================
         
         function toggleGps() {
@@ -747,6 +653,10 @@
             }
         }
 
+        // ============================================================
+        // ΠΛΟΗΓΗΣΗ (FOLLOW)
+        // ============================================================
+        
         function toggleNavigation() {
             if (state.isNavigating) { stopNavigation(); } else { startNavigation(); }
         }
@@ -779,6 +689,10 @@
             localStorage.setItem('athos_was_navigating', 'false');
         }
 
+        // ============================================================
+        // ROUTES, SOS, DOWNLOAD (όπως πριν)
+        // ============================================================
+        
         function checkOffRoute(lat, lng) {
             if (!state.routeGeometry || state.alertDisabledForever) return;
             
@@ -833,10 +747,6 @@
             document.getElementById('distRemaining').textContent = remaining.toFixed(2);
         }
 
-        // ============================================================
-        // ROUTES
-        // ============================================================
-        
         function showRoutes() {
             document.getElementById('routeDropdown').classList.add('active');
             renderRoutes('');
