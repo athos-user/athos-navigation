@@ -35,12 +35,15 @@
         .header .badge{font-size:7px;background:rgba(255,255,255,0.1);padding:2px 5px;border-radius:5px;color:#aaa;min-height:20px;display:inline-flex;align-items:center}
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
         
-        .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:8px 14px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:160px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px)}
+        .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:8px 14px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:160px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px);cursor:grab;user-select:none}
         .info-bar .distance{font-size:24px;font-weight:800;color:#4CAF50}
         .info-bar .time{font-size:18px;font-weight:700;color:#FF9800}
         .info-bar .time.excel{color:#FF9800}
         .info-bar .time.calculated{color:#00BCD4}
         .info-bar .speed-kmh{font-size:12px;color:#00BCD4;font-weight:700;margin-top:2px}
+        .info-bar .dist-progress-inline{font-size:10px;color:#aaa;margin-top:2px}
+        .info-bar .dist-progress-inline span{color:#4CAF50;font-weight:700}
+        .info-bar .dist-progress-inline .remaining{color:#FF9800}
         .info-bar .status{font-size:10px;color:#aaa;margin-top:3px}
         .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:12px}
         .info-bar .offroute.active{display:block}
@@ -52,9 +55,6 @@
         .bottom-bar button.screen-btn{background:rgba(255,255,255,0.08);color:#888}
         .bottom-bar button.screen-btn.active{background:rgba(26,188,156,0.3);color:#1abc9c}
         .bottom-bar button.sos-bottom-btn{background:#f44336;font-size:12px;min-width:36px;min-height:28px;padding:4px 8px}
-        .bottom-bar .dist-info{font-size:10px;color:#ccc;display:flex;gap:10px;align-items:center;padding:3px 10px;background:rgba(255,255,255,0.05);border-radius:5px;font-weight:500}
-        .bottom-bar .dist-info span{color:#4CAF50;font-weight:700;font-size:11px}
-        .bottom-bar .dist-info .remaining{color:#FF9800}
         
         .offroute-warning{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:1001;background:#f44336;color:white;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;box-shadow:0 4px 20px rgba(244,67,54,0.6);flex-direction:column;align-items:center;gap:8px}
         .offroute-warning.active{display:flex}
@@ -124,8 +124,6 @@
             #routeDropdown .letter-header{font-size:14px}
             .blog-link{bottom:44px;right:6px;width:28px;height:28px}
             .blog-link img{width:22px;height:22px}
-            .bottom-bar .dist-info{font-size:9px;gap:6px;padding:2px 6px}
-            .bottom-bar .dist-info span{font-size:10px}
         }
     </style>
 </head>
@@ -173,6 +171,9 @@
         <span class="distance" id="distDisplay">0.00</span> km · 
         <span class="time" id="timeDisplay">--:--</span>
         <div class="speed-kmh" id="speedDisplay"></div>
+        <div class="dist-progress-inline" id="distProgressInline" style="display:none">
+            📍 Διανυθέντα: <span id="distDone">0.00</span> km | Υπολείπονται: <span id="distRemaining">0.00</span> km
+        </div>
         <div class="status" id="statusDisplay">Πατήστε 📍 για GPS</div>
         <div class="offroute" id="offRouteStatus">⚠️ Εκτός διαδρομής!</div>
     </div>
@@ -183,9 +184,6 @@
         <button class="speed-btn active" data-speed="4" title="Μέτρια">🚶 4</button>
         <button class="speed-btn" data-speed="5" title="Γρήγορη">🏃 5</button>
         <button id="screenBtn" class="screen-btn" title="Οθόνη ON">🔆</button>
-        <div class="dist-info" id="distProgress" style="display:none">
-            📍 Διανυθέντα: <span id="distDone">0.00</span> km | Υπολείπονται: <span class="remaining" id="distRemaining">0.00</span> km
-        </div>
     </div>
 
     <div class="status-badge" id="statusBadge">📡 Online</div>
@@ -232,16 +230,16 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.0 FINAL
-        // CSS Transform περιστροφή, bottom-bar km, όλα διορθωμένα
+        // ATHOS MAPS - NAVIGATION APP v2.1
+        // Alert 100m, km στο draggable info-bar, σωστό κεντράρισμα
         // ============================================================
         
         const ACCESS_CODE = '10101010';
         let isOnlineAccessGranted = false;
         let hasDownloadedOnce = false;
         
-        const OFF_ROUTE_THRESHOLD = 150;
-        const NAV_UPDATE_INTERVAL = 500;
+        const OFF_ROUTE_THRESHOLD = 100;
+        const NAV_UPDATE_INTERVAL = 300;
         const NAV_ZOOM = 18;
         const SPEEDS = { 3: '🐢 Αργή', 4: '🚶 Μέτρια', 5: '🏃 Γρήγορη' };
         const DB_NAME = 'AthosNavTilesDB';
@@ -461,9 +459,9 @@
         async function updateCacheBadge(count){if(!count)count=await getTileCount();const b=document.getElementById('cacheBadge');b.textContent=count;b.className=count>0?'badge has-tiles':'badge';}
 
         function updateDistProgress(){
-            const el=document.getElementById('distProgress');
+            const el=document.getElementById('distProgressInline');
             if(!state.routeGeometry||!state.lastPosition||state.routeDistance===0){el.style.display='none';return;}
-            el.style.display='flex';
+            el.style.display='block';
             let minDist=Infinity,closestIdx=0;
             for(let i=0;i<state.routeGeometry.length;i++){const d=L.latLng(state.lastPosition.lat,state.lastPosition.lng).distanceTo(L.latLng(state.routeGeometry[i][1],state.routeGeometry[i][0]));if(d<minDist){minDist=d;closestIdx=i;}}
             let doneDist=0;for(let i=1;i<=closestIdx;i++){doneDist+=L.latLng(state.routeGeometry[i-1][1],state.routeGeometry[i-1][0]).distanceTo(L.latLng(state.routeGeometry[i][1],state.routeGeometry[i][0]));}
@@ -487,7 +485,7 @@
             navigator.geolocation.getCurrentPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);state.map.setView([p.coords.latitude,p.coords.longitude],NAV_ZOOM,{animate:false});},()=>showToast('❌ GPS','#f44336'),{enableHighAccuracy:true,timeout:10000});
             state.gpsWatchId=navigator.geolocation.watchPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);},()=>{},{enableHighAccuracy:true,timeout:30000,maximumAge:1000});
         }
-        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();if(state.isCompassOn)disableCompass();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');resetMapRotation();document.getElementById('distProgress').style.display='none';localStorage.setItem('athos_was_navigating','false');}
+        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();if(state.isCompassOn)disableCompass();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');resetMapRotation();document.getElementById('distProgressInline').style.display='none';localStorage.setItem('athos_was_navigating','false');}
 
         function updatePosition(lat,lng,speed,heading){
             if(state.lastPosition)state.prevPosition={...state.lastPosition};
@@ -504,48 +502,19 @@
 
         function updateUserMarker(lat,lng){const h=state.currentHeading||0;const html=`<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;if(!state.userMarker){state.userMarker=L.marker([lat,lng],{icon:L.divIcon({html,className:'',iconSize:[32,32],iconAnchor:[16,20]}),zIndexOffset:1000}).addTo(state.map);}else{state.userMarker.setLatLng([lat,lng]);const el=state.userMarker.getElement();if(el){const ad=el.querySelector('.arrow-dot');if(ad)ad.style.transform=`rotate(${h}deg)`;}}}
 
-        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΧΑΡΤΗ ΜΕ CSS TRANSFORM ★★★
         function toggleCompass(){if(state.isCompassOn){disableCompass();}else{enableCompass();}}
-        function enableCompass(){
-            state.isCompassOn=true;
-            document.getElementById('compassBtn').textContent='🗺️↻✓';
-            document.getElementById('compassBtn').classList.add('active');
-            applyMapRotation();
-        }
-        function disableCompass(){
-            state.isCompassOn=false;
-            document.getElementById('compassBtn').textContent='🗺️↻';
-            document.getElementById('compassBtn').classList.remove('active');
-            resetMapRotation();
-        }
-        function applyMapRotation(){
-            if(!state.isCompassOn)return;
-            const m=document.getElementById('map');
-            const heading=state.currentHeading||0;
-            m.style.transform=`rotate(${-heading}deg)`;
-            m.style.transformOrigin='center center';
-            m.style.width='150vw';
-            m.style.height='150vh';
-            m.style.position='fixed';
-            m.style.top='-25vh';
-            m.style.left='-25vw';
-        }
-        function resetMapRotation(){
-            const m=document.getElementById('map');
-            m.style.transform='rotate(0deg)';
-            m.style.width='100vw';
-            m.style.height='100vh';
-            m.style.top='0';
-            m.style.left='0';
-        }
+        function enableCompass(){state.isCompassOn=true;document.getElementById('compassBtn').textContent='🗺️↻✓';document.getElementById('compassBtn').classList.add('active');applyMapRotation();}
+        function disableCompass(){state.isCompassOn=false;document.getElementById('compassBtn').textContent='🗺️↻';document.getElementById('compassBtn').classList.remove('active');resetMapRotation();}
+        function applyMapRotation(){if(!state.isCompassOn)return;const m=document.getElementById('map');const heading=state.currentHeading||0;m.style.transform=`rotate(${-heading}deg)`;m.style.transformOrigin='center center';m.style.width='120vw';m.style.height='120vh';m.style.position='fixed';m.style.top='-10vh';m.style.left='-10vw';}
+        function resetMapRotation(){const m=document.getElementById('map');m.style.transform='rotate(0deg)';m.style.width='100vw';m.style.height='100vh';m.style.top='0';m.style.left='0';}
 
         function toggleNavigation(){if(state.isNavigating){stopNavigation();}else{startNavigation();}}
         function startNavigation(){
             if(!state.isGpsOn){showToast('⚠️ GPS πρώτα','#FF9800');return;}
             document.getElementById('navBtn').textContent='🧭✓';document.getElementById('navBtn').classList.add('active');state.isNavigating=true;
             if(!state.isCompassOn)enableCompass();
-            if(state.lastPosition)state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});
-            state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});applyMapRotation();}},NAV_UPDATE_INTERVAL);
+            if(state.lastPosition)state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});
+            state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});applyMapRotation();}},NAV_UPDATE_INTERVAL);
             localStorage.setItem('athos_was_navigating','true');
         }
         function stopNavigation(){if(state.navIntervalId){clearInterval(state.navIntervalId);state.navIntervalId=null;}state.isNavigating=false;document.getElementById('navBtn').textContent='🧭';document.getElementById('navBtn').classList.remove('active');localStorage.setItem('athos_was_navigating','false');}
@@ -597,7 +566,7 @@
             state.routeGeometry=null;state.routeDistance=0;state.currentRouteName='';state.originalTime=null;
             document.getElementById('distDisplay').textContent='0.00';
             document.getElementById('timeDisplay').textContent='--:--';document.getElementById('timeDisplay').className='time';
-            document.getElementById('distProgress').style.display='none';
+            document.getElementById('distProgressInline').style.display='none';
             document.getElementById('offRouteWarning').classList.remove('active');
             document.getElementById('offRouteStatus').classList.remove('active');
             localStorage.removeItem('athos_last_route');
