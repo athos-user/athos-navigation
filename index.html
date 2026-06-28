@@ -249,8 +249,8 @@
 
     <div id="codeModal">
         <div class="modal-content">
-            <h3>🔐 Online Πρόσβαση</h3>
-            <p>Εισαγάγετε τον κωδικό για online λειτουργία</p>
+            <h3>🔐 Κωδικός Λήψης Χαρτών</h3>
+            <p>Εισαγάγετε τον κωδικό για να κατεβάσετε χάρτες</p>
             <input type="password" id="codeInput" placeholder="••••••••" maxlength="20" autocomplete="off">
             <div class="error" id="codeError">❌ Λάθος κωδικός</div>
             <div class="btn-group">
@@ -262,12 +262,14 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ ONLINE ACCESS CONTROL
-        // Ο κωδικός 10101010 είναι απαραίτητος για online λειτουργία
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ
+        // - ONLINE για θέαση χάρτη (ΔΕΝ χρειάζεται κωδικό)
+        // - ΛΗΨΗ χαρτών (ΧΡΕΙΑΖΕΤΑΙ κωδικό 10101010)
+        // - ΠΕΡΙΣΤΡΟΦΗ με δύο δάχτυλα (λειτουργεί!)
         // ============================================================
         
         const ACCESS_CODE = '10101010';
-        let isOnlineAccessGranted = false;
+        let isDownloadAccessGranted = false;
         let mapRotation = 0;
         
         const OFF_ROUTE_THRESHOLD = 100;
@@ -454,13 +456,13 @@
         };
 
         // ============================================================
-        // ONLINE ACCESS CONTROL - Ο ΚΩΔΙΚΟΣ ΕΙΝΑΙ ΑΠΑΡΑΙΤΗΤΟΣ
+        // ACCESS CONTROL - ΜΟΝΟ ΓΙΑ ΛΗΨΗ
         // ============================================================
         
-        function checkOnlineAccess() {
-            if (isOnlineAccessGranted) return true;
-            if (localStorage.getItem('athos_online_granted') === 'true') {
-                isOnlineAccessGranted = true;
+        function checkDownloadAccess() {
+            if (isDownloadAccessGranted) return true;
+            if (localStorage.getItem('athos_download_granted') === 'true') {
+                isDownloadAccessGranted = true;
                 return true;
             }
             return false;
@@ -480,38 +482,18 @@
         function confirmCode() {
             const input = document.getElementById('codeInput');
             if (input.value.trim() === ACCESS_CODE) {
-                isOnlineAccessGranted = true;
-                localStorage.setItem('athos_online_granted', 'true');
+                isDownloadAccessGranted = true;
+                localStorage.setItem('athos_download_granted', 'true');
                 hideCodeModal();
-                showToast('✅ Online πρόσβαση ενεργοποιήθηκε', '#4CAF50');
-                enableOnlineMode();
+                showToast('✅ Πρόσβαση λήψης ενεργοποιήθηκε', '#4CAF50');
             } else {
                 document.getElementById('codeError').style.display = 'block';
                 input.value = '';
             }
         }
 
-        function enableOnlineMode() {
-            if (state.offlineLayer && state.map.hasLayer(state.offlineLayer)) {
-                state.map.removeLayer(state.offlineLayer);
-                state.offlineLayer = null;
-            }
-            if (!state.tileLayer || !state.map.hasLayer(state.tileLayer)) {
-                state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    crossOrigin: true
-                });
-                state.map.addLayer(state.tileLayer);
-            }
-            state.isOffline = false;
-            document.getElementById('offlineBtn').textContent = '📴';
-            document.getElementById('offlineBtn').classList.remove('active');
-            document.getElementById('statusBadge').textContent = '📡 Online';
-            showToast('🌐 Online λειτουργία', '#4CAF50');
-        }
-
         // ============================================================
-        // ΑΡΧΙΚΟΠΟΙΗΣΗ ΧΑΡΤΗ
+        // ΑΡΧΙΚΟΠΟΙΗΣΗ ΧΑΡΤΗ - ΠΑΝΤΑ ONLINE (ΔΕΝ ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ)
         // ============================================================
         
         function showToast(msg, color) {
@@ -523,6 +505,7 @@
         }
 
         function initMap() {
+            // ΠΑΝΤΑ ONLINE - ΔΕΝ ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ
             state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 crossOrigin: true
@@ -540,18 +523,10 @@
                 bearing: 0
             });
             
-            // Αν δεν έχει κωδικό, πάει σε offline
-            if (!checkOnlineAccess()) {
-                state.map.removeLayer(state.tileLayer);
-                state.map.addLayer(createOfflineLayer());
-                state.isOffline = true;
-                document.getElementById('offlineBtn').textContent = '📴✓';
-                document.getElementById('offlineBtn').classList.add('active');
-                document.getElementById('statusBadge').textContent = '📴 Offline';
-                showToast('📴 Offline - Εισάγετε κωδικό για online', '#2980b9');
-            }
+            // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - ΧΕΙΡΟΚΙΝΗΤΟΣ ΧΕΙΡΙΣΜΟΣ ★★★
+            setupTouchRotation(state.map);
             
-            // Κουμπί περιστροφής
+            // ★★★ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
             document.getElementById('rotateBtn').addEventListener('click', function() {
                 mapRotation = (mapRotation + 90) % 360;
                 state.map.setBearing(mapRotation, { animate: true, duration: 0.5 });
@@ -571,6 +546,65 @@
             });
             
             updateCacheBadge();
+            
+            // Ενημέρωση για την κατάσταση
+            document.getElementById('statusBadge').textContent = '📡 Online';
+            showToast('🌐 Online - Πατήστε 📥 για λήψη χαρτών', '#4CAF50');
+        }
+
+        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - ΛΕΙΤΟΥΡΓΕΙ ★★★
+        function setupTouchRotation(map) {
+            const container = map.getContainer();
+            let touchData = null;
+            let currentBearing = 0;
+            
+            container.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const angle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX);
+                    touchData = {
+                        x1: t1.clientX,
+                        y1: t1.clientY,
+                        x2: t2.clientX,
+                        y2: t2.clientY,
+                        angle: angle,
+                        startBearing: map.getBearing() || 0
+                    };
+                    currentBearing = touchData.startBearing;
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2 && touchData) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const currentAngle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX);
+                    const deltaAngle = (currentAngle - touchData.angle) * (180 / Math.PI);
+                    const newBearing = (touchData.startBearing + deltaAngle) % 360;
+                    
+                    if (newBearing !== currentBearing) {
+                        map.setBearing(newBearing, { animate: false });
+                        currentBearing = newBearing;
+                        // Ενημέρωση της μεταβλητής mapRotation
+                        mapRotation = newBearing;
+                    }
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchend', function(e) {
+                if (e.touches.length < 2) {
+                    touchData = null;
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchcancel', function(e) {
+                touchData = null;
+            }, { passive: false });
+            
+            showToast('🔄 Περιστροφή με 2 δάχτυλα ενεργή', '#4CAF50');
         }
 
         function createOfflineLayer() {
@@ -591,7 +625,8 @@
                         t.src = data;
                         t.onerror = () => { t.src = this.options.errorTileUrl; };
                         done(null, t);
-                    } else if (checkOnlineAccess() && navigator.onLine) {
+                    } else if (navigator.onLine) {
+                        // Ακόμα και σε offline mode, αν έχει σύνδεση, φορτώνει
                         t.src = u;
                         t.onload = () => {
                             fetch(u).then(r => r.blob()).then(b => {
@@ -854,7 +889,7 @@
         }
 
         // ============================================================
-        // ROUTES
+        // ROUTES - ΔΕΝ ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ (είναι απλά διαδρομές)
         // ============================================================
         
         function showRoutes() {
@@ -897,12 +932,7 @@
         }
 
         function loadRouteFromUrl(url, name, dist, time) {
-            // ΑΠΑΙΤΕΙΤΑΙ ΚΩΔΙΚΟΣ
-            if (!checkOnlineAccess()) {
-                showCodeModal();
-                return;
-            }
-            
+            // ΔΕΝ χρειάζεται κωδικό - απλά φορτώνει μια διαδρομή
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -943,7 +973,6 @@
         }
 
         function loadGpxFile(file) {
-            // GPX από τοπικό αρχείο - ΔΕΝ χρειάζεται κωδικό
             const r = new FileReader();
             r.onload = function(e) {
                 try {
@@ -1054,7 +1083,7 @@
         }
 
         // ============================================================
-        // SOS, SCREEN, OFFLINE DOWNLOAD
+        // SOS, SCREEN
         // ============================================================
         
         function openSos() {
@@ -1141,7 +1170,7 @@
         }
 
         // ============================================================
-        // DOWNLOAD & OFFLINE
+        // DOWNLOAD - ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ
         // ============================================================
         
         function getBoundsAround(la, ln, r) {
@@ -1183,8 +1212,8 @@
         async function startDownload() {
             if (state.isDownloading) { showToast('⏳ Σε εξέλιξη...', '#FF9800'); return; }
             
-            // ΑΠΑΙΤΕΙΤΑΙ ΚΩΔΙΚΟΣ ΓΙΑ ΛΗΨΗ
-            if (!checkOnlineAccess()) {
+            // ★★★ ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ ΓΙΑ ΛΗΨΗ ★★★
+            if (!checkDownloadAccess()) {
                 showCodeModal();
                 return;
             }
@@ -1265,12 +1294,9 @@
 
         async function toggleOffline() {
             if (state.isOffline) {
-                if (!checkOnlineAccess()) {
-                    showCodeModal();
-                    return;
-                }
+                // Για να βγεις από offline, πας σε online (ΔΕΝ χρειάζεται κωδικό)
                 disableOffline();
-                enableOnlineMode();
+                showToast('🌐 Online λειτουργία', '#4CAF50');
             } else {
                 await enableOffline();
             }
@@ -1279,7 +1305,7 @@
         async function enableOffline() {
             const c = await getTileCount();
             if (c === 0) {
-                showToast('❌ Κάνε λήψη πρώτα', '#f44336');
+                showToast('❌ Κάνε λήψη πρώτα (χρειάζεται κωδικός)', '#f44336');
                 return;
             }
             
@@ -1306,6 +1332,13 @@
                 state.map.removeLayer(state.offlineLayer);
                 state.offlineLayer = null;
             }
+            if (!state.tileLayer || !state.map.hasLayer(state.tileLayer)) {
+                state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    crossOrigin: true
+                });
+                state.map.addLayer(state.tileLayer);
+            }
             state.isOffline = false;
             document.getElementById('offlineBtn').textContent = '📴';
             document.getElementById('offlineBtn').classList.remove('active');
@@ -1317,8 +1350,8 @@
         // ============================================================
         
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('athos_online_granted') === 'true') {
-                isOnlineAccessGranted = true;
+            if (localStorage.getItem('athos_download_granted') === 'true') {
+                isDownloadAccessGranted = true;
             }
             
             initMap();
