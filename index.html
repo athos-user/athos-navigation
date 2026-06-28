@@ -8,6 +8,11 @@
     <meta name="description" content="Athos Maps - Εφαρμογή πλοήγησης για το Άγιο Όρος με GPS, offline χάρτες και 140+ διαδρομές">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet.TouchRotate CSS & JS για περιστροφή με δύο δάχτυλα -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@1.0.1/dist/leaflet.touchrotate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@1.0.1/dist/leaflet.touchrotate.min.js"></script>
+    
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
@@ -231,8 +236,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.4 FINAL
-        // Native rotation με δύο δάχτυλα (rotate:true, touchRotate:true)
+        // ATHOS MAPS - NAVIGATION APP v2.5 FINAL
+        // Native rotation με δύο δάχτυλα (Leaflet.TouchRotate plugin)
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -471,18 +476,51 @@
             document.getElementById('distRemaining').textContent=remaining.toFixed(2);
         }
 
-        // ★★★ NATIVE ROTATION ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★
+        // ★★★ NATIVE ROTATION ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ΜΕ ΤΟ PLUGIN ★★★
         function initMap(){
-            state.tileLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,crossOrigin:true});
-            state.map=L.map('map',{
-                center:[40.16,24.32],zoom:12,zoomControl:true,
-                layers:[state.tileLayer],minZoom:3,maxZoom:19,
-                rotate:true,
-                touchRotate:true,
-                bearing:0
+            state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                crossOrigin: true
             });
-            state.map.on('movestart zoomstart',()=>{state.lastUserInteraction=Date.now();});
-            document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state.isNavigating&&state.lastPosition){setTimeout(()=>{state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});},200);}});
+            
+            state.map = L.map('map', {
+                center: [40.16, 24.32],
+                zoom: 12,
+                zoomControl: true,
+                layers: [state.tileLayer],
+                minZoom: 3,
+                maxZoom: 19,
+                // Αυτά βοηθούν αλλά το plugin κάνει την πραγματική δουλειά
+                rotate: true,
+                touchRotate: true,
+                bearing: 0
+            });
+            
+            // ★★★ ΕΝΕΡΓΟΠΟΙΗΣΗ ΤΟΥ PLUGIN ΓΙΑ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★
+            if (typeof L.touchRotate !== 'undefined') {
+                L.touchRotate(state.map, {
+                    rotate: true,
+                    touchRotate: true
+                });
+            } else {
+                // Fallback: δοκιμάζουμε την ενσωματωμένη μέθοδο
+                if (state.map.touchRotate && typeof state.map.touchRotate.enable === 'function') {
+                    state.map.touchRotate.enable();
+                }
+            }
+            
+            state.map.on('movestart zoomstart', () => {
+                state.lastUserInteraction = Date.now();
+            });
+            
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && state.isNavigating && state.lastPosition) {
+                    setTimeout(() => {
+                        state.map.setView([state.lastPosition.lat, state.lastPosition.lng], NAV_ZOOM, { animate: false });
+                    }, 200);
+                }
+            });
+            
             updateCacheBadge();
         }
 
