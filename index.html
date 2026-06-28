@@ -28,6 +28,7 @@
         .header button.offline-btn{background:#2980b9;font-size:11px}
         .header button.offline-btn.active{background:#27ae60}
         .header a.design-btn{background:#4CAF50;font-size:11px}
+        .header button.resume-btn{background:#e91e63;font-size:11px}
         .header select{background:rgba(255,255,255,0.1);color:#ddd;padding:4px 5px;border-radius:5px;font-size:9px;border:1px solid rgba(255,255,255,0.1);min-height:32px;max-width:75px}
         .header select option{color:#333}
         .header .badge{font-size:7px;background:rgba(255,255,255,0.1);padding:2px 5px;border-radius:5px;color:#aaa;min-height:20px;display:inline-flex;align-items:center}
@@ -126,6 +127,7 @@
         <button id="compassBtn" class="compass-btn" title="Περιστροφή χάρτη">🗺️↻</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="loadBtn" class="load-btn" title="GPX">📂</button>
+        <button id="resumeBtn" class="resume-btn" title="Συνέχεια τελευταίας διαδρομής">🔄</button>
         <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση Διαδρομών">✏️</a>
         <select id="areaSelect">
             <option value="athos">🏔️ Άγιο Όρος</option>
@@ -201,8 +203,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v1.6
-        // Alert 150m, οριστική απενεργοποίηση, αφαίρεση ονόματος/δυσκολίας
+        // ATHOS MAPS - NAVIGATION APP v1.7 FINAL
+        // Αυτόματη επαναφορά διαδρομής, GPS & πλοήγηση
         // ============================================================
         
         const OFF_ROUTE_THRESHOLD = 150;
@@ -386,7 +388,8 @@
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
             currentRouteName: '', currentDifficulty: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null
+            alertDismissed: false, alertDisabledForever: false, audioCtx: null,
+            lastRouteUrl: null, lastRouteName: null, lastRouteDist: null, lastRouteTime: null, wasNavigating: false
         };
 
         function playAlertSound(){if(state.alertDismissed||state.alertDisabledForever)return;try{if(!state.audioCtx)state.audioCtx=new(window.AudioContext||window.webkitAudioContext)();const c=state.audioCtx,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='square';o.frequency.setValueAtTime(880,c.currentTime);o.frequency.setValueAtTime(440,c.currentTime+0.15);g.gain.setValueAtTime(0.3,c.currentTime);g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.5);o.start(c.currentTime);o.stop(c.currentTime+0.5);}catch(e){}}
@@ -440,7 +443,7 @@
             navigator.geolocation.getCurrentPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);state.map.setView([p.coords.latitude,p.coords.longitude],NAV_ZOOM,{animate:false});},()=>showToast('❌ GPS','#f44336'),{enableHighAccuracy:true,timeout:10000});
             state.gpsWatchId=navigator.geolocation.watchPosition(p=>{updatePosition(p.coords.latitude,p.coords.longitude,p.coords.speed,p.coords.heading);},()=>{},{enableHighAccuracy:true,timeout:30000,maximumAge:1000});
         }
-        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();if(state.isCompassOn)disableCompass();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');state.map.setBearing(0,{animate:true,duration:0.5});document.getElementById('distProgress').style.display='none';}
+        function stopGps(){if(state.gpsWatchId){navigator.geolocation.clearWatch(state.gpsWatchId);state.gpsWatchId=null;}if(state.isNavigating)stopNavigation();if(state.isCompassOn)disableCompass();state.isGpsOn=false;document.getElementById('gpsBtn').textContent='📍';document.getElementById('gpsBtn').classList.remove('active');state.map.setBearing(0,{animate:true,duration:0.5});document.getElementById('distProgress').style.display='none';localStorage.setItem('athos_was_navigating','false');}
 
         function updatePosition(lat,lng,speed,heading){
             if(state.lastPosition)state.prevPosition={...state.lastPosition};
@@ -468,8 +471,9 @@
             if(!state.isCompassOn)enableCompass();
             if(state.lastPosition)state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});
             state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});if(state.isCompassOn&&state.currentHeading)state.map.setBearing(state.currentHeading,{animate:true,duration:0.5});}},NAV_UPDATE_INTERVAL);
+            localStorage.setItem('athos_was_navigating','true');
         }
-        function stopNavigation(){if(state.navIntervalId){clearInterval(state.navIntervalId);state.navIntervalId=null;}state.isNavigating=false;document.getElementById('navBtn').textContent='🧭';document.getElementById('navBtn').classList.remove('active');}
+        function stopNavigation(){if(state.navIntervalId){clearInterval(state.navIntervalId);state.navIntervalId=null;}state.isNavigating=false;document.getElementById('navBtn').textContent='🧭';document.getElementById('navBtn').classList.remove('active');localStorage.setItem('athos_was_navigating','false');}
 
         function checkOffRoute(lat,lng){if(!state.routeGeometry||state.alertDisabledForever)return;let min=Infinity;for(const c of state.routeGeometry){const d=L.latLng(lat,lng).distanceTo(L.latLng(c[1],c[0]));if(d<min)min=d;}const w=document.getElementById('offRouteWarning'),s=document.getElementById('offRouteStatus'),m=document.getElementById('offRouteMsg');if(min>OFF_ROUTE_THRESHOLD){m.textContent=`⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ! (${Math.round(min)}m)`;w.classList.add('active');s.classList.add('active');playAlertSound();if(navigator.vibrate)navigator.vibrate([200,100,200,100,200]);}else{w.classList.remove('active');s.classList.remove('active');}}
 
@@ -487,6 +491,9 @@
                 state.alertDismissed=false;state.alertDisabledForever=false;
                 document.getElementById('offRouteWarning').classList.remove('active');
                 document.getElementById('offRouteStatus').classList.remove('active');
+                // Αποθήκευση για αυτόματη επαναφορά
+                state.lastRouteUrl=url;state.lastRouteName=name;state.lastRouteDist=dist;state.lastRouteTime=time;
+                localStorage.setItem('athos_last_route',JSON.stringify({url,name,dist,time}));
                 state.routeLine=L.polyline(ac,{color:'#FF5722',weight:5,opacity:0.9,smoothFactor:1}).addTo(state.map);
                 state.map.fitBounds(state.routeLine.getBounds(),{padding:[50,50],maxZoom:15});updateRouteInfo();
             }).catch(err=>showToast('❌ '+err.message,'#f44336'));
@@ -512,6 +519,30 @@
 
         document.addEventListener('DOMContentLoaded',()=>{
             initMap();
+            
+            // Αυτόματη επαναφορά τελευταίας διαδρομής
+            const savedRoute=localStorage.getItem('athos_last_route');
+            const wasNavigating=localStorage.getItem('athos_was_navigating')==='true';
+            if(savedRoute){
+                try{
+                    const r=JSON.parse(savedRoute);
+                    if(r.url&&r.name){
+                        setTimeout(()=>{
+                            loadRouteFromUrl(r.url,r.name,r.dist,r.time);
+                            if(wasNavigating||confirm('🔄 Συνέχεια από την τελευταία διαδρομή;\n\n'+r.name+'\n\nΘέλεις να ενεργοποιηθεί το GPS και η πλοήγηση;')){
+                                setTimeout(()=>{
+                                    startGps();
+                                    setTimeout(()=>{
+                                        startNavigation();
+                                        toggleScreenOn();
+                                    },1500);
+                                },2000);
+                            }
+                        },1000);
+                    }
+                }catch(e){}
+            }
+            
             document.getElementById('gpsBtn').addEventListener('click',toggleGps);
             document.getElementById('navBtn').addEventListener('click',toggleNavigation);
             document.getElementById('compassBtn').addEventListener('click',toggleCompass);
@@ -521,6 +552,15 @@
             document.getElementById('routeSearch').addEventListener('input',e=>renderRoutes(e.target.value));
             document.getElementById('loadBtn').addEventListener('click',()=>document.getElementById('fileInput').click());
             document.getElementById('fileInput').addEventListener('change',e=>{if(e.target.files[0]){loadGpxFile(e.target.files[0]);e.target.value='';}});
+            document.getElementById('resumeBtn').addEventListener('click',()=>{
+                const sr=localStorage.getItem('athos_last_route');
+                if(sr){
+                    const r=JSON.parse(sr);
+                    loadRouteFromUrl(r.url,r.name,r.dist,r.time);
+                    startGps();
+                    setTimeout(()=>{startNavigation();toggleScreenOn();},1500);
+                }else{showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή','#f44336');}
+            });
             document.getElementById('downloadBtn').addEventListener('click',startDownload);
             document.getElementById('offlineBtn').addEventListener('click',toggleOffline);
             document.getElementById('screenBtn').addEventListener('click',toggleScreenOn);
