@@ -174,6 +174,45 @@
             display:block;
         }
         
+        /* ★★★ ΕΙΔΟΠΟΙΗΣΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗΣ GPS ★★★ */
+        .gps-notification {
+            position:fixed;
+            top:76px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:1002;
+            background:rgba(255,152,0,0.95);
+            color:white;
+            padding:6px 16px;
+            border-radius:10px;
+            font-size:12px;
+            font-weight:600;
+            display:none;
+            box-shadow:0 4px 20px rgba(255,152,0,0.4);
+            text-align:center;
+            max-width:90%;
+            border:1px solid rgba(255,255,255,0.2);
+        }
+        .gps-notification.active {
+            display:block;
+        }
+        .gps-notification .close-notification {
+            background:rgba(255,255,255,0.2);
+            border:none;
+            color:white;
+            border-radius:50%;
+            width:20px;
+            height:20px;
+            font-size:12px;
+            cursor:pointer;
+            margin-left:8px;
+            padding:0;
+            line-height:20px;
+        }
+        .gps-notification .close-notification:hover {
+            background:rgba(255,255,255,0.4);
+        }
+        
         @media(max-width:600px){
             .header{padding:4px 5px;gap:2px;max-height:64px}
             .header button,.header a{padding:4px 6px;font-size:9px;min-height:28px;min-width:26px}
@@ -190,6 +229,7 @@
             .blog-link img{width:22px;height:22px}
             .rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}
             .rotation-indicator{font-size:9px;padding:2px 8px;top:72px}
+            .gps-notification{font-size:10px;padding:4px 12px;top:72px}
         }
     </style>
 </head>
@@ -199,6 +239,13 @@
     </div>
     
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
+    
+    <!-- ★★★ ΕΙΔΟΠΟΙΗΣΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗΣ GPS ★★★ -->
+    <div class="gps-notification" id="gpsNotification">
+        <span>📍 GPS & 🧭 Follow απενεργοποιήθηκαν αυτόματα για να δείτε τη διαδρομή</span>
+        <button class="close-notification" id="closeGpsNotification">✕</button>
+    </div>
+    
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
@@ -300,7 +347,7 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ ΟΛΕΣ ΤΙΣ ΔΙΑΔΡΟΜΕΣ
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -531,6 +578,36 @@
         }
 
         // ============================================================
+        // ★★★ ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ΚΑΙ FOLLOW ★★★
+        // ============================================================
+        
+        function disableGpsAndFollow() {
+            let wasGpsOn = state.isGpsOn;
+            let wasNavigating = state.isNavigating;
+            
+            // Απενεργοποίηση GPS
+            if (state.isGpsOn) {
+                stopGps();
+            }
+            
+            // Απενεργοποίηση Follow (πλοήγηση)
+            if (state.isNavigating) {
+                stopNavigation();
+            }
+            
+            // Εμφάνιση ειδοποίησης αν ήταν ενεργά
+            if (wasGpsOn || wasNavigating) {
+                const notification = document.getElementById('gpsNotification');
+                notification.classList.add('active');
+                
+                // Αυτόματη απόκρυψη μετά από 5 δευτερόλεπτα
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                }, 5000);
+            }
+        }
+
+        // ============================================================
         // ΠΕΡΙΣΤΡΟΦΗ
         // ============================================================
         
@@ -589,6 +666,11 @@
             
             document.getElementById('rotateBtn').addEventListener('click', function() {
                 rotateBy(90);
+            });
+            
+            // ★★★ ΚΛΕΙΣΙΜΟ ΕΙΔΟΠΟΙΗΣΗΣ ★★★
+            document.getElementById('closeGpsNotification').addEventListener('click', function() {
+                document.getElementById('gpsNotification').classList.remove('active');
             });
             
             state.map.on('movestart zoomstart', () => {
@@ -869,6 +951,8 @@
             list.innerHTML = html;
             list.querySelectorAll('.route-item').forEach(item => {
                 item.addEventListener('click', function() {
+                    // ★★★ ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ΚΑΙ FOLLOW ★★★
+                    disableGpsAndFollow();
                     loadRouteFromUrl(this.dataset.url, this.dataset.name, parseFloat(this.dataset.dist), this.dataset.time);
                     hideRoutes();
                 });
@@ -876,6 +960,9 @@
         }
 
         function loadRouteFromUrl(url, name, dist, time) {
+            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
+            disableGpsAndFollow();
+            
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -900,7 +987,6 @@
                     document.getElementById('offRouteWarning').classList.remove('active');
                     document.getElementById('offRouteStatus').classList.remove('active');
                     
-                    // ★★★ ΑΠΟΘΗΚΕΥΣΗ ΓΙΑ ΣΥΝΕΧΕΙΑ ★★★
                     localStorage.setItem('athos_last_route', JSON.stringify({ url, name, dist, time }));
                     localStorage.removeItem('athos_last_gpx_data');
                     
@@ -919,6 +1005,9 @@
         }
 
         function loadGpxFile(file) {
+            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
+            disableGpsAndFollow();
+            
             const r = new FileReader();
             r.onload = function(e) {
                 try {
@@ -941,7 +1030,6 @@
                     document.getElementById('offRouteWarning').classList.remove('active');
                     document.getElementById('offRouteStatus').classList.remove('active');
                     
-                    // ★★★ ΑΠΟΘΗΚΕΥΣΗ GPX ΓΙΑ ΣΥΝΕΧΕΙΑ ★★★
                     localStorage.setItem('athos_last_route', JSON.stringify({ 
                         url: 'file:' + file.name, 
                         name: file.name.replace('.gpx', ''), 
@@ -967,8 +1055,10 @@
             r.readAsText(file);
         }
 
-        // ★★★ ΦΟΡΤΩΣΗ GPX ΑΠΟ ΑΠΟΘΗΚΕΥΜΕΝΑ ΔΕΔΟΜΕΝΑ ★★★
         function loadGpxFromData(gpxData, name) {
+            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
+            disableGpsAndFollow();
+            
             try {
                 if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
                 const d = parseGpx(gpxData);
@@ -1409,7 +1499,9 @@
                     const r = JSON.parse(savedRoute);
                     if (r.url && r.name) {
                         setTimeout(() => {
-                            // Έλεγχος αν είναι GPX από τοπικό αρχείο
+                            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ΠΡΙΝ ΤΗ ΦΟΡΤΩΣΗ ★★★
+                            disableGpsAndFollow();
+                            
                             if (r.url && r.url.startsWith('file:')) {
                                 const gpxData = localStorage.getItem('athos_last_gpx_data');
                                 if (gpxData) {
@@ -1424,7 +1516,6 @@
                                 }
                             }
                             
-                            // Κανονική διαδρομή από URL
                             loadRouteFromUrl(r.url, r.name, r.dist, r.time);
                             if (wasNavigating || confirm('🔄 Συνέχεια από την τελευταία διαδρομή;\n\n' + r.name + '\n\nΘέλεις να ενεργοποιηθεί το GPS και η πλοήγηση;')) {
                                 setTimeout(() => {
@@ -1453,11 +1544,13 @@
             });
             document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
             
-            // ★★★ ΣΥΝΕΧΕΙΑ ΤΕΛΕΥΤΑΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★
             document.getElementById('resumeBtn').addEventListener('click', () => {
                 const sr = localStorage.getItem('athos_last_route');
                 if (sr) {
                     const r = JSON.parse(sr);
+                    // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
+                    disableGpsAndFollow();
+                    
                     if (r.url && r.url.startsWith('file:')) {
                         const gpxData = localStorage.getItem('athos_last_gpx_data');
                         if (gpxData) {
