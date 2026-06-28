@@ -12,22 +12,41 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         
-        /* ★★★ Ο ΧΑΡΤΗΣ ΜΕΣΑ ΣΕ CONTAINER ΓΙΑ 3D ΠΕΡΙΣΤΡΟΦΗ ★★★ */
+        /* ★★★ CONTAINER ΜΕΓΕΘΥΜΕΝΟ ΓΙΑ ΝΑ ΚΑΛΥΠΤΕΙ ΤΙΣ ΓΩΝΙΕΣ ★★★ */
         #map-wrapper {
+            position:fixed;
+            top:50%;
+            left:50%;
+            width:200vw;
+            height:200vh;
+            transform: translate(-50%, -50%);
+            z-index:1;
+            transform-origin: center center;
+            transition: transform 0.05s ease-out;
+            will-change: transform;
+            pointer-events: none;
+        }
+        /* ★★★ Ο ΧΑΡΤΗΣ ΜΕΣΑ ΣΤΟ ΜΕΓΑΛΥΤΕΡΟ CONTAINER ★★★ */
+        #map {
+            width:100%;
+            height:100%;
+            background:#0d1117;
+            pointer-events: auto;
+        }
+        
+        /* ★★★ OVERLAY ΓΙΑ ΝΑ ΠΙΑΝΕΙ ΤΑ TOUCH EVENTS ★★★ */
+        #touch-overlay {
             position:fixed;
             top:0;
             left:0;
             width:100vw;
             height:100vh;
-            z-index:1;
-            transform-origin: center center;
-            transition: transform 0.05s ease-out;
-            will-change: transform;
+            z-index:2;
+            pointer-events: none;
         }
-        #map {
-            width:100%;
-            height:100%;
-            background:#0d1117;
+        #touch-overlay.active {
+            pointer-events: auto;
+            touch-action: none;
         }
         
         .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;backdrop-filter:blur(8px);border-bottom:2px solid #2196F3;max-height:72px;overflow:hidden}
@@ -196,7 +215,10 @@
     </style>
 </head>
 <body>
-    <!-- ★★★ CONTAINER ΓΙΑ ΠΕΡΙΣΤΡΟΦΗ ★★★ -->
+    <!-- ★★★ TOUCH OVERLAY ΓΙΑ ΧΕΙΡΙΣΜΟ ★★★ -->
+    <div id="touch-overlay"></div>
+    
+    <!-- ★★★ CONTAINER ΓΙΑ ΠΕΡΙΣΤΡΟΦΗ - ΜΕΓΕΘΥΜΕΝΟ ★★★ -->
     <div id="map-wrapper">
         <div id="map"></div>
     </div>
@@ -307,7 +329,7 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΕΡΙΣΤΡΟΦΗ ΜΕ CSS 3D TRANSFORMS (ΛΕΙΤΟΥΡΓΕΙ!)
+        // ATHOS MAPS - ΠΕΡΙΣΤΡΟΦΗ ΜΕ 3D TRANSFORM + ΜΕΓΕΘΥΝΣΗ
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -348,7 +370,8 @@
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
             currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null
+            alertDismissed: false, alertDisabledForever: false, audioCtx: null,
+            isRotating: false
         };
 
         // ============================================================
@@ -389,13 +412,15 @@
         }
 
         // ============================================================
-        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ 3D TRANSFORM ★★★
+        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ 3D TRANSFORM - ΜΕΓΕΘΥΝΣΗ ΓΙΑ ΝΑ ΜΗΝ ΑΦΗΝΕΙ ΚΕΝΑ ★★★
         // ============================================================
         
         function setRotation(angle) {
             currentRotation = ((angle % 360) + 360) % 360;
             const wrapper = document.getElementById('map-wrapper');
-            wrapper.style.transform = `rotate(${currentRotation}deg)`;
+            
+            // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ CSS ★★★
+            wrapper.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
             
             // Ενημέρωση ένδειξης
             const indicator = document.getElementById('rotationIndicator');
@@ -406,14 +431,13 @@
                 indicator.classList.remove('active');
             }
             
-            // Ενημέρωση του χάρτη για την περιστροφή (για να λειτουργούν τα controls)
+            // Προσπάθεια ενημέρωσης του χάρτη
             if (state.map && state.map.setBearing) {
                 try {
                     state.map.setBearing(currentRotation, { animate: false });
                 } catch(e) {}
             }
             
-            // Αποθήκευση για επαναφορά
             localStorage.setItem('athos_rotation', currentRotation);
         }
 
@@ -429,11 +453,12 @@
 
         // ★★★ ΧΕΙΡΙΣΜΟΣ ΠΕΡΙΣΤΡΟΦΗΣ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★
         function setupTouchRotation() {
-            const wrapper = document.getElementById('map-wrapper');
+            const overlay = document.getElementById('touch-overlay');
             let touchData = null;
             let startRotation = 0;
             
-            wrapper.addEventListener('touchstart', function(e) {
+            // Ενεργοποίηση του overlay όταν αρχίζει η αφή
+            overlay.addEventListener('touchstart', function(e) {
                 if (e.touches.length === 2) {
                     const t1 = e.touches[0];
                     const t2 = e.touches[1];
@@ -442,11 +467,12 @@
                         angle: angle,
                         startRotation: currentRotation
                     };
+                    this.classList.add('active');
                     e.preventDefault();
                 }
             }, { passive: false });
             
-            wrapper.addEventListener('touchmove', function(e) {
+            overlay.addEventListener('touchmove', function(e) {
                 if (e.touches.length === 2 && touchData) {
                     const t1 = e.touches[0];
                     const t2 = e.touches[1];
@@ -458,14 +484,16 @@
                 }
             }, { passive: false });
             
-            wrapper.addEventListener('touchend', function(e) {
+            overlay.addEventListener('touchend', function(e) {
                 if (e.touches.length < 2) {
                     touchData = null;
+                    this.classList.remove('active');
                 }
             }, { passive: false });
             
-            wrapper.addEventListener('touchcancel', function(e) {
+            overlay.addEventListener('touchcancel', function(e) {
                 touchData = null;
+                this.classList.remove('active');
             }, { passive: false });
         }
 
@@ -701,7 +729,6 @@
         }
 
         function updateUserMarker(lat, lng) {
-            // Η περιστροφή του marker είναι ανεξάρτητη από την περιστροφή του χάρτη
             const h = state.currentHeading || 0;
             const html = `<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;
             
