@@ -36,6 +36,7 @@
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
         
         .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:8px 14px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:160px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px);cursor:grab;user-select:none}
+        .info-bar:active{cursor:grabbing}
         .info-bar .distance{font-size:24px;font-weight:800;color:#4CAF50}
         .info-bar .time{font-size:18px;font-weight:700;color:#FF9800}
         .info-bar .time.excel{color:#FF9800}
@@ -230,8 +231,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.1
-        // Alert 100m, km στο draggable info-bar, σωστό κεντράρισμα
+        // ATHOS MAPS - NAVIGATION APP v2.2 FINAL
+        // 200vw/200vh = ΜΗΔΕΝΙΚΑ ΚΕΝΑ στην περιστροφή
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -505,7 +506,7 @@
         function toggleCompass(){if(state.isCompassOn){disableCompass();}else{enableCompass();}}
         function enableCompass(){state.isCompassOn=true;document.getElementById('compassBtn').textContent='🗺️↻✓';document.getElementById('compassBtn').classList.add('active');applyMapRotation();}
         function disableCompass(){state.isCompassOn=false;document.getElementById('compassBtn').textContent='🗺️↻';document.getElementById('compassBtn').classList.remove('active');resetMapRotation();}
-        function applyMapRotation(){if(!state.isCompassOn)return;const m=document.getElementById('map');const heading=state.currentHeading||0;m.style.transform=`rotate(${-heading}deg)`;m.style.transformOrigin='center center';m.style.width='120vw';m.style.height='120vh';m.style.position='fixed';m.style.top='-10vh';m.style.left='-10vw';}
+        function applyMapRotation(){if(!state.isCompassOn)return;const m=document.getElementById('map');const heading=state.currentHeading||0;m.style.transform=`rotate(${-heading}deg)`;m.style.transformOrigin='center center';m.style.width='200vw';m.style.height='200vh';m.style.position='fixed';m.style.top='-50vh';m.style.left='-50vw';}
         function resetMapRotation(){const m=document.getElementById('map');m.style.transform='rotate(0deg)';m.style.width='100vw';m.style.height='100vh';m.style.top='0';m.style.left='0';}
 
         function toggleNavigation(){if(state.isNavigating){stopNavigation();}else{startNavigation();}}
