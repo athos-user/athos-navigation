@@ -138,7 +138,7 @@
     <div class="header">
         <button id="gpsBtn" class="gps-btn" title="GPS">📍</button>
         <button id="navBtn" class="nav-btn" title="Πλοήγηση">🧭</button>
-        <button id="compassBtn" class="compass-btn" title="Κατεύθυνση βέλους">🗺️↻</button>
+        <button id="compassBtn" class="compass-btn" title="Επαναφορά Βορρά">🗺️↻</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="loadBtn" class="load-btn" title="GPX">📂</button>
         <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός διαδρομής">🗑️</button>
@@ -231,8 +231,8 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - NAVIGATION APP v2.3 FINAL
-        // Χωρίς περιστροφή χάρτη - μόνο το βέλος δείχνει κατεύθυνση
+        // ATHOS MAPS - NAVIGATION APP v2.4 FINAL
+        // Native rotation με δύο δάχτυλα (rotate:true, touchRotate:true)
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -471,9 +471,16 @@
             document.getElementById('distRemaining').textContent=remaining.toFixed(2);
         }
 
+        // ★★★ NATIVE ROTATION ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★
         function initMap(){
             state.tileLayer=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,crossOrigin:true});
-            state.map=L.map('map',{center:[40.16,24.32],zoom:12,zoomControl:true,layers:[state.tileLayer],minZoom:3,maxZoom:19});
+            state.map=L.map('map',{
+                center:[40.16,24.32],zoom:12,zoomControl:true,
+                layers:[state.tileLayer],minZoom:3,maxZoom:19,
+                rotate:true,
+                touchRotate:true,
+                bearing:0
+            });
             state.map.on('movestart zoomstart',()=>{state.lastUserInteraction=Date.now();});
             document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state.isNavigating&&state.lastPosition){setTimeout(()=>{state.map.setView([state.lastPosition.lat,state.lastPosition.lng],NAV_ZOOM,{animate:false});},200);}});
             updateCacheBadge();
@@ -503,10 +510,10 @@
 
         function updateUserMarker(lat,lng){const h=state.currentHeading||0;const html=`<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;if(!state.userMarker){state.userMarker=L.marker([lat,lng],{icon:L.divIcon({html,className:'',iconSize:[32,32],iconAnchor:[16,20]}),zIndexOffset:1000}).addTo(state.map);}else{state.userMarker.setLatLng([lat,lng]);const el=state.userMarker.getElement();if(el){const ad=el.querySelector('.arrow-dot');if(ad)ad.style.transform=`rotate(${h}deg)`;}}}
 
-        // ΜΟΝΟ ΤΟ ΒΕΛΟΣ ΠΕΡΙΣΤΡΕΦΕΤΑΙ - ΟΧΙ Ο ΧΑΡΤΗΣ
-        function toggleCompass(){if(state.isCompassOn){disableCompass();}else{enableCompass();}}
-        function enableCompass(){state.isCompassOn=true;document.getElementById('compassBtn').textContent='🗺️↻✓';document.getElementById('compassBtn').classList.add('active');showToast('🧭 Το βέλος δείχνει την κατεύθυνση','#00BCD4');}
-        function disableCompass(){state.isCompassOn=false;document.getElementById('compassBtn').textContent='🗺️↻';document.getElementById('compassBtn').classList.remove('active');showToast('🧭 Ο χάρτης σταθερός στον Βορρά','#888');}
+        // Το κουμπί 🗺️↻ απλά επαναφέρει τον Βορρά
+        function toggleCompass(){state.map.setBearing(0,{animate:true,duration:0.5});showToast('🧭 Βορράς','#888');}
+        function enableCompass(){}
+        function disableCompass(){}
         function applyMapRotation(){}
         function resetMapRotation(){}
 
@@ -514,7 +521,6 @@
         function startNavigation(){
             if(!state.isGpsOn){showToast('⚠️ GPS πρώτα','#FF9800');return;}
             document.getElementById('navBtn').textContent='🧭✓';document.getElementById('navBtn').classList.add('active');state.isNavigating=true;
-            if(!state.isCompassOn)enableCompass();
             if(state.lastPosition)state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});
             state.navIntervalId=setInterval(()=>{if(state.isNavigating&&state.lastPosition){state.map.panTo([state.lastPosition.lat,state.lastPosition.lng],{animate:false});}},NAV_UPDATE_INTERVAL);
             localStorage.setItem('athos_was_navigating','true');
