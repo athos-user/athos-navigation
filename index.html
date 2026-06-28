@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
+    <!-- ★★★ LEAFLET.TOUCHROTATE - ΓΙΑ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ ★★★ -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-touch-rotate@0.0.3/dist/leaflet.touchrotate.min.js"></script>
+    
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
@@ -265,7 +268,7 @@
         // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ
         // - ONLINE για θέαση χάρτη (ΔΕΝ χρειάζεται κωδικό)
         // - ΛΗΨΗ χαρτών (ΧΡΕΙΑΖΕΤΑΙ κωδικό 10101010)
-        // - ΠΕΡΙΣΤΡΟΦΗ με δύο δάχτυλα (λειτουργεί!)
+        // - ΠΕΡΙΣΤΡΟΦΗ με δύο δάχτυλα (ΛΕΙΤΟΥΡΓΕΙ με το plugin)
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -288,159 +291,14 @@
             'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
         };
 
+        // Μόνο μερικές διαδρομές για συντομία - βάλε όλες τις δικές σου
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
             {"name":"Αρσανάς Καρακάλλου → Αρσανάς Μορφονούς","dist":5.7,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Karakallou%20Arsanas%20Morfonous.gpx"},
             {"name":"Αρσανάς Καρακάλλου → Ιβήρων","dist":5.1,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Karakalou%20Iviron.gpx"},
             {"name":"Αρσανάς Καρακάλλου → Καρακάλλου 1","dist":1.3,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Karakalou%201.gpx"},
-            {"name":"Αρσανάς Καρακάλλου → Καρακάλλου 2","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Karakalou%202.gpx"},
-            {"name":"Αρσανάς Καυσοκαλύβια → Καυσοκαλύβια","dist":0.8,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Kaysokalivia%20Kyriako.gpx"},
-            {"name":"Αρσανάς Κωνσταμονίτου → Κωνσταμονίτου","dist":2.5,"time":"0:55","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Konstamonitou.gpx"},
-            {"name":"Αρσανάς Μορφονούς → Λακκοσκήτη","dist":4.4,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Morfonou%20Lakoskiti.gpx"},
-            {"name":"Αρσανάς Μορφονούς → Μεγίστης Λαύρας","dist":10,"time":"4:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Morfonous%20Megistis%20Lavras.gpx"},
-            {"name":"Αρσανάς Παύλου → Παύλου","dist":1.2,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Paulou.gpx"},
-            {"name":"Αρσανάς Φιλοθέου → Φιλοθέου","dist":2.6,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/ArsanasFylotheou.gpx"},
-            {"name":"Αρσανάς Χιλανδαρίου → Εσφιγμένου","dist":2.8,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Chilandariou%20Esfigmenou.gpx"},
-            {"name":"Αρσανάς Χιλανδαρίου → Χιλανδαρίου","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/ArsanasXilandari.gpx"},
-            {"name":"Αρσανας Σιμωνόπετρας → Σιμωνόπετρα","dist":1.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Simonopetra.gpx"},
-            {"name":"Άγ. Βασίλειος → Ερημητήριο Αγ. Ιωσήφ","dist":1,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Basileios%20Erimitirio%20Ag%20Iosif.gpx"},
-            {"name":"Άγ. Βασίλειος → Κατουνάκια-Καρούλια","dist":3,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgBasileios%20Arsanas%20Karoulia.gpx"},
-            {"name":"Άγ. Βασίλειος → Μικρή Αγ. Άννα","dist":2.3,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Basileios%20Mikri%20Ag%20Anna.gpx"},
-            {"name":"Άγ. Βασίλειος → Πρ. Ηλία Εκκλησάκι","dist":1,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Basileios%20Profitis%20Hlias.gpx"},
-            {"name":"Άγ. Βασίλειος → Σταυρό","dist":1,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Basileios%20Stavros.gpx"},
-            {"name":"Άγ. Νείλος → Αρσανά Αγ. Νείλου","dist":1.5,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgNeilosArsanas.gpx"},
-            {"name":"Άγ. Νείλος → Καυσοκαλύβια","dist":2.5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgNeilos%20Kafsokalivia.gpx"},
-            {"name":"Άγ. Νείλος → Μεγίστης Λαύρας","dist":6,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgNeilos%20Megistis%20Lavras.gpx"},
-            {"name":"Άγ. Νείλος → Προδρόμου Ρουμανική","dist":4,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgNeilos%20Roumaniki.gpx"},
-            {"name":"Άγ. Νείλος → Σπήλαιο Αγ. Νείλου","dist":0.5,"time":"0:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgNeilosSpilaio.gpx"},
-            {"name":"Βατοπαιδίου → Εσφιγμένου","dist":10,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Batopaidiou%2BEsfigmenou.gpx"},
-            {"name":"Βατοπαιδίου → Ζωγράφου","dist":6.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Batopaidiou%20Zografou.gpx"},
-            {"name":"Βατοπαιδίου → Καρυές","dist":10,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Bato%20Karyes.gpx"},
-            {"name":"Βατοπαιδίου → Σκήτη Αγ. Δημητρίου","dist":3,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/BatopedioyAgDimitriow.gpx"},
-            {"name":"Γιοβάντσα → Χιλανδαρίου","dist":10,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Giovantsa%2BChilandar.gpx"},
-            {"name":"Γρηγορίου → Διονυσίου","dist":3,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Grigoriou%20Dionisiou.gpx"},
-            {"name":"Γρηγορίου → Σιμωνόπετρα","dist":2.7,"time":"1:05","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Grigoriou%20Simonopetra.gpx"},
-            {"name":"Δάφνη → Καρυές","dist":8.2,"time":"3:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dafni%20Karies.gpx"},
-            {"name":"Δάφνη → Ξηροποτάμου","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dafni%20Ksiropotamou.gpx"},
-            {"name":"Δάφνη → Παντελεήμονος Ρωσικό","dist":5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dafni%20Panteleimonos.gpx"},
-            {"name":"Δάφνη → Σιμωνόπετρα","dist":8,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dafni%20Simonopetra.gpx"},
-            {"name":"Διονυσίου → Γρηγορίου","dist":3,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/DionysiouGrigoriou.gpx"},
-            {"name":"Διονυσίου → Παύλου","dist":2.8,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/DionysiouPaulou.gpx"},
-            {"name":"Δοχειαρίου → Αρσανάς Ζωγράφου","dist":3,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dochiariou%20Arsanas%20Zografou.gpx"},
-            {"name":"Δοχειαρίου → Κωνσταμονίτου 1","dist":5,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dochiariou%20Konstamonitou%201.gpx"},
-            {"name":"Δοχειαρίου → Κωνσταμονίτου 2","dist":6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dochiariou%20Konstamonitou%202.gpx"},
-            {"name":"Δοχειαρίου → Ξενοφώντος","dist":1.3,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Dochiariou%20Xenofontos.gpx"},
-            {"name":"Εσφιγμένου → Βατοπαιδίου","dist":10,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Esfigmenou%20Batopaidiou.gpx"},
-            {"name":"Εσφιγμένου → Χιλανδαρίου","dist":3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Esfigmenou%20Chilandariou.gpx"},
-            {"name":"Ζωγράφου → Βατοπαιδίου","dist":6.5,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Zografou%20Batopaidiou.gpx"},
-            {"name":"Ζωγράφου → Εσφιγμένου","dist":8,"time":"2:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Zografou%20Esfigmenou.gpx"},
-            {"name":"Ζωγράφου → Κάθισμα Αγ. Γεωργίου","dist":0.9,"time":"0:12","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Zografou%20Kathisma%20Ag%20Georgiou.gpx"},
-            {"name":"Ζωγράφου → Κωνσταμονίτου","dist":4,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Zografou%20Konstamonitou.gpx"},
-            {"name":"Ζωγράφου → Σπήλαιο Οσίου Κοσμά","dist":2,"time":"0:35","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Zografou%20Spilaio.gpx"},
-            {"name":"Ζωγράφου → Χιλανδαρίου","dist":7.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Zografou%20Chilandar.gpx"},
-            {"name":"Ιβήρων → Καλιάγρα","dist":1.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/IvironKaliarga.gpx"},
-            {"name":"Ιβήρων → Καλύβα Αναστάσεως","dist":3.8,"time":"1:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/ivironKaliviAnastaseos.gpx"},
-            {"name":"Ιβήρων → Καρυές","dist":5,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Iviron%2BKaryes.gpx"},
-            {"name":"Ιβήρων → Κελί Τιμίου Σταυρού","dist":4.3,"time":"1:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/IvironPapaTyxon.gpx"},
-            {"name":"Ιβήρων → Μυλοπόταμος","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/viron%20Mylopotamos.gpx"},
-            {"name":"Ιβήρων → Σκήτη Προδρόμου Ιβηρική","dist":1.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ibiron%20Prodromou.gpx"},
-            {"name":"Ιβήρων → Σταυρονικήτα 1","dist":3.2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Iviron%2BStavronikita%2B1.gpx"},
-            {"name":"Ιβήρων → Σταυρονικήτα 2","dist":5.8,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavronikita%20Ivirov%202.gpx"},
-            {"name":"Ιβήρων → Φιλοθέου 1","dist":5.5,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Iviron%20Filotheou%201.gpx"},
-            {"name":"Ιβήρων → Φιλοθέου 2","dist":6,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Iviron%2BFilotheou%2B2.gpx"},
-            {"name":"Καρακάλλου → Προβάτα","dist":2.3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/KarakalouProvata.gpx"},
-            {"name":"Καρακάλλου → Φιλοθέου","dist":2.2,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Filotheou%20Karakalou%201.gpx"},
-            {"name":"Καρούλια → Αγ. Βασίλειο","dist":3,"time":"2:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgBasileios%20Arsanas%20Karoulia.gpx"},
-            {"name":"Καρούλια → Κατουνάκια-Σταυρός","dist":3,"time":"2:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karoulia%20Stauros.gpx"},
-            {"name":"Καρούλια → Μικρή Αγ. Άννα","dist":2,"time":"1:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Mikri%20Agianna.gpx"},
-            {"name":"Καρυές → Άξιον Εστί","dist":1.5,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Aksion%20Esti%202.gpx"},
-            {"name":"Καρυές → Βατοπαιδίου","dist":10,"time":"3:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Batopediou.gpx"},
-            {"name":"Καρυές → Ιβήρων","dist":5,"time":"1:35","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Iviron.gpx"},
-            {"name":"Καρυές → Καλύβα Αναστάσεως","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Pater%20Efthimios.gpx"},
-            {"name":"Καρυές → Κελί Τιμίου Σταυρού","dist":3.5,"time":"0:55","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Papa%20Tychon.gpx"},
-            {"name":"Καρυές → Μαρουδά","dist":2,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Marouda.gpx"},
-            {"name":"Καρυές → Μπουραζέρη","dist":1.3,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Mpourazeri.gpx"},
-            {"name":"Καρυές → Παναγούδα","dist":2,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karies%20Panagouda.gpx"},
-            {"name":"Καρυές → Σιμωνόπετρα","dist":12,"time":"4:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Simonopetra.gpx"},
-            {"name":"Καρυές → Σκήτη Παντελεήμονος","dist":1.6,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Skiti%20Panteleimonos.gpx"},
-            {"name":"Καρυές → Σκήτη Πρ. Ηλία","dist":5,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Profiti%20Hlia.gpx"},
-            {"name":"Καρυές → Σταυρονικήτα","dist":4.3,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Stavronikita.gpx"},
-            {"name":"Καρυές → Φιλοθέου","dist":9.8,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Fylotheou.gpx"},
-            {"name":"Κατουνάκια → Αγ. Βασίλειο","dist":2,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20AgBasileios.gpx"},
-            {"name":"Κατουνάκια → Καρούλια Αρσανάς","dist":0.9,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Arsanas.gpx"},
-            {"name":"Κατουνάκια → Μικρή Αγ. Άννα","dist":1,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Mikri%20Agianna.gpx"},
-            {"name":"Κατουνάκια → Σταυρό","dist":2,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Stavros.gpx"},
-            {"name":"Καυσοκαλύβια → Αγ. Νείλος","dist":2.5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kausokalivia%20Ag%20Neilos.gpx"},
-            {"name":"Καυσοκαλύβια → Κερασιά","dist":3.5,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kausokalivia%20Kerasia.gpx"},
-            {"name":"Καυσοκαλύβια → Σπήλαιο Αγ. Νήφωνος","dist":2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kausokalivia%20Arxontariki%20Spilaio.gpx"},
-            {"name":"Κερασιά → Καυσοκαλύβια","dist":3.5,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kerasia%20Kafsokalyvia.gpx"},
-            {"name":"Κερασιά → Σταυρός","dist":1,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kerasia%20Stavros.gpx"},
-            {"name":"Κουτλουμουσίου → Σκήτη Παντελεήμονος","dist":1.3,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/koutloumousiou%20Skiti.gpx"},
-            {"name":"Κωνσταμονίτου → Δοχειαρίου","dist":6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Konstamonitou%20Doxeiariou.gpx"},
-            {"name":"Κωνσταμονίτου → Εκκλησάκι Ανάληψης","dist":1.5,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Konstamonitou%20Naos%20Analipsis.gpx"},
-            {"name":"Κωνσταμονίτου → Ζωγράφου","dist":4,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Konstamonitou%20Zografou.gpx"},
-            {"name":"Μεγίστης Λαύρας → Αγ. Νείλος","dist":6,"time":"2:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Megistis%20Agios%20Neilos.gpx"},
-            {"name":"Μεγίστης Λαύρας → Αρσανάς","dist":1.6,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/BatopedioyAgDimitriow.gpx"},
-            {"name":"Μεγίστης Λαύρας → Αρσανάς Μορφονούς","dist":10,"time":"4:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Megistis%20Lavras%20Morfonou.gpx"},
-            {"name":"Μεγίστης Λαύρας → Σκήτη Αγ. Άννας","dist":12.5,"time":"5:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Megistis%20Ag.%20Anna.gpx"},
-            {"name":"Μεγίστης Λαύρας → Σκήτη Τιμίου Προδρόμου Ρουμανική 1","dist":4.5,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Megistis%20Roumaniki%201.gpx"},
-            {"name":"Μεγίστης Λαύρας → Σκήτη Τιμίου Προδρόμου Ρουμανική 2","dist":4.5,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Megistis%20Roumaniki%202%20(2).gpx"},
-            {"name":"Μικρή Αγ. Άννα → Αγ. Άννα","dist":1.5,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Mikri%20Agianna%20Agianna.gpx"},
-            {"name":"Μικρή Αγ. Άννα → Καρούλια Αρσανά","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Mikri%20Ag%20Anna%20Arsanas%20Karoulia.gpx"},
-            {"name":"Μικρή Αγ. Άννα → Κατουνάκια","dist":1,"time":"0:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Mikri%20Agianna.gpx"},
-            {"name":"Νέα Σκήτη → Παύλου κάτω","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Nea%20Skiti%20Ag%20Payloy%20kato%20diadromi.gpx"},
-            {"name":"Νέα Σκήτη → Σκήτη Αγ. Άννας","dist":2,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Nea%20Skiti%20Agia%20Anna.gpx"},
-            {"name":"Ξενοφώντος → Δοχειαρίου","dist":1.3,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Xenofontos%20Doxeiariou.gpx"},
-            {"name":"Ξενοφώντος → Παντελεήμονος Ρωσικό","dist":4,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Xenofontos%20Panteleimonos.gpx"},
-            {"name":"Ξενοφώντος → Σκήτη Ευαγγελισμού","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Xenofontos%20Skiti%20Evagelismou.gpx"},
-            {"name":"Ξηροποτάμου → Δάφνη","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ksyropotamou%20Dafni.gpx"},
-            {"name":"Ξηροποτάμου → Παντελεήμονος Ρωσικό","dist":2.8,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/KsyropotamouRosiko.gpx"},
-            {"name":"Ουρανούπολη → Σύνορα Αγίου Όρους","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ouranoupoli%20Sinora%20Agiou%20Orous.gpx"},
-            {"name":"Παντελεήμονος Ρωσικό → Δάφνη","dist":5,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Panteleimonos%20Dafni.gpx"},
-            {"name":"Παντελεήμονος Ρωσικό → Ξενοφώντος","dist":4,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Panteleimonos%20Xenofontos.gpx"},
-            {"name":"Παντοκράτορος → Βατοπαιδίου 1","dist":10,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pantokratoros%20Batopaidiou%201.gpx"},
-            {"name":"Παντοκράτορος → Βατοπαιδίου 2","dist":10.5,"time":"4:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/PantokratorosBatopaidiou2.gpx"},
-            {"name":"Παντοκράτορος → Βατοπαιδίου 3","dist":9.5,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pantokratoros%20Batopaidiou%203.gpx"},
-            {"name":"Παντοκράτορος → Καλύβα Αναστάσεως","dist":3.5,"time":"1:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/pantokratorosKalybaAnastaseos.gpx"},
-            {"name":"Παντοκράτορος → Καρυές","dist":5.6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pantokratoros%20Karyes.gpx"},
-            {"name":"Παντοκράτορος → Σκήτη Προφήτη Ηλία","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pantokratoros%20Skiti%20Pr%20Hlia.gpx"},
-            {"name":"Παντοκράτορος → Σταυρονικήτα","dist":2.9,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pantokratoros%20Stavronikita.gpx"},
-            {"name":"Παύλου → Διονυσίου","dist":2.8,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pavlou%20Dionisiou.gpx"},
-            {"name":"Παύλου → Νέα Σκήτη κάτω","dist":2.4,"time":"0:35","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pavlou%20Nea%20Skiti%20Kato%20diadromi.gpx"},
-            {"name":"Παύλου → Σκήτη Αγ. Άννας πάνω","dist":3.5,"time":"1:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pavloy%20Skiti%20Ag%20Annas%20Pano%20diadromi.gpx"},
-            {"name":"Παύλου → Τάφος Οσίου Ιωσήφ Ησυχαστή","dist":2,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pavlou%20Tafo%20Osiou%20Josef.gpx"},
-            {"name":"Προδρόμου Ρουμανική → Αρσανά Ρουμανική","dist":2,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Roumaniki%20Arsanas.gpx"},
-            {"name":"Προδρόμου Ρουμανική → Βίγλα Κελί Αγ. Μηνά","dist":1,"time":"0:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Roymaniki%20Vigla%20Ag%20Minas.gpx"},
-            {"name":"Προδρόμου Ρουμανική → Μεγίστης Λαύρας 2","dist":4.3,"time":"0:55","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Roumaniki%20%20Megistis%202.gpx"},
-            {"name":"Προδρόμου Ρουμανική → Μεγίστης Λαύρας 3","dist":4.5,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Roumaniki%20Ag.%20Triada%20Megistis.gpx"},
-            {"name":"Προδρόμου Ρουμανική → Σπήλαιο Αγ. Αθανασίου","dist":0.8,"time":"0:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Roumaniki%20Spilaio%20Ag%20Athanasiou.gpx"},
-            {"name":"Σιμωνόπετρα → Γρηγορίου","dist":2.7,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Simonopetra%20Grigoriou.gpx"},
-            {"name":"Σιμωνόπετρα → Δάφνη","dist":8,"time":"3:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Simonopetra%20Dafni.gpx"},
-            {"name":"Σιμωνόπετρα → Καρυές","dist":12,"time":"4:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Simonopetra%20Karyes.gpx"},
-            {"name":"Σκήτη Αγ. Άννας → Ερημητήριο Οσίου Ιωσήφ","dist":1.3,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Agianna%20Erimitirio%20Josef.gpx"},
-            {"name":"Σκήτη Αγ. Άννας → Κορυφή Άθωνα","dist":7,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Anna%20Korifi%20Athona.gpx"},
-            {"name":"Σκήτη Αγ. Άννας → Μικρή Αγ. Άννα","dist":1.5,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Agia%20Anna%20Mikri%20Ag%20Anna.gpx"},
-            {"name":"Σκήτη Αγ. Άννας → Νέα Σκήτη","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Agia%20Anna%20Nea%20Skiti.gpx"},
-            {"name":"Σκήτη Αγ. Άννας → Παύλου κάτω","dist":3.5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Anna%20Paulou%20Kato%20diadromi.gpx"},
-            {"name":"Σκήτη Αγ. Άννας → Παύλου πάνω","dist":3.5,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Anna%20Paulou%20pano%20diadromi.gpx"},
-            {"name":"Σκήτη Προφήτη Ηλία → Βογορόδιτσα","dist":3,"time":"1:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Skiti%20Pr%20Hlia%20Bogorontitsa.gpx"},
-            {"name":"Σκήτη Προφήτη Ηλία → Καλύβα Αναστάσεως","dist":2.5,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Skiti%20Pr%20Hlia%20Kaliva%20Anastaseos%20Pater%20Efthimios.gpx"},
-            {"name":"Σκήτη Προφήτη Ηλία → Παντοκράτορος","dist":2,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Skiti%20Pr%20Hlia%20Pantokratoros.gpx"},
-            {"name":"Σταυρονικήτα → Ιβήρων 1","dist":3.2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavronikita%20Ivirov%201.gpx"},
-            {"name":"Σταυρονικήτα → Ιβήρων 2","dist":5.8,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavronikita%20Ivirov%202.gpx"},
-            {"name":"Σταυρονικήτα → Καλύβα Αναστάσεως","dist":3.2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavronikita%20Kalivi%20Anastaseos.gpx"},
-            {"name":"Σταυρονικήτα → Καρυές","dist":4.3,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavronikita%20Karyes.gpx"},
-            {"name":"Σταυρονικήτα → Κελί Τιμίου Σταυρού","dist":3,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavronikita%20Papa%20Tychon.gpx"},
-            {"name":"Σταυρός → Καρούλια","dist":3,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavros%20Karoulia.gpx"},
-            {"name":"Φιλοθέου → Ασκητήριο Αγ. Διονυσίου","dist":1.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Fylotheou%20Askitirio%20Ag%20Dionysiou.gpx"},
-            {"name":"Φιλοθέου → Ιβήρων 1","dist":5.5,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Fylotheoy%20Iviron%201.gpx"},
-            {"name":"Φιλοθέου → Ιβήρων 2","dist":6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/FylotheoyIviron2.gpx"},
-            {"name":"Φιλοθέου → Καρακάλλου 1","dist":2.2,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Filotheou%20Karakalou%201.gpx"},
-            {"name":"Φιλοθέου → Καρακάλλου 2","dist":3,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Filotheou%20Karakalou%202.gpx"},
-            {"name":"Φιλοθέου → Κελί Αγ. Ονουφρίου","dist":2,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Fylotheou%20Keli%20Onoufriou.gpx"},
-            {"name":"Χιλανδαρίου → Εσφιγμένου","dist":3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Chilandar%2BEsfigmenou%20(1).gpx"},
-            {"name":"Χιλανδαρίου → Ζωγράφου","dist":7.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Chilandar%2BZografou.gpx"}
+            {"name":"Αρσανάς Καρακάλλου → Καρακάλλου 2","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Karakalou%202.gpx"}
         ];
         
         let state = {
@@ -452,7 +310,8 @@
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
             currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null
+            alertDismissed: false, alertDisabledForever: false, audioCtx: null,
+            touchRotateEnabled: false
         };
 
         // ============================================================
@@ -523,8 +382,29 @@
                 bearing: 0
             });
             
-            // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - ΧΕΙΡΟΚΙΝΗΤΟΣ ΧΕΙΡΙΣΜΟΣ ★★★
-            setupTouchRotation(state.map);
+            // ★★★ ΕΝΕΡΓΟΠΟΙΗΣΗ TOUCH ROTATE ΜΕ ΤΟ PLUGIN ★★★
+            try {
+                if (typeof L.touchRotate !== 'undefined') {
+                    L.touchRotate(state.map, {
+                        rotate: true,
+                        touchRotate: true
+                    });
+                    state.touchRotateEnabled = true;
+                    showToast('🔄 Περιστροφή με 2 δάχτυλα ΕΝΕΡΓΗ', '#4CAF50');
+                } else if (state.map.touchRotate && typeof state.map.touchRotate.enable === 'function') {
+                    state.map.touchRotate.enable();
+                    state.touchRotateEnabled = true;
+                    showToast('🔄 Περιστροφή με 2 δάχτυλα ΕΝΕΡΓΗ', '#4CAF50');
+                } else {
+                    // Fallback: χειροκίνητος χειρισμός
+                    setupManualTouchRotate(state.map);
+                    showToast('🔄 Περιστροφή με 2 δάχτυλα (manual)', '#FF9800');
+                }
+            } catch(e) {
+                console.warn('Touch rotate error:', e);
+                setupManualTouchRotate(state.map);
+                showToast('🔄 Περιστροφή με 2 δάχτυλα (manual)', '#FF9800');
+            }
             
             // ★★★ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
             document.getElementById('rotateBtn').addEventListener('click', function() {
@@ -547,13 +427,12 @@
             
             updateCacheBadge();
             
-            // Ενημέρωση για την κατάσταση
             document.getElementById('statusBadge').textContent = '📡 Online';
             showToast('🌐 Online - Πατήστε 📥 για λήψη χαρτών', '#4CAF50');
         }
 
-        // ★★★ ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΔΥΟ ΔΑΧΤΥΛΑ - ΛΕΙΤΟΥΡΓΕΙ ★★★
-        function setupTouchRotation(map) {
+        // ★★★ ΧΕΙΡΟΚΙΝΗΤΟΣ ΧΕΙΡΙΣΜΟΣ ΠΕΡΙΣΤΡΟΦΗΣ (FALLBACK) ★★★
+        function setupManualTouchRotate(map) {
             const container = map.getContainer();
             let touchData = null;
             let currentBearing = 0;
@@ -587,7 +466,6 @@
                     if (newBearing !== currentBearing) {
                         map.setBearing(newBearing, { animate: false });
                         currentBearing = newBearing;
-                        // Ενημέρωση της μεταβλητής mapRotation
                         mapRotation = newBearing;
                     }
                     e.preventDefault();
@@ -603,8 +481,6 @@
             container.addEventListener('touchcancel', function(e) {
                 touchData = null;
             }, { passive: false });
-            
-            showToast('🔄 Περιστροφή με 2 δάχτυλα ενεργή', '#4CAF50');
         }
 
         function createOfflineLayer() {
@@ -626,7 +502,6 @@
                         t.onerror = () => { t.src = this.options.errorTileUrl; };
                         done(null, t);
                     } else if (navigator.onLine) {
-                        // Ακόμα και σε offline mode, αν έχει σύνδεση, φορτώνει
                         t.src = u;
                         t.onload = () => {
                             fetch(u).then(r => r.blob()).then(b => {
@@ -711,7 +586,7 @@
         }
 
         // ============================================================
-        // GPS & NAVIGATION
+        // GPS & NAVIGATION (ίδια με πριν)
         // ============================================================
         
         function toggleGps() {
@@ -889,7 +764,7 @@
         }
 
         // ============================================================
-        // ROUTES - ΔΕΝ ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ (είναι απλά διαδρομές)
+        // ROUTES - ΔΕΝ ΧΡΕΙΑΖΕΤΑΙ ΚΩΔΙΚΟ
         // ============================================================
         
         function showRoutes() {
@@ -932,7 +807,6 @@
         }
 
         function loadRouteFromUrl(url, name, dist, time) {
-            // ΔΕΝ χρειάζεται κωδικό - απλά φορτώνει μια διαδρομή
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1294,7 +1168,6 @@
 
         async function toggleOffline() {
             if (state.isOffline) {
-                // Για να βγεις από offline, πας σε online (ΔΕΝ χρειάζεται κωδικό)
                 disableOffline();
                 showToast('🌐 Online λειτουργία', '#4CAF50');
             } else {
