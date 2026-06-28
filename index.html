@@ -32,9 +32,46 @@
             pointer-events: auto;
         }
         
-        .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:center;backdrop-filter:blur(8px);border-bottom:2px solid #2196F3;max-height:72px;overflow:hidden}
-        .header button,.header a{padding:5px 8px;font-size:10px;border-radius:6px;border:none;color:white;cursor:pointer;min-height:32px;font-weight:600;transition:all 0.2s;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+        /* ============================================================
+           HEADER - ΜΠΑΡΑ ΠΑΝΩ
+           ============================================================ */
+        .header{
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            z-index:1000;
+            background:rgba(13,17,23,0.95);
+            padding:5px 6px;
+            display:flex;
+            flex-wrap:wrap;
+            gap:3px;
+            justify-content:center;
+            align-items:center;
+            backdrop-filter:blur(8px);
+            border-bottom:2px solid #2196F3;
+            max-height:72px;
+            overflow:hidden
+        }
+        .header button,.header a{
+            padding:5px 8px;
+            font-size:10px;
+            border-radius:6px;
+            border:none;
+            color:white;
+            cursor:pointer;
+            min-height:32px;
+            font-weight:600;
+            transition:all 0.2s;
+            touch-action:manipulation;
+            text-decoration:none;
+            display:inline-flex;
+            align-items:center;
+            gap:3px
+        }
         .header button:active,.header a:active{transform:scale(0.94)}
+        
+        /* ΧΡΩΜΑΤΑ ΚΟΥΜΠΙΩΝ */
         .header button.gps-btn{background:#2196F3;font-size:16px}
         .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
         .header button.nav-btn{background:#FF9800;font-size:16px}
@@ -45,77 +82,416 @@
         .header button.dl-btn{background:#673AB7;font-size:11px}
         .header button.offline-btn{background:#2980b9;font-size:11px}
         .header button.offline-btn.active{background:#27ae60}
-        .header a.design-btn{background:#4CAF50;font-size:11px}
         .header button.resume-btn{background:#e91e63;font-size:11px}
-        .header select{background:rgba(255,255,255,0.1);color:#ddd;padding:4px 5px;border-radius:5px;font-size:9px;border:1px solid rgba(255,255,255,0.1);min-height:32px;max-width:75px}
+        .header button.help-btn{background:#9C27B0;font-size:16px}
+        .header a.design-btn{background:#4CAF50;font-size:11px}
+        
+        .header select{
+            background:rgba(255,255,255,0.1);
+            color:#ddd;
+            padding:4px 5px;
+            border-radius:5px;
+            font-size:9px;
+            border:1px solid rgba(255,255,255,0.1);
+            min-height:32px;
+            max-width:75px
+        }
         .header select option{color:#333}
-        .header .badge{font-size:7px;background:rgba(255,255,255,0.1);padding:2px 5px;border-radius:5px;color:#aaa;min-height:20px;display:inline-flex;align-items:center}
+        .header .badge{
+            font-size:7px;
+            background:rgba(255,255,255,0.1);
+            padding:2px 5px;
+            border-radius:5px;
+            color:#aaa;
+            min-height:20px;
+            display:inline-flex;
+            align-items:center
+        }
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
         
-        .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:8px 14px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:160px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px);cursor:grab;user-select:none}
+        /* ============================================================
+           INFO BAR - ΚΑΤΩ ΠΑΝΕΛ (ΜΕΓΑΛΥΤΕΡΑ ΓΡΑΜΜΑΤΑ)
+           ============================================================ */
+        .info-bar{
+            position:fixed;
+            bottom:56px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:900;
+            background:rgba(13,17,23,0.95);
+            padding:10px 18px;
+            border-radius:12px;
+            box-shadow:0 4px 20px rgba(0,0,0,0.5);
+            text-align:center;
+            min-width:180px;
+            max-width:95%;
+            border:2px solid #2196F3;
+            color:#eee;
+            backdrop-filter:blur(8px);
+            cursor:grab;
+            user-select:none
+        }
         .info-bar:active{cursor:grabbing}
-        .info-bar .distance{font-size:24px;font-weight:800;color:#4CAF50}
-        .info-bar .time{font-size:18px;font-weight:700;color:#FF9800}
+        
+        /* ★★★ ΜΕΓΑΛΥΤΕΡΑ ΓΡΑΜΜΑΤΑ ★★★ */
+        .info-bar .distance{
+            font-size:28px;
+            font-weight:800;
+            color:#4CAF50
+        }
+        .info-bar .distance-label{
+            font-size:14px;
+            color:#888;
+            font-weight:400;
+        }
+        .info-bar .time{
+            font-size:24px;
+            font-weight:700;
+            color:#FF9800
+        }
         .info-bar .time.excel{color:#FF9800}
         .info-bar .time.calculated{color:#00BCD4}
-        .info-bar .speed-kmh{font-size:12px;color:#00BCD4;font-weight:700;margin-top:2px}
-        .info-bar .dist-progress-inline{font-size:10px;color:#aaa;margin-top:2px}
+        .info-bar .time-label{
+            font-size:14px;
+            color:#888;
+            font-weight:400;
+        }
+        .info-bar .speed-kmh{
+            font-size:14px;
+            color:#00BCD4;
+            font-weight:700;
+            margin-top:3px
+        }
+        .info-bar .dist-progress-inline{
+            font-size:12px;
+            color:#aaa;
+            margin-top:3px
+        }
         .info-bar .dist-progress-inline span{color:#4CAF50;font-weight:700}
         .info-bar .dist-progress-inline .remaining{color:#FF9800}
-        .info-bar .status{font-size:10px;color:#aaa;margin-top:3px}
-        .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:12px}
+        .info-bar .status{
+            font-size:11px;
+            color:#aaa;
+            margin-top:4px
+        }
+        .info-bar .offroute{
+            color:#f44336;
+            font-weight:700;
+            display:none;
+            font-size:13px
+        }
         .info-bar .offroute.active{display:block}
         
-        .bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:950;background:rgba(13,17,23,0.95);padding:6px 8px;display:flex;gap:6px;justify-content:center;align-items:center;border-top:1px solid rgba(255,255,255,0.08);padding-bottom:calc(6px + env(safe-area-inset-bottom));flex-wrap:wrap}
-        .bottom-bar button{padding:5px 10px;font-size:9px;border-radius:5px;border:none;cursor:pointer;font-weight:600;color:white;min-height:28px;touch-action:manipulation}
+        .bottom-bar{
+            position:fixed;
+            bottom:0;
+            left:0;
+            right:0;
+            z-index:950;
+            background:rgba(13,17,23,0.95);
+            padding:6px 8px;
+            display:flex;
+            gap:6px;
+            justify-content:center;
+            align-items:center;
+            border-top:1px solid rgba(255,255,255,0.08);
+            padding-bottom:calc(6px + env(safe-area-inset-bottom));
+            flex-wrap:wrap
+        }
+        .bottom-bar button{
+            padding:5px 10px;
+            font-size:9px;
+            border-radius:5px;
+            border:none;
+            cursor:pointer;
+            font-weight:600;
+            color:white;
+            min-height:28px;
+            touch-action:manipulation
+        }
         .bottom-bar button.speed-btn{background:rgba(255,255,255,0.08);color:#888}
         .bottom-bar button.speed-btn.active{background:rgba(76,175,80,0.3);color:#4CAF50}
         .bottom-bar button.screen-btn{background:rgba(255,255,255,0.08);color:#888}
         .bottom-bar button.screen-btn.active{background:rgba(26,188,156,0.3);color:#1abc9c}
         .bottom-bar button.sos-bottom-btn{background:#f44336;font-size:12px;min-width:36px;min-height:28px;padding:4px 8px}
         
-        .offroute-warning{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:1001;background:#f44336;color:white;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;box-shadow:0 4px 20px rgba(244,67,54,0.6);flex-direction:column;align-items:center;gap:8px}
+        .offroute-warning{
+            position:fixed;
+            top:76px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:1001;
+            background:#f44336;
+            color:white;
+            padding:10px 20px;
+            border-radius:10px;
+            font-size:13px;
+            font-weight:700;
+            display:none;
+            box-shadow:0 4px 20px rgba(244,67,54,0.6);
+            flex-direction:column;
+            align-items:center;
+            gap:8px
+        }
         .offroute-warning.active{display:flex}
-        .offroute-warning button{background:white;color:#f44336;border:none;padding:8px 18px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
-        .offroute-warning .disable-forever-btn{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);padding:6px 14px;border-radius:6px;font-size:10px;cursor:pointer;margin-top:2px}
+        .offroute-warning button{
+            background:white;
+            color:#f44336;
+            border:none;
+            padding:8px 18px;
+            border-radius:6px;
+            font-size:11px;
+            font-weight:700;
+            cursor:pointer;
+            margin-top:4px
+        }
+        .offroute-warning .disable-forever-btn{
+            background:rgba(255,255,255,0.2);
+            color:white;
+            border:1px solid rgba(255,255,255,0.4);
+            padding:6px 14px;
+            border-radius:6px;
+            font-size:10px;
+            cursor:pointer;
+            margin-top:2px
+        }
         
-        .blog-link{position:fixed;bottom:48px;right:8px;z-index:850;background:rgba(13,17,23,0.85);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;text-decoration:none;backdrop-filter:blur(4px);overflow:hidden}
+        .blog-link{
+            position:fixed;
+            bottom:48px;
+            right:8px;
+            z-index:850;
+            background:rgba(13,17,23,0.85);
+            border-radius:50%;
+            width:34px;
+            height:34px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 2px 10px rgba(0,0,0,0.4);
+            border:1px solid rgba(255,255,255,0.15);
+            transition:all 0.2s;
+            text-decoration:none;
+            backdrop-filter:blur(4px);
+            overflow:hidden
+        }
         .blog-link:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.3)}
         .blog-link img{width:28px;height:28px;border-radius:50%;object-fit:cover}
         
-        #downloadProgress{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);z-index:999;background:rgba(0,0,0,0.92);color:white;padding:6px 14px;border-radius:12px;font-size:9px;display:none;min-width:150px;text-align:center}
+        #downloadProgress{
+            position:fixed;
+            bottom:50px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:999;
+            background:rgba(0,0,0,0.92);
+            color:white;
+            padding:6px 14px;
+            border-radius:12px;
+            font-size:9px;
+            display:none;
+            min-width:150px;
+            text-align:center
+        }
         #downloadProgress .bar{width:100%;height:3px;background:#333;border-radius:2px;margin-top:3px;overflow:hidden}
         #downloadProgress .bar .fill{height:100%;background:#4CAF50;width:0%;transition:width 0.3s}
         
-        #routeDropdown{position:fixed;top:72px;left:0;right:0;bottom:0;z-index:1200;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;padding:8px}
+        /* ============================================================
+           ΛΙΣΤΑ ΔΙΑΔΡΟΜΩΝ
+           ============================================================ */
+        #routeDropdown{
+            position:fixed;
+            top:72px;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index:1200;
+            background:rgba(0,0,0,0.75);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            padding:8px
+        }
         #routeDropdown.active{display:flex}
-        #routeDropdown .dd-content{background:rgba(13,17,23,0.98);border-radius:12px;padding:12px 14px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;border:2px solid #8e44ad;color:#eee}
+        #routeDropdown .dd-content{
+            background:rgba(13,17,23,0.98);
+            border-radius:12px;
+            padding:12px 14px;
+            max-width:520px;
+            width:100%;
+            max-height:82vh;
+            overflow-y:auto;
+            border:2px solid #8e44ad;
+            color:#eee
+        }
         #routeDropdown .dd-content h3{color:#bb86fc;font-size:16px;margin-bottom:8px}
-        #routeDropdown .route-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;border-radius:5px;gap:5px;font-size:13px;min-height:40px}
+        #routeDropdown .route-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:7px 8px;
+            border-bottom:1px solid rgba(255,255,255,0.06);
+            cursor:pointer;
+            border-radius:5px;
+            gap:5px;
+            font-size:13px;
+            min-height:40px
+        }
         #routeDropdown .route-item:hover{background:rgba(255,255,255,0.1)}
         #routeDropdown .route-item .rname{flex:1;min-width:0;color:#eee;font-size:13px;font-weight:500;line-height:1.3}
         #routeDropdown .route-item .rinfo{font-size:10px;color:#aaa;white-space:nowrap;margin-left:4px}
-        #routeDropdown .route-search{width:100%;padding:8px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:12px;margin-bottom:8px}
-        #routeDropdown .letter-header{font-size:15px;font-weight:700;color:#bb86fc;padding:10px 4px 4px 4px;border-bottom:1px solid rgba(255,255,255,0.1);margin-top:8px}
-        #routeDropdown .close-routes{background:#555;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-top:6px;width:100%}
+        #routeDropdown .route-search{
+            width:100%;
+            padding:8px 12px;
+            border-radius:6px;
+            border:1px solid rgba(255,255,255,0.15);
+            background:rgba(255,255,255,0.06);
+            color:white;
+            font-size:12px;
+            margin-bottom:8px
+        }
+        #routeDropdown .letter-header{
+            font-size:15px;
+            font-weight:700;
+            color:#bb86fc;
+            padding:10px 4px 4px 4px;
+            border-bottom:1px solid rgba(255,255,255,0.1);
+            margin-top:8px
+        }
+        #routeDropdown .close-routes{
+            background:#555;
+            color:white;
+            border:none;
+            padding:6px 14px;
+            border-radius:6px;
+            cursor:pointer;
+            font-size:11px;
+            margin-top:6px;
+            width:100%
+        }
         
-        .arrow-dot{width:26px;height:30px;position:relative;display:flex;align-items:center;justify-content:center}
-        .arrow-dot .arrow{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:18px solid #2196F3;position:absolute;top:-4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6))}
-        .arrow-dot .dot{width:14px;height:14px;background:white;border-radius:50%;border:2px solid #2196F3;position:absolute;top:8px;box-shadow:0 0 0 4px rgba(33,150,243,0.35)}
-        .arrow-dot .glow{width:36px;height:36px;background:rgba(33,150,243,0.12);border-radius:50%;position:absolute;animation:pulse 2s infinite}
+        .arrow-dot{
+            width:26px;
+            height:30px;
+            position:relative;
+            display:flex;
+            align-items:center;
+            justify-content:center
+        }
+        .arrow-dot .arrow{
+            width:0;
+            height:0;
+            border-left:8px solid transparent;
+            border-right:8px solid transparent;
+            border-bottom:18px solid #2196F3;
+            position:absolute;
+            top:-4px;
+            filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6))
+        }
+        .arrow-dot .dot{
+            width:14px;
+            height:14px;
+            background:white;
+            border-radius:50%;
+            border:2px solid #2196F3;
+            position:absolute;
+            top:8px;
+            box-shadow:0 0 0 4px rgba(33,150,243,0.35)
+        }
+        .arrow-dot .glow{
+            width:36px;
+            height:36px;
+            background:rgba(33,150,243,0.12);
+            border-radius:50%;
+            position:absolute;
+            animation:pulse 2s infinite
+        }
         @keyframes pulse{0%{transform:scale(1);opacity:0.5}50%{transform:scale(1.6);opacity:0.1}100%{transform:scale(1);opacity:0.5}}
         
-        #sosContainer{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3000;background:rgba(13,17,23,0.98);padding:14px 18px;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);display:none;max-width:320px;width:92%;max-height:85vh;overflow-y:auto;border:2px solid #f44336;color:#eee}
+        /* ============================================================
+           SOS
+           ============================================================ */
+        #sosContainer{
+            position:fixed;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            z-index:3000;
+            background:rgba(13,17,23,0.98);
+            padding:14px 18px;
+            border-radius:14px;
+            box-shadow:0 8px 40px rgba(0,0,0,0.5);
+            display:none;
+            max-width:320px;
+            width:92%;
+            max-height:85vh;
+            overflow-y:auto;
+            border:2px solid #f44336;
+            color:#eee
+        }
         #sosContainer.active{display:block}
-        #sosContainer input,#sosContainer select,#sosContainer textarea{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px 8px;border-radius:5px;width:100%;font-size:11px;margin:3px 0}
-        #sosContainer button{width:100%;padding:6px;border-radius:5px;border:none;font-weight:700;cursor:pointer;color:white;margin:2px 0;font-size:11px}
+        #sosContainer input,#sosContainer select,#sosContainer textarea{
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.15);
+            color:white;
+            padding:6px 8px;
+            border-radius:5px;
+            width:100%;
+            font-size:11px;
+            margin:3px 0
+        }
+        #sosContainer button{
+            width:100%;
+            padding:6px;
+            border-radius:5px;
+            border:none;
+            font-weight:700;
+            cursor:pointer;
+            color:white;
+            margin:2px 0;
+            font-size:11px
+        }
         
-        #codeModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center}
+        /* ============================================================
+           CODE MODAL
+           ============================================================ */
+        #codeModal{
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index:9999;
+            background:rgba(0,0,0,0.85);
+            display:none;
+            align-items:center;
+            justify-content:center
+        }
         #codeModal.active{display:flex}
-        #codeModal .modal-content{background:#1a1a2e;border-radius:16px;padding:20px;max-width:340px;width:92%;border:2px solid #2980b9;color:#eee;text-align:center}
+        #codeModal .modal-content{
+            background:#1a1a2e;
+            border-radius:16px;
+            padding:20px;
+            max-width:340px;
+            width:92%;
+            border:2px solid #2980b9;
+            color:#eee;
+            text-align:center
+        }
         #codeModal .modal-content h3{color:#4CAF50;font-size:16px;margin-bottom:8px}
         #codeModal .modal-content p{font-size:11px;color:#888;margin-bottom:12px}
-        #codeModal .modal-content input{width:100%;padding:8px 12px;font-size:16px;border-radius:8px;border:2px solid #333;background:rgba(255,255,255,0.05);color:white;text-align:center;letter-spacing:3px;font-family:monospace}
+        #codeModal .modal-content input{
+            width:100%;
+            padding:8px 12px;
+            font-size:16px;
+            border-radius:8px;
+            border:2px solid #333;
+            background:rgba(255,255,255,0.05);
+            color:white;
+            text-align:center;
+            letter-spacing:3px;
+            font-family:monospace
+        }
         #codeModal .modal-content input:focus{outline:none;border-color:#4CAF50}
         #codeModal .modal-content .btn-group{display:flex;gap:8px;margin-top:12px}
         #codeModal .modal-content .btn-group button{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer}
@@ -123,11 +499,26 @@
         #codeModal .modal-content .btn-group .cancel{background:#555;color:white}
         #codeModal .modal-content .error{color:#e74c3c;font-size:10px;margin-top:6px;display:none}
         
-        .status-badge{position:fixed;top:76px;right:4px;z-index:999;background:rgba(0,0,0,0.8);color:white;padding:2px 6px;border-radius:6px;font-size:7px;font-weight:600;pointer-events:none}
+        .status-badge{
+            position:fixed;
+            top:76px;
+            right:4px;
+            z-index:999;
+            background:rgba(0,0,0,0.8);
+            color:white;
+            padding:2px 6px;
+            border-radius:6px;
+            font-size:7px;
+            font-weight:600;
+            pointer-events:none
+        }
         
         .leaflet-control-zoom{z-index:800!important;margin-top:76px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
+        /* ============================================================
+           ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ
+           ============================================================ */
         .rotate-btn-fixed {
             position:fixed;
             bottom:110px;
@@ -170,11 +561,11 @@
             pointer-events:none;
             border:1px solid rgba(76,175,80,0.3);
         }
-        .rotation-indicator.active {
-            display:block;
-        }
+        .rotation-indicator.active { display:block; }
         
-        /* ★★★ ΕΙΔΟΠΟΙΗΣΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗΣ GPS ★★★ */
+        /* ============================================================
+           ΕΙΔΟΠΟΙΗΣΗ GPS
+           ============================================================ */
         .gps-notification {
             position:fixed;
             top:76px;
@@ -193,9 +584,7 @@
             max-width:90%;
             border:1px solid rgba(255,255,255,0.2);
         }
-        .gps-notification.active {
-            display:block;
-        }
+        .gps-notification.active { display:block; }
         .gps-notification .close-notification {
             background:rgba(255,255,255,0.2);
             border:none;
@@ -213,23 +602,161 @@
             background:rgba(255,255,255,0.4);
         }
         
+        /* ============================================================
+           ★★★ ΠΑΡΑΘΥΡΟ ΒΟΗΘΕΙΑΣ ★★★
+           ============================================================ */
+        #helpModal {
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index:5000;
+            background:rgba(0,0,0,0.85);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            padding:16px;
+        }
+        #helpModal.active { display:flex; }
+        
+        #helpModal .help-content {
+            background:rgba(13,17,23,0.98);
+            border-radius:16px;
+            padding:20px;
+            max-width:420px;
+            width:100%;
+            max-height:85vh;
+            overflow-y:auto;
+            border:2px solid #9C27B0;
+            color:#eee;
+        }
+        
+        #helpModal .help-title {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:12px;
+            padding-bottom:8px;
+            border-bottom:2px solid rgba(156,39,176,0.3);
+        }
+        #helpModal .help-title h2 {
+            color:#bb86fc;
+            font-size:18px;
+            font-weight:700;
+        }
+        #helpModal .help-title button {
+            background:#555;
+            color:white;
+            border:none;
+            border-radius:50%;
+            width:30px;
+            height:30px;
+            cursor:pointer;
+            font-size:16px;
+            transition:all 0.2s;
+        }
+        #helpModal .help-title button:hover {
+            background:#777;
+            transform:scale(1.1);
+        }
+        
+        #helpModal .help-intro {
+            font-size:12px;
+            color:#aaa;
+            margin-bottom:12px;
+            text-align:center;
+            line-height:1.5;
+            background:rgba(255,255,255,0.05);
+            padding:8px 12px;
+            border-radius:8px;
+        }
+        
+        #helpModal .help-section {
+            margin-bottom:10px;
+        }
+        #helpModal .help-section-title {
+            font-size:13px;
+            font-weight:700;
+            color:#bb86fc;
+            margin-bottom:6px;
+            padding-left:4px;
+        }
+        
+        #helpModal .help-item {
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:7px 10px;
+            background:rgba(255,255,255,0.04);
+            border-radius:8px;
+            font-size:12px;
+            line-height:1.4;
+            margin-bottom:4px;
+            transition:background 0.2s;
+        }
+        #helpModal .help-item:hover {
+            background:rgba(255,255,255,0.08);
+        }
+        
+        #helpModal .help-icon {
+            font-size:20px;
+            width:34px;
+            text-align:center;
+            flex-shrink:0;
+        }
+        
+        #helpModal .help-item strong {
+            color:#bb86fc;
+        }
+        #helpModal .help-item .help-desc {
+            color:#ccc;
+            font-size:11px;
+        }
+        
+        #helpModal .help-footer {
+            margin-top:12px;
+            padding-top:10px;
+            border-top:1px solid rgba(255,255,255,0.08);
+            text-align:center;
+            font-size:10px;
+            color:#666;
+        }
+        #helpModal .help-footer span {
+            color:#888;
+        }
+        
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media(max-width:600px){
             .header{padding:4px 5px;gap:2px;max-height:64px}
             .header button,.header a{padding:4px 6px;font-size:9px;min-height:28px;min-width:26px}
-            .header button.gps-btn,.header button.nav-btn{font-size:14px}
+            .header button.gps-btn,.header button.nav-btn,.header button.help-btn{font-size:14px}
             .header select{font-size:8px;min-height:28px;max-width:60px}
-            .info-bar{padding:6px 10px;bottom:48px}
-            .info-bar .distance{font-size:20px}
-            .info-bar .time{font-size:15px}
+            
+            .info-bar{padding:8px 12px;bottom:48px;min-width:150px}
+            .info-bar .distance{font-size:22px}
+            .info-bar .time{font-size:18px}
+            .info-bar .distance-label,.info-bar .time-label{font-size:11px}
+            .info-bar .speed-kmh{font-size:12px}
+            .info-bar .status{font-size:10px}
+            
             #routeDropdown .dd-content{padding:10px 12px}
             #routeDropdown .route-item{font-size:12px;padding:6px 7px;min-height:36px}
             #routeDropdown .route-item .rname{font-size:12px}
             #routeDropdown .letter-header{font-size:14px}
+            
             .blog-link{bottom:44px;right:6px;width:28px;height:28px}
             .blog-link img{width:22px;height:22px}
             .rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}
             .rotation-indicator{font-size:9px;padding:2px 8px;top:72px}
             .gps-notification{font-size:10px;padding:4px 12px;top:72px}
+            
+            #helpModal .help-content { padding:14px; }
+            #helpModal .help-item { font-size:11px; padding:6px 8px; }
+            #helpModal .help-icon { font-size:17px; width:28px; }
+            #helpModal .help-title h2 { font-size:15px; }
         }
     </style>
 </head>
@@ -238,73 +765,89 @@
         <div id="map"></div>
     </div>
     
+    <!-- ΕΝΔΕΙΞΗ ΓΩΝΙΑΣ ΠΕΡΙΣΤΡΟΦΗΣ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     
-    <!-- ★★★ ΕΙΔΟΠΟΙΗΣΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗΣ GPS ★★★ -->
+    <!-- ΕΙΔΟΠΟΙΗΣΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗΣ GPS -->
     <div class="gps-notification" id="gpsNotification">
-        <span>📍 GPS & 🧭 Follow απενεργοποιήθηκαν αυτόματα για να δείτε τη διαδρομή</span>
+        <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν για να δείτε τη διαδρομή</span>
         <button class="close-notification" id="closeGpsNotification">✕</button>
     </div>
     
-    <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
+    <!-- ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ -->
+    <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή χάρτη κατά 90°">🔄</button>
     
+    <!-- BLOG LINK -->
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
+    <!-- HEADER - ΠΑΝΩ ΜΠΑΡΑ -->
     <div class="header">
-        <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍 Θέση</button>
-        <button id="navBtn" class="nav-btn" title="Πλοήγηση (ο χάρτης ακολουθεί)">🧭 Follow</button>
-        <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
-        <button id="loadBtn" class="load-btn" title="GPX">📂</button>
-        <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός διαδρομής">🗑️</button>
-        <button id="resumeBtn" class="resume-btn" title="Συνέχεια τελευταίας διαδρομής">🔄</button>
-        <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση Διαδρομών">✏️</a>
-        <select id="areaSelect">
+        <button id="gpsBtn" class="gps-btn" title="Εμφάνιση της τρέχουσας θέσης σας στον χάρτη">📍 Θέση</button>
+        <button id="navBtn" class="nav-btn" title="Ο χάρτης ακολουθεί αυτόματα την κίνησή σας">🧭 Follow</button>
+        <button id="routesBtn" class="route-btn" title="Εμφάνιση λίστας με 140+ διαδρομές στο Άγιο Όρος">🗺️ Διαδρομές</button>
+        <button id="loadBtn" class="load-btn" title="Φόρτωση GPX αρχείου από τον υπολογιστή σας">📂 GPX</button>
+        <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός της τρέχουσας διαδρομής από τον χάρτη">🗑️ Καθαρισμός</button>
+        <button id="resumeBtn" class="resume-btn" title="Συνέχεια της τελευταίας διαδρομής που είχατε ανοίξει">🔄 Συνέχεια</button>
+        <button id="helpBtn" class="help-btn" title="Βοήθεια - Πληροφορίες για τις λειτουργίες της εφαρμογής">❓ Βοήθεια</button>
+        <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση νέων διαδρομών">✏️ Σχεδίαση</a>
+        <select id="areaSelect" title="Επιλογή περιοχής για λήψη χαρτών">
             <option value="athos">🏔️ Άγιο Όρος</option>
             <option value="patras">🏙️ Πάτρα</option>
             <option value="athens">🏛️ Αθήνα</option>
             <option value="thessaloniki">🌊 Θεσ/νίκη</option>
             <option value="my_area">📍 Εδώ</option>
         </select>
-        <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
-        <button id="offlineBtn" class="offline-btn" title="Offline">📴</button>
-        <span class="badge" id="cacheBadge">0</span>
+        <button id="downloadBtn" class="dl-btn" title="Λήψη χαρτών για offline χρήση (απαιτείται κωδικός)">📥 Λήψη</button>
+        <button id="offlineBtn" class="offline-btn" title="Εναλλαγή μεταξύ Online και Offline λειτουργίας">📴 Offline</button>
+        <span class="badge" id="cacheBadge" title="Αριθμός αποθηκευμένων tiles για offline χρήση">0</span>
         <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
 
+    <!-- ΠΡΟΕΙΔΟΠΟΙΗΣΗ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ -->
     <div class="offroute-warning" id="offRouteWarning">
         <span id="offRouteMsg">⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ!</span>
         <button id="dismissAlertBtn">🔇 ΠΡΟΣΩΡΙΝΗ ΣΙΓΑΣΗ</button>
         <button id="disableAlertForeverBtn" class="disable-forever-btn">🚫 ΟΡΙΣΤΙΚΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</button>
     </div>
 
+    <!-- ΠΡΟΟΔΟΣ ΛΗΨΗΣ -->
     <div id="downloadProgress">
         <span id="progressText">Λήψη...</span>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
 
+    <!-- INFO BAR - ΚΑΤΩ ΠΑΝΕΛ ΜΕ ΣΤΟΙΧΕΙΑ ΔΙΑΔΡΟΜΗΣ -->
     <div class="info-bar" id="infoBar">
-        <span class="distance" id="distDisplay">0.00</span> km · 
-        <span class="time" id="timeDisplay">--:--</span>
+        <div>
+            <span class="distance" id="distDisplay">0.00</span>
+            <span class="distance-label">χλμ</span>
+            <span style="color:#666;margin:0 4px;">·</span>
+            <span class="time" id="timeDisplay">--:--</span>
+            <span class="time-label">εκτίμηση</span>
+        </div>
         <div class="speed-kmh" id="speedDisplay"></div>
         <div class="dist-progress-inline" id="distProgressInline" style="display:none">
-            📍 Διανυθέντα: <span id="distDone">0.00</span> km | Υπολείπονται: <span id="distRemaining">0.00</span> km
+            📍 Διανυθέντα: <span id="distDone">0.00</span> χλμ | Υπολείπονται: <span id="distRemaining">0.00</span> χλμ
         </div>
-        <div class="status" id="statusDisplay">Πατήστε 📍 για GPS</div>
+        <div class="status" id="statusDisplay">Πατήστε 📍 Θέση για GPS</div>
         <div class="offroute" id="offRouteStatus">⚠️ Εκτός διαδρομής!</div>
     </div>
 
+    <!-- BOTTOM BAR - ΚΑΤΩ ΜΠΑΡΑ -->
     <div class="bottom-bar">
-        <button id="sosBottomBtn" class="sos-bottom-btn" title="SOS">🆘</button>
-        <button class="speed-btn" data-speed="3" title="Αργή">🐢 3</button>
-        <button class="speed-btn active" data-speed="4" title="Μέτρια">🚶 4</button>
-        <button class="speed-btn" data-speed="5" title="Γρήγορη">🏃 5</button>
-        <button id="screenBtn" class="screen-btn" title="Οθόνη ON">🔆</button>
+        <button id="sosBottomBtn" class="sos-bottom-btn" title="SOS - Μήνυμα έκτακτης ανάγκης">🆘 SOS</button>
+        <button class="speed-btn" data-speed="3" title="Αργή ταχύτητα (3 χλμ/ώρα)">🐢 3</button>
+        <button class="speed-btn active" data-speed="4" title="Μέτρια ταχύτητα (4 χλμ/ώρα)">🚶 4</button>
+        <button class="speed-btn" data-speed="5" title="Γρήγορη ταχύτητα (5 χλμ/ώρα)">🏃 5</button>
+        <button id="screenBtn" class="screen-btn" title="Διατήρηση οθόνης αναμμένης">🔆 Οθόνη ON</button>
     </div>
 
+    <!-- STATUS BADGE -->
     <div class="status-badge" id="statusBadge">📡 Online</div>
 
+    <!-- ΛΙΣΤΑ ΔΙΑΔΡΟΜΩΝ -->
     <div id="routeDropdown">
         <div class="dd-content">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -317,14 +860,21 @@
         </div>
     </div>
 
+    <!-- SOS -->
     <div id="sosContainer">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:2px solid #f44336;padding-bottom:4px">
-            <span style="font-size:14px;font-weight:700;color:#f44336;">🆘 SOS</span>
+            <span style="font-size:14px;font-weight:700;color:#f44336;">🆘 SOS - Έκτακτη Ανάγκη</span>
             <button id="closeSosBtn" style="background:#555;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:12px;padding:0;line-height:24px;">✕</button>
         </div>
         <div style="font-size:9px;margin-bottom:6px;background:rgba(244,67,54,0.15);padding:5px;border-radius:5px;border-left:3px solid #f44336;">📍 <span id="sosCoords">Φόρτωση...</span></div>
         <input type="text" id="sosName" placeholder="Ονοματεπώνυμο">
-        <select id="sosType"><option>Χάθηκα</option><option>Χτύπησα</option><option>Πρόβλημα υγείας</option><option>Έκτακτη ανάγκη</option><option>Άλλο</option></select>
+        <select id="sosType">
+            <option>Χάθηκα</option>
+            <option>Χτύπησα</option>
+            <option>Πρόβλημα υγείας</option>
+            <option>Έκτακτη ανάγκη</option>
+            <option>Άλλο</option>
+        </select>
         <input type="tel" id="sosPhone" placeholder="Τηλέφωνο">
         <textarea id="sosHistory" placeholder="Ιστορικό..." style="min-height:35px;"></textarea>
         <button id="sosSendSms" style="background:#4CAF50;">📱 SMS</button>
@@ -332,6 +882,7 @@
         <button id="sosCall112" style="background:#f44336;">📞 112</button>
     </div>
 
+    <!-- CODE MODAL -->
     <div id="codeModal">
         <div class="modal-content">
             <h3>🔐 Κωδικός Λήψης Χαρτών</h3>
@@ -345,9 +896,153 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    ★★★ ΠΑΡΑΘΥΡΟ ΒΟΗΘΕΙΑΣ ★★★
+    ============================================================ -->
+    <div id="helpModal">
+        <div class="help-content">
+            <div class="help-title">
+                <h2>❓ Βοήθεια - Athos Maps</h2>
+                <button id="closeHelpBtn">✕</button>
+            </div>
+            
+            <div class="help-intro">
+                Καλώς ήρθατε στο Athos Maps! Παρακάτω θα βρείτε όλες τις λειτουργίες της εφαρμογής.
+            </div>
+            
+            <!-- ΚΥΡΙΕΣ ΛΕΙΤΟΥΡΓΙΕΣ -->
+            <div class="help-section">
+                <div class="help-section-title">📍 Πλοήγηση &amp; Θέση</div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📍</span>
+                    <div>
+                        <strong>Θέση</strong>
+                        <div class="help-desc">Εμφανίζει την τρέχουσα θέση σας στον χάρτη με ένα βέλος που δείχνει την κατεύθυνσή σας.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🧭</span>
+                    <div>
+                        <strong>Follow (Πλοήγηση)</strong>
+                        <div class="help-desc">Ο χάρτης ακολουθεί αυτόματα την κίνησή σας. Ιδανικό όταν περπατάτε ή οδηγείτε.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ΔΙΑΔΡΟΜΕΣ -->
+            <div class="help-section">
+                <div class="help-section-title">🗺️ Διαδρομές</div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🗺️</span>
+                    <div>
+                        <strong>Διαδρομές</strong>
+                        <div class="help-desc">Επιλέξτε από 140+ διαδρομές στο Άγιο Όρος. Η διαδρομή εμφανίζεται με κόκκινη γραμμή.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📂</span>
+                    <div>
+                        <strong>GPX</strong>
+                        <div class="help-desc">Φορτώστε το δικό σας GPX αρχείο από τον υπολογιστή ή το κινητό σας.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🗑️</span>
+                    <div>
+                        <strong>Καθαρισμός</strong>
+                        <div class="help-desc">Αφαιρεί την τρέχουσα διαδρομή από τον χάρτη.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🔄</span>
+                    <div>
+                        <strong>Συνέχεια</strong>
+                        <div class="help-desc">Συνεχίζει την τελευταία διαδρομή που είχατε ανοίξει, ακόμα και GPX αρχεία.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ΧΑΡΤΗΣ -->
+            <div class="help-section">
+                <div class="help-section-title">🗺️ Χάρτης</div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🔄</span>
+                    <div>
+                        <strong>Περιστροφή</strong>
+                        <div class="help-desc">Περιστρέφει τον χάρτη κατά 90° δεξιόστροφα. Χρήσιμο για προσανατολισμό.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📥</span>
+                    <div>
+                        <strong>Λήψη Χαρτών</strong>
+                        <div class="help-desc">Κατεβάζει χάρτες για offline χρήση. <strong>Απαιτείται κωδικός (10101010)</strong></div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📴</span>
+                    <div>
+                        <strong>Offline</strong>
+                        <div class="help-desc">Ενεργοποιεί την offline λειτουργία. Οι χάρτες φορτώνονται από την τοπική αποθήκευση.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🔆</span>
+                    <div>
+                        <strong>Οθόνη ON</strong>
+                        <div class="help-desc">Διατηρεί την οθόνη αναμμένη. Χρήσιμο κατά την πλοήγηση.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ΑΛΛΑ -->
+            <div class="help-section">
+                <div class="help-section-title">🆘 Άλλες Λειτουργίες</div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🆘</span>
+                    <div>
+                        <strong>SOS</strong>
+                        <div class="help-desc">Στείλτε μήνυμα έκτακτης ανάγκης με τις συντεταγμένες σας μέσω SMS ή Email.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🐢🚶🏃</span>
+                    <div>
+                        <strong>Ταχύτητα</strong>
+                        <div class="help-desc">Αργή (3 χλμ/ώρα), Μέτρια (4 χλμ/ώρα) ή Γρήγορη (5 χλμ/ώρα) - επηρεάζει την εκτίμηση χρόνου.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">✏️</span>
+                    <div>
+                        <strong>Σχεδίαση</strong>
+                        <div class="help-desc">Μεταφέρεστε σε εργαλείο σχεδίασης νέων διαδρομών.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-footer">
+                <span>Athos Maps v2.0 · Άγιο Όρος · Πατήστε ✕ ή έξω από το παράθυρο για κλείσιμο</span>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -585,22 +1280,16 @@
             let wasGpsOn = state.isGpsOn;
             let wasNavigating = state.isNavigating;
             
-            // Απενεργοποίηση GPS
             if (state.isGpsOn) {
                 stopGps();
             }
-            
-            // Απενεργοποίηση Follow (πλοήγηση)
             if (state.isNavigating) {
                 stopNavigation();
             }
             
-            // Εμφάνιση ειδοποίησης αν ήταν ενεργά
             if (wasGpsOn || wasNavigating) {
                 const notification = document.getElementById('gpsNotification');
                 notification.classList.add('active');
-                
-                // Αυτόματη απόκρυψη μετά από 5 δευτερόλεπτα
                 setTimeout(() => {
                     notification.classList.remove('active');
                 }, 5000);
@@ -668,7 +1357,6 @@
                 rotateBy(90);
             });
             
-            // ★★★ ΚΛΕΙΣΙΜΟ ΕΙΔΟΠΟΙΗΣΗΣ ★★★
             document.getElementById('closeGpsNotification').addEventListener('click', function() {
                 document.getElementById('gpsNotification').classList.remove('active');
             });
@@ -687,7 +1375,7 @@
             
             updateCacheBadge();
             document.getElementById('statusBadge').textContent = '📡 Online';
-            showToast('🌐 Online - Πατήστε 🔄 για περιστροφή', '#4CAF50');
+            showToast('🌐 Online - Πατήστε ❓ για βοήθεια', '#4CAF50');
         }
 
         function createOfflineLayer() {
@@ -951,7 +1639,6 @@
             list.innerHTML = html;
             list.querySelectorAll('.route-item').forEach(item => {
                 item.addEventListener('click', function() {
-                    // ★★★ ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ΚΑΙ FOLLOW ★★★
                     disableGpsAndFollow();
                     loadRouteFromUrl(this.dataset.url, this.dataset.name, parseFloat(this.dataset.dist), this.dataset.time);
                     hideRoutes();
@@ -960,7 +1647,6 @@
         }
 
         function loadRouteFromUrl(url, name, dist, time) {
-            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
             disableGpsAndFollow();
             
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
@@ -1005,7 +1691,6 @@
         }
 
         function loadGpxFile(file) {
-            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
             disableGpsAndFollow();
             
             const r = new FileReader();
@@ -1056,7 +1741,6 @@
         }
 
         function loadGpxFromData(gpxData, name) {
-            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
             disableGpsAndFollow();
             
             try {
@@ -1481,7 +2165,7 @@
         }
 
         // ============================================================
-        // DOM READY
+        // ★★★ DOM READY - ΒΟΗΘΕΙΑ ★★★
         // ============================================================
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -1491,6 +2175,21 @@
             
             initMap();
             
+            // ★★★ ΒΟΗΘΕΙΑ ★★★
+            document.getElementById('helpBtn').addEventListener('click', function() {
+                document.getElementById('helpModal').classList.add('active');
+            });
+            
+            document.getElementById('closeHelpBtn').addEventListener('click', function() {
+                document.getElementById('helpModal').classList.remove('active');
+            });
+            
+            document.getElementById('helpModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
             const savedRoute = localStorage.getItem('athos_last_route');
             const wasNavigating = localStorage.getItem('athos_was_navigating') === 'true';
             
@@ -1499,7 +2198,6 @@
                     const r = JSON.parse(savedRoute);
                     if (r.url && r.name) {
                         setTimeout(() => {
-                            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ΠΡΙΝ ΤΗ ΦΟΡΤΩΣΗ ★★★
                             disableGpsAndFollow();
                             
                             if (r.url && r.url.startsWith('file:')) {
@@ -1548,7 +2246,6 @@
                 const sr = localStorage.getItem('athos_last_route');
                 if (sr) {
                     const r = JSON.parse(sr);
-                    // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ★★★
                     disableGpsAndFollow();
                     
                     if (r.url && r.url.startsWith('file:')) {
