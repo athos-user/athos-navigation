@@ -9,9 +9,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <style>
-        /* ============================================================
-           ΟΛΑ ΤΑ STYLES ΟΠΩΣ ΠΡΙΝ (τα ίδια)
-           ============================================================ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         
@@ -35,6 +32,9 @@
             pointer-events: auto;
         }
         
+        /* ============================================================
+           HEADER - ΠΑΝΩ ΜΠΑΡΑ ΜΕ ΟΡΙΖΟΝΤΙΑ ΚΥΛΙΣΗ
+           ============================================================ */
         .header-wrapper {
             position:fixed;
             top:0;
@@ -560,7 +560,7 @@
             background:rgba(255,255,255,0.4);
         }
         
-        /* ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★ */
+        /* ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★ */
         #resumeModal {
             position:fixed;
             top:0;
@@ -592,8 +592,15 @@
             to { opacity:1; transform:translateY(0) scale(1); }
         }
         
-        #resumeModal .resume-content .resume-icon { font-size:48px; margin-bottom:8px; }
-        #resumeModal .resume-content h2 { color:#bb86fc; font-size:18px; margin-bottom:4px; }
+        #resumeModal .resume-content .resume-icon {
+            font-size:48px;
+            margin-bottom:8px;
+        }
+        #resumeModal .resume-content h2 {
+            color:#bb86fc;
+            font-size:18px;
+            margin-bottom:4px;
+        }
         #resumeModal .resume-content .route-name {
             color:#eee;
             font-size:16px;
@@ -608,7 +615,10 @@
             color:#aaa;
             margin:6px 0;
         }
-        #resumeModal .resume-content .route-info span { color:#4CAF50; font-weight:700; }
+        #resumeModal .resume-content .route-info span {
+            color:#4CAF50;
+            font-weight:700;
+        }
         #resumeModal .resume-content .resume-actions {
             display:flex;
             gap:10px;
@@ -624,11 +634,23 @@
             cursor:pointer;
             transition:all 0.2s;
         }
-        #resumeModal .resume-content .resume-actions button:active { transform:scale(0.95); }
-        #resumeModal .resume-content .resume-actions .btn-yes { background:#4CAF50; color:white; }
-        #resumeModal .resume-content .resume-actions .btn-yes:hover { background:#43A047; }
-        #resumeModal .resume-content .resume-actions .btn-no { background:#555; color:white; }
-        #resumeModal .resume-content .resume-actions .btn-no:hover { background:#666; }
+        #resumeModal .resume-content .resume-actions button:active {
+            transform:scale(0.95);
+        }
+        #resumeModal .resume-content .resume-actions .btn-yes {
+            background:#4CAF50;
+            color:white;
+        }
+        #resumeModal .resume-content .resume-actions .btn-yes:hover {
+            background:#43A047;
+        }
+        #resumeModal .resume-content .resume-actions .btn-no {
+            background:#555;
+            color:white;
+        }
+        #resumeModal .resume-content .resume-actions .btn-no:hover {
+            background:#666;
+        }
         #resumeModal .resume-content .resume-extra {
             font-size:11px;
             color:#666;
@@ -784,7 +806,7 @@
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
-    <!-- ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★ -->
+    <!-- ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★ -->
     <div id="resumeModal">
         <div class="resume-content">
             <div class="resume-icon">🗺️</div>
@@ -802,7 +824,7 @@
         </div>
     </div>
     
-    <!-- HEADER -->
+    <!-- HEADER - ΠΑΝΩ ΜΠΑΡΑ -->
     <div class="header-wrapper" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Θέση">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
@@ -940,112 +962,19 @@
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
                 <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.2 · Άγιο Όρος</span></div>
+            <div class="help-footer"><span>Athos Maps v2.1 · Άγιο Όρος</span></div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΜΕ LOAD BALANCING & FALLBACK SERVERS
-        // ============================================================
-        
-        // ★★★ ΠΟΛΛΑΠΛΟΙ OSM SERVERS ΓΙΑ LOAD BALANCING ★★★
-        const TILE_SERVERS = [
-            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',      // Κύριος OSM
-            'https://tile.openstreetmap.de/{z}/{x}/{y}.png',      // Γερμανικός
-            'https://tile.openstreetmap.fr/{z}/{x}/{y}.png',      // Γαλλικός
-            'https://tile.openstreetmap.nl/{z}/{x}/{y}.png',      // Ολλανδικός
-            'https://tile.openstreetmap.bzh/{z}/{x}/{y}.png',     // Γαλλικός (BZH)
-        ];
-        
-        let currentServerIndex = 0;
-        let tileLoadAttempts = {};
-        const MAX_ATTEMPTS = TILE_SERVERS.length;
-        
-        // ★★★ ΕΠΙΛΟΓΗ SERVER ΜΕ ROUND-ROBIN ★★★
-        function getNextServer() {
-            const server = TILE_SERVERS[currentServerIndex];
-            currentServerIndex = (currentServerIndex + 1) % TILE_SERVERS.length;
-            return server;
-        }
-        
-        // ★★★ ΠΑΡΑΓΩΓΗ URL ΓΙΑ ΕΝΑ TILE ★★★
-        function getTileUrl(server, z, x, y) {
-            return server.replace(/\{z\}/g, z).replace(/\{x\}/g, x).replace(/\{y\}/g, y);
-        }
-        
-        // ★★★ ΦΟΡΤΩΣΗ TILE ΜΕ FALLBACK ★★★
-        function loadTileWithFallback(z, x, y, done, attempt = 0) {
-            const server = TILE_SERVERS[attempt % TILE_SERVERS.length];
-            const url = getTileUrl(server, z, x, y);
-            const img = document.createElement('img');
-            img.crossOrigin = 'anonymous';
-            
-            const tileKey = `${z}_${x}_${y}`;
-            const startTime = Date.now();
-            
-            img.onload = function() {
-                // Επιτυχία - επιστροφή
-                done(null, img);
-            };
-            
-            img.onerror = function() {
-                // Αποτυχία - δοκιμή επόμενου server
-                if (attempt < TILE_SERVERS.length - 1) {
-                    loadTileWithFallback(z, x, y, done, attempt + 1);
-                } else {
-                    // Όλοι οι servers απέτυχαν - fallback tile
-                    img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII=';
-                    done(null, img);
-                }
-            };
-            
-            // ★★★ TIMEOUT (5 δευτερόλεπτα) ★★★
-            const timeoutId = setTimeout(() => {
-                if (attempt < TILE_SERVERS.length - 1) {
-                    loadTileWithFallback(z, x, y, done, attempt + 1);
-                } else {
-                    img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII=';
-                    done(null, img);
-                }
-            }, 5000);
-            
-            img.onload = function() {
-                clearTimeout(timeoutId);
-                done(null, img);
-            };
-            
-            img.onerror = function() {
-                clearTimeout(timeoutId);
-                if (attempt < TILE_SERVERS.length - 1) {
-                    loadTileWithFallback(z, x, y, done, attempt + 1);
-                } else {
-                    img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII=';
-                    done(null, img);
-                }
-            };
-            
-            img.src = url;
-        }
-        
-        // ★★★ ΠΑΡΑΚΟΛΟΥΘΗΣΗ ΥΓΕΙΑΣ SERVER ★★★
-        function checkServerHealth(server) {
-            return new Promise((resolve) => {
-                const url = getTileUrl(server, 0, 0, 0);
-                fetch(url, { method: 'HEAD', mode: 'no-cors' })
-                    .then(() => resolve(true))
-                    .catch(() => resolve(false));
-            });
-        }
-        
-        // ============================================================
-        // ACCESS CODE & STATE
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ MODAL ΣΥΝΕΧΕΙΑΣ
         // ============================================================
         
         const ACCESS_CODE = '10101010';
         let isDownloadAccessGranted = false;
         let currentRotation = 0;
-        let pendingResumeAction = null;
+        let pendingResumeAction = null; // για αποθήκευση της ενέργειας συνέχειας
         
         const OFF_ROUTE_THRESHOLD = 100;
         const NAV_UPDATE_INTERVAL = 300;
@@ -1063,7 +992,7 @@
             'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
         };
 
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★ (συντομευμένα - βάλε όλες)
+        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1277,6 +1206,8 @@
             document.getElementById('resumeRouteName').textContent = routeData.name;
             document.getElementById('resumeDist').textContent = routeData.dist || '0.00';
             document.getElementById('resumeTime').textContent = routeData.time || '--:--';
+            
+            // Αποθήκευση των δεδομένων για χρήση στα κουμπιά
             pendingResumeAction = routeData;
             modal.classList.add('active');
         }
@@ -1286,20 +1217,31 @@
             pendingResumeAction = null;
         }
         
+        // ★★★ ΚΟΥΜΠΙΑ MODAL ★★★
         document.getElementById('resumeYes').addEventListener('click', function() {
             if (pendingResumeAction) {
                 const r = pendingResumeAction;
                 hideResumeModal();
+                
+                // Φόρτωση διαδρομής
                 if (r.url && r.url.startsWith('file:')) {
                     const gpxData = localStorage.getItem('athos_last_gpx_data');
-                    if (gpxData) loadGpxFromData(gpxData, r.name);
+                    if (gpxData) {
+                        loadGpxFromData(gpxData, r.name);
+                    }
                 } else if (r.url) {
                     loadRouteFromUrl(r.url, r.name, r.dist, r.time);
                 }
+                
+                // Ενεργοποίηση GPS και πλοήγησης
                 setTimeout(() => {
                     startGps();
-                    setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
+                    setTimeout(() => { 
+                        startNavigation(); 
+                        toggleScreenOn(); 
+                    }, 1500);
                 }, 1000);
+                
                 showToast('🔄 Συνέχεια διαδρομής: ' + r.name, '#4CAF50');
             }
         });
@@ -1307,6 +1249,7 @@
         document.getElementById('resumeNo').addEventListener('click', function() {
             hideResumeModal();
             showToast('❌ Συνέχεια ακυρώθηκε', '#888');
+            // Διαγραφή της αποθηκευμένης διαδρομής για να μην ξαναεμφανιστεί
             localStorage.removeItem('athos_last_route');
             localStorage.removeItem('athos_last_gpx_data');
         });
@@ -1317,7 +1260,9 @@
         
         function setRotation(angle) {
             currentRotation = ((angle % 360) + 360) % 360;
-            document.getElementById('map-wrapper').style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+            const wrapper = document.getElementById('map-wrapper');
+            wrapper.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+            
             const indicator = document.getElementById('rotationIndicator');
             if (Math.abs(currentRotation) > 1) {
                 indicator.textContent = `🔄 ${Math.round(currentRotation)}°`;
@@ -1325,6 +1270,7 @@
             } else {
                 indicator.classList.remove('active');
             }
+            
             localStorage.setItem('athos_rotation', currentRotation);
         }
 
@@ -1334,7 +1280,7 @@
         }
 
         // ============================================================
-        // ΑΡΧΙΚΟΠΟΙΗΣΗ ΧΑΡΤΗ - ΜΕ LOAD BALANCING
+        // ΑΡΧΙΚΟΠΟΙΗΣΗ ΧΑΡΤΗ
         // ============================================================
         
         function showToast(msg, color) {
@@ -1346,71 +1292,10 @@
         }
 
         function initMap() {
-            // ★★★ ΔΗΜΙΟΥΡΓΙΑ TILE LAYER ΜΕ LOAD BALANCING ★★★
-            const tileLayer = L.tileLayer('', {
+            state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                crossOrigin: true,
-                errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII='
+                crossOrigin: true
             });
-            
-            // ★★★ ΠΑΡΑΚΑΜΨΗ ΤΟΥ DEFAULT createTile ★★★
-            tileLayer.createTile = function(coords, done) {
-                const z = coords.z;
-                const x = coords.x;
-                const y = coords.y;
-                const key = `osm_${z}_${x}_${y}`;
-                
-                // Πρώτα έλεγχος στην IndexedDB
-                getTileFromDB(key).then(data => {
-                    if (data) {
-                        // Βρέθηκε στην τοπική βάση
-                        const img = document.createElement('img');
-                        img.src = data;
-                        img.onerror = () => {
-                            img.src = this.options.errorTileUrl;
-                            done(null, img);
-                        };
-                        img.onload = () => done(null, img);
-                        return;
-                    }
-                    
-                    // Δεν υπάρχει - φόρτωση με load balancing
-                    if (navigator.onLine && !state.isOffline) {
-                        loadTileWithFallback(z, x, y, (err, img) => {
-                            if (err || !img) {
-                                img = document.createElement('img');
-                                img.src = this.options.errorTileUrl;
-                                done(null, img);
-                                return;
-                            }
-                            
-                            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ΣΤΗ ΒΑΣΗ ★★★
-                            try {
-                                const canvas = document.createElement('canvas');
-                                canvas.width = img.naturalWidth || 256;
-                                canvas.height = img.naturalHeight || 256;
-                                const ctx = canvas.getContext('2d');
-                                ctx.drawImage(img, 0, 0);
-                                const dataUrl = canvas.toDataURL('image/png');
-                                putTileInDB(key, dataUrl, z).catch(() => {});
-                            } catch(e) {}
-                            
-                            done(null, img);
-                        });
-                    } else {
-                        // Offline ή χωρίς σύνδεση
-                        const img = document.createElement('img');
-                        img.src = this.options.errorTileUrl;
-                        done(null, img);
-                    }
-                }).catch(() => {
-                    const img = document.createElement('img');
-                    img.src = this.options.errorTileUrl;
-                    done(null, img);
-                });
-            };
-            
-            state.tileLayer = tileLayer;
             
             state.map = L.map('map', {
                 center: [40.16, 24.32],
@@ -1422,14 +1307,21 @@
             });
             
             const savedRotation = localStorage.getItem('athos_rotation');
-            if (savedRotation) setRotation(parseFloat(savedRotation));
+            if (savedRotation) {
+                setRotation(parseFloat(savedRotation));
+            }
             
-            document.getElementById('rotateBtn').addEventListener('click', function() { rotateBy(90); });
+            document.getElementById('rotateBtn').addEventListener('click', function() {
+                rotateBy(90);
+            });
+            
             document.getElementById('closeGpsNotification').addEventListener('click', function() {
                 document.getElementById('gpsNotification').classList.remove('active');
             });
             
-            state.map.on('movestart zoomstart', () => { state.lastUserInteraction = Date.now(); });
+            state.map.on('movestart zoomstart', () => {
+                state.lastUserInteraction = Date.now();
+            });
             
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible' && state.isNavigating && state.lastPosition) {
@@ -1449,22 +1341,16 @@
                     try {
                         const r = JSON.parse(savedRoute);
                         if (r.url && r.name) {
+                            // Εμφάνιση modal
                             showResumeModal(r);
-                            return;
                         }
                     } catch(e) {}
+                } else {
+                    showToast('🌐 Online - Σύρετε την μπάρα αριστερά-δεξιά', '#4CAF50');
                 }
-                showToast('🌐 Online - Σύρετε την μπάρα αριστερά-δεξιά', '#4CAF50');
             }, 800);
-            
-            // ★★★ ΕΝΗΜΕΡΩΣΗ ΓΙΑ ΤΟ LOAD BALANCING ★★★
-            showToast('⚖️ Load Balancing: ' + TILE_SERVERS.length + ' servers', '#673AB7');
         }
 
-        // ============================================================
-        // OFFLINE LAYER (με load balancing)
-        // ============================================================
-        
         function createOfflineLayer() {
             const l = L.tileLayer('', {
                 maxZoom: 18,
@@ -1475,6 +1361,7 @@
             
             l.createTile = function(c, done) {
                 const t = document.createElement('img');
+                const u = `https://tile.openstreetmap.org/${c.z}/${c.x}/${c.y}.png`;
                 const k = `osm_${c.z}_${c.x}_${c.y}`;
                 
                 getTileFromDB(k).then(data => {
@@ -1482,27 +1369,22 @@
                         t.src = data;
                         t.onerror = () => { t.src = this.options.errorTileUrl; };
                         done(null, t);
-                    } else if (navigator.onLine && !state.isOffline) {
-                        // ★★★ ΣΕ OFFLINE MODE, ΑΛΛΑ ΜΕ ΣΥΝΔΕΣΗ - ΧΡΗΣΗ LOAD BALANCING ★★★
-                        loadTileWithFallback(c.z, c.x, c.y, (err, img) => {
-                            if (err || !img) {
-                                t.src = this.options.errorTileUrl;
-                                done(null, t);
-                                return;
-                            }
-                            // Αποθήκευση για μελλοντική χρήση
-                            try {
-                                const canvas = document.createElement('canvas');
-                                canvas.width = img.naturalWidth || 256;
-                                canvas.height = img.naturalHeight || 256;
-                                const ctx = canvas.getContext('2d');
-                                ctx.drawImage(img, 0, 0);
-                                const dataUrl = canvas.toDataURL('image/png');
-                                putTileInDB(k, dataUrl, c.z).catch(() => {});
-                            } catch(e) {}
-                            t.src = img.src;
+                    } else if (navigator.onLine) {
+                        t.src = u;
+                        t.onload = () => {
+                            fetch(u).then(r => r.blob()).then(b => {
+                                const rd = new FileReader();
+                                rd.onload = function(e) {
+                                    putTileInDB(k, e.target.result, c.z).catch(() => {});
+                                };
+                                rd.readAsDataURL(b);
+                            }).catch(() => {});
                             done(null, t);
-                        });
+                        };
+                        t.onerror = () => {
+                            t.src = this.options.errorTileUrl;
+                            done(null, t);
+                        };
                     } else {
                         t.src = this.options.errorTileUrl;
                         done(null, t);
@@ -1516,10 +1398,6 @@
             return l;
         }
 
-        // ============================================================
-        // INDEXEDDB
-        // ============================================================
-        
         function openDB() {
             return new Promise((r, j) => {
                 if (state.db) { r(state.db); return; }
@@ -1576,7 +1454,7 @@
         }
 
         // ============================================================
-        // GPS, NAVIGATION, ROUTES (οι υπόλοιπες συναρτήσεις)
+        // GPS
         // ============================================================
         
         function toggleGps() {
@@ -1661,6 +1539,10 @@
             }
         }
 
+        // ============================================================
+        // ΠΛΟΗΓΗΣΗ (FOLLOW)
+        // ============================================================
+        
         function toggleNavigation() {
             if (state.isNavigating) { stopNavigation(); } else { startNavigation(); }
         }
@@ -1694,7 +1576,7 @@
         }
 
         // ============================================================
-        // ROUTES (συντομευμένα)
+        // ROUTES
         // ============================================================
         
         function showRoutes() {
@@ -1709,12 +1591,15 @@
         function renderRoutes(filter) {
             const list = document.getElementById('routesList');
             let filtered = ROUTES;
+            
             if (filter) {
                 const f = filter.toLowerCase();
                 filtered = ROUTES.filter(r => r.name.toLowerCase().includes(f));
             }
+            
             document.getElementById('routeCount').textContent = filtered.length;
             let html = '', cl = '';
+            
             filtered.forEach(r => {
                 const fl = r.name.charAt(0).toUpperCase();
                 if (fl !== cl) { cl = fl; html += `<div class="letter-header">${cl}</div>`; }
@@ -1723,6 +1608,7 @@
                     <span class="rinfo">${r.dist}km | ${r.time}</span>
                 </div>`;
             });
+            
             list.innerHTML = html;
             list.querySelectorAll('.route-item').forEach(item => {
                 item.addEventListener('click', function() {
@@ -1861,6 +1747,7 @@
             const p = new DOMParser();
             const xml = p.parseFromString(x, 'text/xml');
             if (xml.querySelector('parsererror')) throw new Error('Μη έγκυρο GPX');
+            
             const r = { tracks: [] };
             xml.querySelectorAll('trk trkseg').forEach(s => {
                 const c = [];
@@ -1930,14 +1817,17 @@
 
         function checkOffRoute(lat, lng) {
             if (!state.routeGeometry || state.alertDisabledForever) return;
+            
             let min = Infinity;
             for (const c of state.routeGeometry) {
                 const d = L.latLng(lat, lng).distanceTo(L.latLng(c[1], c[0]));
                 if (d < min) min = d;
             }
+            
             const w = document.getElementById('offRouteWarning');
             const s = document.getElementById('offRouteStatus');
             const m = document.getElementById('offRouteMsg');
+            
             if (min > OFF_ROUTE_THRESHOLD) {
                 m.textContent = `⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ! (${Math.round(min)}m)`;
                 w.classList.add('active');
@@ -1955,20 +1845,24 @@
                 el.style.display = 'none';
                 return;
             }
+            
             el.style.display = 'block';
             let minDist = Infinity, closestIdx = 0;
+            
             for (let i = 0; i < state.routeGeometry.length; i++) {
                 const d = L.latLng(state.lastPosition.lat, state.lastPosition.lng).distanceTo(
                     L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
                 );
                 if (d < minDist) { minDist = d; closestIdx = i; }
             }
+            
             let doneDist = 0;
             for (let i = 1; i <= closestIdx; i++) {
                 doneDist += L.latLng(state.routeGeometry[i-1][1], state.routeGeometry[i-1][0]).distanceTo(
                     L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
                 );
             }
+            
             doneDist /= 1000;
             const remaining = Math.max(0, state.routeDistance - doneDist);
             document.getElementById('distDone').textContent = doneDist.toFixed(2);
@@ -1976,7 +1870,7 @@
         }
 
         // ============================================================
-        // SOS, SCREEN, DOWNLOAD, OFFLINE (συντομευμένα)
+        // SOS, SCREEN, DOWNLOAD, OFFLINE
         // ============================================================
         
         function openSos() {
@@ -2083,8 +1977,7 @@
             await Promise.allSettled(b.map(async ({ z, x, y, key }) => {
                 try {
                     if (await getTileFromDB(key)) return;
-                    const url = getTileUrl(TILE_SERVERS[0], z, x, y);
-                    const r = await fetch(url);
+                    const r = await fetch(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);
                     if (!r.ok) return;
                     const bl = await r.blob();
                     const rd = new FileReader();
@@ -2101,7 +1994,11 @@
 
         async function startDownload() {
             if (state.isDownloading) { showToast('⏳ Σε εξέλιξη...', '#FF9800'); return; }
-            if (!checkDownloadAccess()) { showCodeModal(); return; }
+            
+            if (!checkDownloadAccess()) {
+                showCodeModal();
+                return;
+            }
             
             const area = document.getElementById('areaSelect').value;
             
@@ -2217,67 +2114,16 @@
                 state.offlineLayer = null;
             }
             if (!state.tileLayer || !state.map.hasLayer(state.tileLayer)) {
-                // Ξαναδημιουργία με load balancing
-                const tileLayer = L.tileLayer('', {
+                state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                    crossOrigin: true,
-                    errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII='
+                    crossOrigin: true
                 });
-                tileLayer.createTile = function(coords, done) {
-                    const z = coords.z;
-                    const x = coords.x;
-                    const y = coords.y;
-                    const key = `osm_${z}_${x}_${y}`;
-                    
-                    getTileFromDB(key).then(data => {
-                        if (data) {
-                            const img = document.createElement('img');
-                            img.src = data;
-                            img.onerror = () => {
-                                img.src = this.options.errorTileUrl;
-                                done(null, img);
-                            };
-                            img.onload = () => done(null, img);
-                            return;
-                        }
-                        if (navigator.onLine && !state.isOffline) {
-                            loadTileWithFallback(z, x, y, (err, img) => {
-                                if (err || !img) {
-                                    img = document.createElement('img');
-                                    img.src = this.options.errorTileUrl;
-                                    done(null, img);
-                                    return;
-                                }
-                                try {
-                                    const canvas = document.createElement('canvas');
-                                    canvas.width = img.naturalWidth || 256;
-                                    canvas.height = img.naturalHeight || 256;
-                                    const ctx = canvas.getContext('2d');
-                                    ctx.drawImage(img, 0, 0);
-                                    const dataUrl = canvas.toDataURL('image/png');
-                                    putTileInDB(key, dataUrl, z).catch(() => {});
-                                } catch(e) {}
-                                done(null, img);
-                            });
-                        } else {
-                            const img = document.createElement('img');
-                            img.src = this.options.errorTileUrl;
-                            done(null, img);
-                        }
-                    }).catch(() => {
-                        const img = document.createElement('img');
-                        img.src = this.options.errorTileUrl;
-                        done(null, img);
-                    });
-                };
-                state.tileLayer = tileLayer;
                 state.map.addLayer(state.tileLayer);
             }
             state.isOffline = false;
             document.getElementById('offlineBtn').textContent = '📴';
             document.getElementById('offlineBtn').classList.remove('active');
             document.getElementById('statusBadge').textContent = '📡 Online';
-            showToast('🌐 Online - Load Balancing ενεργό', '#4CAF50');
         }
 
         // ============================================================
@@ -2295,9 +2141,11 @@
             document.getElementById('helpBtn').addEventListener('click', function() {
                 document.getElementById('helpModal').classList.add('active');
             });
+            
             document.getElementById('closeHelpBtn').addEventListener('click', function() {
                 document.getElementById('helpModal').classList.remove('active');
             });
+            
             document.getElementById('helpModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
@@ -2323,6 +2171,7 @@
                 const sr = localStorage.getItem('athos_last_route');
                 if (sr) {
                     const r = JSON.parse(sr);
+                    
                     if (r.url && r.url.startsWith('file:')) {
                         const gpxData = localStorage.getItem('athos_last_gpx_data');
                         if (gpxData) {
