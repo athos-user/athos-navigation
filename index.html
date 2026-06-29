@@ -32,9 +32,6 @@
             pointer-events: auto;
         }
         
-        /* ============================================================
-           HEADER - ΠΑΝΩ ΜΠΑΡΑ (ΜΕΓΑΛΥΤΕΡΑ ΕΙΚΟΝΙΔΙΑ)
-           ============================================================ */
         .header{
             position:fixed;
             top:0;
@@ -78,7 +75,6 @@
         }
         .header button:active,.header a:active{transform:scale(0.92)}
         
-        /* ★★★ ΜΕΓΑΛΥΤΕΡΑ ΕΙΚΟΝΙΔΙΑ ★★★ */
         .header button.gps-btn{background:#2196F3;font-size:18px;padding:5px 12px}
         .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 16px rgba(0,188,212,0.5)}
         .header button.nav-btn{background:#FF9800;font-size:18px;padding:5px 12px}
@@ -795,9 +791,6 @@
         }
         #helpModal .help-footer span { color:#888; }
         
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
         @media(max-width:768px){
             .header { height:50px; padding:4px 6px; gap:3px; }
             .header button, .header a { padding:4px 8px; font-size:11px; min-height:34px; height:34px; }
@@ -883,7 +876,6 @@
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
-    <!-- ★★★ HEADER - ΜΕΓΑΛΥΤΕΡΑ ΕΙΚΟΝΙΔΙΑ ★★★ -->
     <div class="header" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
@@ -1029,13 +1021,16 @@
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
                 <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.1 · Άγιο Όρος</span></div>
+            <div class="help-footer"><span>Athos Maps v2.2 · Άγιο Όρος</span></div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ v2.2
+        // - Αποθήκευση καταγραφής στο localStorage
+        // - Μπλε χρώμα για το ίχνος (αντί για κόκκινο)
+        // - Επαναφορά καταγραφής αν κλείσει η εφαρμογή
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -1065,7 +1060,7 @@
             'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
         };
 
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★
+        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★ (συντομευμένα εδώ - βάλε όλες τις διαδρομές σου)
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1290,7 +1285,7 @@
         });
 
         // ============================================================
-        // ★★★ ΚΑΤΑΓΡΑΦΗ ΔΙΑΔΡΟΜΗΣ ★★★
+        // ★★★ ΚΑΤΑΓΡΑΦΗ ΔΙΑΔΡΟΜΗΣ - ΜΕ ΑΠΟΘΗΚΕΥΣΗ ★★★
         // ============================================================
         
         function toggleRecording() {
@@ -1308,10 +1303,42 @@
         
         function startRecording() {
             isRecording = true;
-            recordedPoints = [];
-            recordedDistance = 0;
-            lastRecordedPoint = null;
-            recordStartTime = Date.now();
+            
+            // ★★★ ΦΟΡΤΩΣΗ ΑΠΟΘΗΚΕΥΜΕΝΩΝ ΣΗΜΕΙΩΝ ★★★
+            const saved = localStorage.getItem('athos_recorded_points');
+            const savedTime = localStorage.getItem('athos_record_start_time');
+            
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.length > 0) {
+                        recordedPoints = parsed;
+                        lastRecordedPoint = recordedPoints[recordedPoints.length - 1];
+                        recordedDistance = localStorage.getItem('athos_recorded_distance') ? 
+                            parseFloat(localStorage.getItem('athos_recorded_distance')) : 0;
+                        recordStartTime = savedTime ? parseInt(savedTime) : Date.now();
+                        // Επαναφορά της γραμμής
+                        updateRecordedLine();
+                        // Ενημέρωση οθόνης
+                        document.getElementById('distDisplay').textContent = (recordedDistance / 1000).toFixed(2);
+                        document.getElementById('timeDisplay').textContent = formatRecordTime();
+                        const badge = document.getElementById('cacheBadge');
+                        badge.textContent = '🔴 ' + recordedPoints.length;
+                        badge.className = 'badge recording';
+                        showToast('🔄 Συνέχεια καταγραφής (' + recordedPoints.length + ' σημεία)', '#4CAF50');
+                    }
+                } catch(e) {}
+            }
+            
+            if (recordedPoints.length === 0) {
+                recordedPoints = [];
+                recordedDistance = 0;
+                lastRecordedPoint = null;
+                recordStartTime = Date.now();
+                if (state.lastPosition) {
+                    addRecordPoint(state.lastPosition.lat, state.lastPosition.lng);
+                }
+            }
             
             const btn = document.getElementById('recordBtn');
             btn.textContent = '⏹️';
@@ -1320,15 +1347,7 @@
             
             document.getElementById('recordNotification').classList.add('active');
             
-            const badge = document.getElementById('cacheBadge');
-            badge.textContent = '🔴 0';
-            badge.className = 'badge recording';
-            
-            if (state.lastPosition) {
-                addRecordPoint(state.lastPosition.lat, state.lastPosition.lng);
-            }
-            
-            showToast('🔴 Ξεκίνησε καταγραφή', '#f44336');
+            showToast('🔴 Καταγραφή σε εξέλιξη...', '#f44336');
         }
         
         function stopRecording() {
@@ -1340,6 +1359,11 @@
             btn.classList.add('stop');
             
             document.getElementById('recordNotification').classList.remove('active');
+            
+            // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΑΠΟΘΗΚΕΥΣΗΣ ★★★
+            localStorage.removeItem('athos_recorded_points');
+            localStorage.removeItem('athos_recorded_distance');
+            localStorage.removeItem('athos_record_start_time');
             
             const badge = document.getElementById('cacheBadge');
             updateCacheBadge();
@@ -1367,6 +1391,17 @@
                 localStorage.setItem('athos_recorded_route', JSON.stringify(coords));
                 localStorage.setItem('athos_recorded_name', fileName.replace('.gpx', ''));
             }
+            
+            // Καθαρισμός σημείων μετά την αποθήκευση
+            recordedPoints = [];
+            if (recordedLine) {
+                state.map.removeLayer(recordedLine);
+                recordedLine = null;
+            }
+            recordedDistance = 0;
+            lastRecordedPoint = null;
+            document.getElementById('distDisplay').textContent = '0.00';
+            document.getElementById('timeDisplay').textContent = '--:--';
         }
         
         function addRecordPoint(lat, lng) {
@@ -1383,6 +1418,15 @@
             
             recordedPoints.push(point);
             lastRecordedPoint = point;
+            
+            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ΣΤΟ LOCALSTORAGE ★★★
+            try {
+                localStorage.setItem('athos_recorded_points', JSON.stringify(recordedPoints));
+                localStorage.setItem('athos_recorded_distance', recordedDistance.toString());
+                if (recordStartTime) {
+                    localStorage.setItem('athos_record_start_time', recordStartTime.toString());
+                }
+            } catch(e) {}
             
             const badge = document.getElementById('cacheBadge');
             badge.textContent = '🔴 ' + recordedPoints.length;
@@ -1401,11 +1445,13 @@
             if (recordedPoints.length < 2) return;
             
             const coords = recordedPoints.map(p => [p.lat, p.lng]);
+            
+            // ★★★ ΜΠΛΕ ΧΡΩΜΑ ΓΙΑ ΤΟ ΙΧΝΟΣ (αντί για κόκκινο) ★★★
             recordedLine = L.polyline(coords, {
-                color: '#FF1744',
+                color: '#2196F3',     // Μπλε
                 weight: 4,
                 opacity: 0.9,
-                dashArray: '8, 4',
+                dashArray: '6, 3',
                 smoothFactor: 1
             }).addTo(state.map);
         }
@@ -1543,6 +1589,21 @@
             });
             
             document.getElementById('recordBtn').addEventListener('click', toggleRecording);
+            
+            // ★★★ ΑΝ ΥΠΑΡΧΕΙ ΑΠΟΘΗΚΕΥΜΕΝΗ ΚΑΤΑΓΡΑΦΗ, ΕΝΗΜΕΡΩΣΗ ★★★
+            const savedPoints = localStorage.getItem('athos_recorded_points');
+            if (savedPoints) {
+                try {
+                    const parsed = JSON.parse(savedPoints);
+                    if (parsed.length > 0) {
+                        const badge = document.getElementById('cacheBadge');
+                        badge.textContent = '🔴 ' + parsed.length;
+                        badge.className = 'badge recording';
+                        // Δεν ξεκινάμε αυτόματα την καταγραφή, αλλά δείχνουμε ότι υπάρχει
+                        showToast('📌 Υπάρχει αποθηκευμένη καταγραφή (' + parsed.length + ' σημεία)', '#2196F3');
+                    }
+                } catch(e) {}
+            }
             
             state.map.on('movestart zoomstart', () => {
                 state.lastUserInteraction = Date.now();
@@ -1700,9 +1761,8 @@
             }
             if (state.isNavigating) stopNavigation();
             
-            if (isRecording) {
-                stopRecording();
-            }
+            // ★★★ ΑΝ ΣΤΑΜΑΤΑΕΙ ΤΟ GPS, ΣΥΝΕΧΙΖΕΙ Η ΚΑΤΑΓΡΑΦΗ ΜΕ ΤΑ ΑΠΟΘΗΚΕΥΜΕΝΑ ★★★
+            // Δεν σταματάμε την καταγραφή, απλά δεν προσθέτουμε νέα σημεία
             
             state.isGpsOn = false;
             document.getElementById('gpsBtn').textContent = '📍';
@@ -1728,6 +1788,7 @@
             document.getElementById('speedDisplay').textContent = state.currentSpeedKmh > 0.3 ? `${state.currentSpeedKmh.toFixed(1)} km/h` : '';
             updateUserMarker(lat, lng);
             
+            // ★★★ ΠΡΟΣΘΗΚΗ ΣΗΜΕΙΟΥ ΣΤΗΝ ΚΑΤΑΓΡΑΦΗ ★★★
             if (isRecording) {
                 addRecordPoint(lat, lng);
             }
