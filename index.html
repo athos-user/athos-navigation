@@ -32,6 +32,9 @@
             pointer-events: auto;
         }
         
+        /* ============================================================
+           HEADER - ΜΠΑΡΑ ΠΑΝΩ
+           ============================================================ */
         .header{
             position:fixed;
             top:0;
@@ -39,151 +42,76 @@
             right:0;
             z-index:1000;
             background:rgba(13,17,23,0.95);
-            padding:4px 6px;
+            padding:5px 6px;
             display:flex;
-            flex-wrap:nowrap;
+            flex-wrap:wrap;
             gap:3px;
+            justify-content:center;
             align-items:center;
             backdrop-filter:blur(8px);
             border-bottom:2px solid #2196F3;
-            height:48px;
-            overflow-x:auto;
-            overflow-y:hidden;
-            -webkit-overflow-scrolling:touch;
-            scrollbar-width:none;
+            max-height:72px;
+            overflow:hidden
         }
-        .header::-webkit-scrollbar { display:none; }
-        
         .header button,.header a{
-            padding:4px 7px;
+            padding:5px 8px;
             font-size:10px;
             border-radius:6px;
             border:none;
             color:white;
             cursor:pointer;
-            min-height:34px;
-            height:34px;
+            min-height:32px;
             font-weight:600;
             transition:all 0.2s;
             touch-action:manipulation;
             text-decoration:none;
             display:inline-flex;
             align-items:center;
-            gap:3px;
-            white-space:nowrap;
-            flex-shrink:0;
+            gap:3px
         }
         .header button:active,.header a:active{transform:scale(0.94)}
         
-        .header button.gps-btn{background:#2196F3;font-size:14px}
+        /* ΧΡΩΜΑΤΑ ΚΟΥΜΠΙΩΝ */
+        .header button.gps-btn{background:#2196F3;font-size:16px}
         .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
-        .header button.nav-btn{background:#FF9800;font-size:14px}
+        .header button.nav-btn{background:#FF9800;font-size:16px}
         .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,0.5)}
-        .header button.route-btn{background:#8e44ad;font-size:10px}
-        .header button.load-btn{background:#4CAF50;font-size:10px}
-        .header button.clear-btn{background:#d35400;font-size:10px}
+        .header button.route-btn{background:#8e44ad;font-size:11px}
+        .header button.load-btn{background:#4CAF50;font-size:11px}
+        .header button.clear-btn{background:#d35400;font-size:11px}
         .header button.dl-btn{background:#673AB7;font-size:11px}
         .header button.offline-btn{background:#2980b9;font-size:11px}
         .header button.offline-btn.active{background:#27ae60}
-        .header button.resume-btn{background:#e91e63;font-size:10px}
-        .header button.help-btn{background:#9C27B0;font-size:14px}
-        .header button.record-btn{background:#f44336;font-size:14px}
-        .header button.record-btn.active{background:#d32f2f;box-shadow:0 0 20px rgba(244,67,54,0.6);animation:pulse-record 1.5s infinite}
-        .header button.record-btn.stop{background:#555}
-        @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 10px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
+        .header button.resume-btn{background:#e91e63;font-size:11px}
+        .header button.help-btn{background:#9C27B0;font-size:16px}
+        .header a.design-btn{background:#4CAF50;font-size:11px}
         
-        .header a.design-btn{background:#4CAF50;font-size:10px}
         .header select{
             background:rgba(255,255,255,0.1);
             color:#ddd;
-            padding:3px 5px;
+            padding:4px 5px;
             border-radius:5px;
             font-size:9px;
             border:1px solid rgba(255,255,255,0.1);
-            min-height:30px;
-            height:30px;
-            max-width:70px;
-            flex-shrink:0;
+            min-height:32px;
+            max-width:75px
         }
         .header select option{color:#333}
         .header .badge{
             font-size:7px;
             background:rgba(255,255,255,0.1);
-            padding:2px 6px;
+            padding:2px 5px;
             border-radius:5px;
             color:#aaa;
             min-height:20px;
             display:inline-flex;
-            align-items:center;
-            flex-shrink:0;
+            align-items:center
         }
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
-        .header .badge.recording{background:rgba(244,67,54,0.4);color:#f44336}
         
-        .header .more-btn {
-            background:rgba(255,255,255,0.1);
-            font-size:14px;
-            padding:4px 8px;
-            min-height:34px;
-            height:34px;
-            flex-shrink:0;
-            position:relative;
-        }
-        .header .more-btn.active {
-            background:rgba(255,255,255,0.2);
-        }
-        
-        .header-dropdown {
-            position:fixed;
-            top:48px;
-            right:6px;
-            z-index:1001;
-            background:rgba(13,17,23,0.98);
-            border:1px solid rgba(255,255,255,0.1);
-            border-radius:10px;
-            padding:6px;
-            display:none;
-            flex-direction:column;
-            gap:3px;
-            min-width:140px;
-            box-shadow:0 8px 30px rgba(0,0,0,0.8);
-            backdrop-filter:blur(10px);
-        }
-        .header-dropdown.active { display:flex; }
-        
-        .header-dropdown button,
-        .header-dropdown a,
-        .header-dropdown select {
-            padding:6px 10px;
-            font-size:11px;
-            border-radius:6px;
-            border:none;
-            color:white;
-            cursor:pointer;
-            background:rgba(255,255,255,0.05);
-            transition:all 0.2s;
-            text-decoration:none;
-            display:flex;
-            align-items:center;
-            gap:6px;
-            min-height:32px;
-            font-weight:500;
-            width:100%;
-        }
-        .header-dropdown button:hover,
-        .header-dropdown a:hover {
-            background:rgba(255,255,255,0.15);
-        }
-        .header-dropdown select {
-            background:rgba(255,255,255,0.08);
-            color:#ddd;
-        }
-        .header-dropdown .dropdown-divider {
-            height:1px;
-            background:rgba(255,255,255,0.08);
-            margin:2px 0;
-        }
-        
+        /* ============================================================
+           INFO BAR - ΚΑΤΩ ΠΑΝΕΛ (ΜΕΓΑΛΥΤΕΡΑ ΓΡΑΜΜΑΤΑ)
+           ============================================================ */
         .info-bar{
             position:fixed;
             bottom:56px;
@@ -205,18 +133,53 @@
         }
         .info-bar:active{cursor:grabbing}
         
-        .info-bar .distance{font-size:28px;font-weight:800;color:#4CAF50}
-        .info-bar .distance-label{font-size:14px;color:#888;font-weight:400}
-        .info-bar .time{font-size:24px;font-weight:700;color:#FF9800}
+        /* ★★★ ΜΕΓΑΛΥΤΕΡΑ ΓΡΑΜΜΑΤΑ ★★★ */
+        .info-bar .distance{
+            font-size:28px;
+            font-weight:800;
+            color:#4CAF50
+        }
+        .info-bar .distance-label{
+            font-size:14px;
+            color:#888;
+            font-weight:400;
+        }
+        .info-bar .time{
+            font-size:24px;
+            font-weight:700;
+            color:#FF9800
+        }
         .info-bar .time.excel{color:#FF9800}
         .info-bar .time.calculated{color:#00BCD4}
-        .info-bar .time-label{font-size:14px;color:#888;font-weight:400}
-        .info-bar .speed-kmh{font-size:14px;color:#00BCD4;font-weight:700;margin-top:3px}
-        .info-bar .dist-progress-inline{font-size:12px;color:#aaa;margin-top:3px}
+        .info-bar .time-label{
+            font-size:14px;
+            color:#888;
+            font-weight:400;
+        }
+        .info-bar .speed-kmh{
+            font-size:14px;
+            color:#00BCD4;
+            font-weight:700;
+            margin-top:3px
+        }
+        .info-bar .dist-progress-inline{
+            font-size:12px;
+            color:#aaa;
+            margin-top:3px
+        }
         .info-bar .dist-progress-inline span{color:#4CAF50;font-weight:700}
         .info-bar .dist-progress-inline .remaining{color:#FF9800}
-        .info-bar .status{font-size:11px;color:#aaa;margin-top:4px}
-        .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:13px}
+        .info-bar .status{
+            font-size:11px;
+            color:#aaa;
+            margin-top:4px
+        }
+        .info-bar .offroute{
+            color:#f44336;
+            font-weight:700;
+            display:none;
+            font-size:13px
+        }
         .info-bar .offroute.active{display:block}
         
         .bottom-bar{
@@ -228,72 +191,33 @@
             background:rgba(13,17,23,0.95);
             padding:6px 8px;
             display:flex;
-            gap:5px;
+            gap:6px;
             justify-content:center;
             align-items:center;
             border-top:1px solid rgba(255,255,255,0.08);
             padding-bottom:calc(6px + env(safe-area-inset-bottom));
-            flex-wrap:wrap;
+            flex-wrap:wrap
         }
         .bottom-bar button{
-            padding:6px 10px;
-            font-size:12px;
-            border-radius:6px;
+            padding:5px 10px;
+            font-size:9px;
+            border-radius:5px;
             border:none;
             cursor:pointer;
             font-weight:600;
             color:white;
-            min-height:32px;
-            touch-action:manipulation;
-            transition:all 0.2s;
-            white-space:nowrap;
+            min-height:28px;
+            touch-action:manipulation
         }
-        .bottom-bar button:active{transform:scale(0.92)}
-        .bottom-bar button.speed-btn{
-            background:rgba(255,255,255,0.08);
-            color:#888;
-            font-size:13px;
-            padding:6px 10px;
-            min-width:36px;
-        }
-        .bottom-bar button.speed-btn.active{
-            background:rgba(76,175,80,0.3);
-            color:#4CAF50
-        }
-        .bottom-bar button.screen-btn{
-            background:rgba(255,255,255,0.08);
-            color:#888;
-            font-size:14px;
-            padding:6px 12px;
-        }
-        .bottom-bar button.screen-btn.active{
-            background:rgba(26,188,156,0.3);
-            color:#1abc9c
-        }
-        .bottom-bar button.sos-bottom-btn{
-            background:#f44336;
-            font-size:16px;
-            min-width:38px;
-            min-height:34px;
-            padding:4px 10px;
-            border-radius:50%;
-        }
-        .bottom-bar button.download-bottom-btn{
-            background:#673AB7;
-            font-size:13px;
-            padding:6px 14px;
-            border-radius:6px;
-            min-height:32px;
-            font-weight:700;
-        }
-        .bottom-bar button.download-bottom-btn:active{
-            transform:scale(0.9);
-            background:#7B1FA2;
-        }
+        .bottom-bar button.speed-btn{background:rgba(255,255,255,0.08);color:#888}
+        .bottom-bar button.speed-btn.active{background:rgba(76,175,80,0.3);color:#4CAF50}
+        .bottom-bar button.screen-btn{background:rgba(255,255,255,0.08);color:#888}
+        .bottom-bar button.screen-btn.active{background:rgba(26,188,156,0.3);color:#1abc9c}
+        .bottom-bar button.sos-bottom-btn{background:#f44336;font-size:12px;min-width:36px;min-height:28px;padding:4px 8px}
         
         .offroute-warning{
             position:fixed;
-            top:52px;
+            top:76px;
             left:50%;
             transform:translateX(-50%);
             z-index:1001;
@@ -372,9 +296,12 @@
         #downloadProgress .bar{width:100%;height:3px;background:#333;border-radius:2px;margin-top:3px;overflow:hidden}
         #downloadProgress .bar .fill{height:100%;background:#4CAF50;width:0%;transition:width 0.3s}
         
+        /* ============================================================
+           ΛΙΣΤΑ ΔΙΑΔΡΟΜΩΝ
+           ============================================================ */
         #routeDropdown{
             position:fixed;
-            top:52px;
+            top:72px;
             left:0;
             right:0;
             bottom:0;
@@ -481,6 +408,9 @@
         }
         @keyframes pulse{0%{transform:scale(1);opacity:0.5}50%{transform:scale(1.6);opacity:0.1}100%{transform:scale(1);opacity:0.5}}
         
+        /* ============================================================
+           SOS
+           ============================================================ */
         #sosContainer{
             position:fixed;
             top:50%;
@@ -522,6 +452,9 @@
             font-size:11px
         }
         
+        /* ============================================================
+           CODE MODAL
+           ============================================================ */
         #codeModal{
             position:fixed;
             top:0;
@@ -568,7 +501,7 @@
         
         .status-badge{
             position:fixed;
-            top:52px;
+            top:76px;
             right:4px;
             z-index:999;
             background:rgba(0,0,0,0.8);
@@ -580,9 +513,12 @@
             pointer-events:none
         }
         
-        .leaflet-control-zoom{z-index:800!important;margin-top:52px!important}
+        .leaflet-control-zoom{z-index:800!important;margin-top:76px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
+        /* ============================================================
+           ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ
+           ============================================================ */
         .rotate-btn-fixed {
             position:fixed;
             bottom:110px;
@@ -611,7 +547,7 @@
         
         .rotation-indicator {
             position:fixed;
-            top:52px;
+            top:76px;
             left:50%;
             transform:translateX(-50%);
             z-index:1001;
@@ -627,9 +563,12 @@
         }
         .rotation-indicator.active { display:block; }
         
+        /* ============================================================
+           ΕΙΔΟΠΟΙΗΣΗ GPS
+           ============================================================ */
         .gps-notification {
             position:fixed;
-            top:52px;
+            top:76px;
             left:50%;
             transform:translateX(-50%);
             z-index:1002;
@@ -663,42 +602,9 @@
             background:rgba(255,255,255,0.4);
         }
         
-        .record-notification {
-            position:fixed;
-            top:52px;
-            left:50%;
-            transform:translateX(-50%);
-            z-index:1002;
-            background:rgba(244,67,54,0.95);
-            color:white;
-            padding:6px 16px;
-            border-radius:10px;
-            font-size:12px;
-            font-weight:600;
-            display:none;
-            box-shadow:0 4px 20px rgba(244,67,54,0.4);
-            text-align:center;
-            max-width:90%;
-            border:1px solid rgba(255,255,255,0.2);
-        }
-        .record-notification.active { display:block; }
-        .record-notification .close-notification {
-            background:rgba(255,255,255,0.2);
-            border:none;
-            color:white;
-            border-radius:50%;
-            width:20px;
-            height:20px;
-            font-size:12px;
-            cursor:pointer;
-            margin-left:8px;
-            padding:0;
-            line-height:20px;
-        }
-        .record-notification .close-notification:hover {
-            background:rgba(255,255,255,0.4);
-        }
-        
+        /* ============================================================
+           ★★★ ΠΑΡΑΘΥΡΟ ΒΟΗΘΕΙΑΣ ★★★
+           ============================================================ */
         #helpModal {
             position:fixed;
             top:0;
@@ -713,6 +619,7 @@
             padding:16px;
         }
         #helpModal.active { display:flex; }
+        
         #helpModal .help-content {
             background:rgba(13,17,23,0.98);
             border-radius:16px;
@@ -724,6 +631,7 @@
             border:2px solid #9C27B0;
             color:#eee;
         }
+        
         #helpModal .help-title {
             display:flex;
             justify-content:space-between;
@@ -732,7 +640,11 @@
             padding-bottom:8px;
             border-bottom:2px solid rgba(156,39,176,0.3);
         }
-        #helpModal .help-title h2 { color:#bb86fc; font-size:18px; font-weight:700; }
+        #helpModal .help-title h2 {
+            color:#bb86fc;
+            font-size:18px;
+            font-weight:700;
+        }
         #helpModal .help-title button {
             background:#555;
             color:white;
@@ -744,7 +656,11 @@
             font-size:16px;
             transition:all 0.2s;
         }
-        #helpModal .help-title button:hover { background:#777; transform:scale(1.1); }
+        #helpModal .help-title button:hover {
+            background:#777;
+            transform:scale(1.1);
+        }
+        
         #helpModal .help-intro {
             font-size:12px;
             color:#aaa;
@@ -755,7 +671,10 @@
             padding:8px 12px;
             border-radius:8px;
         }
-        #helpModal .help-section { margin-bottom:10px; }
+        
+        #helpModal .help-section {
+            margin-bottom:10px;
+        }
         #helpModal .help-section-title {
             font-size:13px;
             font-weight:700;
@@ -763,6 +682,7 @@
             margin-bottom:6px;
             padding-left:4px;
         }
+        
         #helpModal .help-item {
             display:flex;
             align-items:center;
@@ -775,10 +695,25 @@
             margin-bottom:4px;
             transition:background 0.2s;
         }
-        #helpModal .help-item:hover { background:rgba(255,255,255,0.08); }
-        #helpModal .help-icon { font-size:20px; width:34px; text-align:center; flex-shrink:0; }
-        #helpModal .help-item strong { color:#bb86fc; }
-        #helpModal .help-item .help-desc { color:#ccc; font-size:11px; }
+        #helpModal .help-item:hover {
+            background:rgba(255,255,255,0.08);
+        }
+        
+        #helpModal .help-icon {
+            font-size:20px;
+            width:34px;
+            text-align:center;
+            flex-shrink:0;
+        }
+        
+        #helpModal .help-item strong {
+            color:#bb86fc;
+        }
+        #helpModal .help-item .help-desc {
+            color:#ccc;
+            font-size:11px;
+        }
+        
         #helpModal .help-footer {
             margin-top:12px;
             padding-top:10px;
@@ -787,52 +722,41 @@
             font-size:10px;
             color:#666;
         }
-        #helpModal .help-footer span { color:#888; }
+        #helpModal .help-footer span {
+            color:#888;
+        }
         
-        @media(max-width:768px){
-            .header { height:44px; padding:3px 4px; gap:2px; }
-            .header button, .header a { padding:3px 5px; font-size:9px; min-height:30px; height:30px; }
-            .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn { font-size:12px; padding:3px 5px; }
-            .header select { font-size:8px; min-height:26px; height:26px; max-width:55px; }
-            .header .badge { font-size:6px; padding:1px 4px; min-height:16px; }
-            .header .more-btn { font-size:12px; padding:3px 6px; min-height:30px; height:30px; }
-            .header-dropdown { top:44px; right:4px; min-width:130px; }
-            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:10px; padding:5px 8px; min-height:28px; }
-            .info-bar{ padding:6px 10px; bottom:48px; min-width:140px; }
-            .info-bar .distance{font-size:20px}
-            .info-bar .time{font-size:16px}
-            .info-bar .distance-label,.info-bar .time-label{font-size:10px}
-            .info-bar .speed-kmh{font-size:11px}
-            .info-bar .status{font-size:9px}
-            .bottom-bar{ padding:4px 4px; gap:3px; }
-            .bottom-bar button{ font-size:10px; padding:4px 6px; min-height:26px; }
-            .bottom-bar button.sos-bottom-btn{ font-size:14px; min-width:32px; min-height:28px; padding:3px 6px; }
-            .bottom-bar button.speed-btn{ font-size:11px; padding:4px 6px; min-width:28px; }
-            .bottom-bar button.screen-btn{ font-size:12px; padding:4px 8px; }
-            .bottom-bar button.download-bottom-btn{ font-size:11px; padding:4px 10px; min-height:26px; }
-            .offroute-warning{top:48px}
-            .status-badge{top:48px}
-            .rotation-indicator{top:48px}
-            .gps-notification{top:48px;font-size:10px;padding:4px 12px}
-            .record-notification{top:48px;font-size:10px;padding:4px 12px}
-            .leaflet-control-zoom{margin-top:48px!important}
-            #routeDropdown{top:48px}
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media(max-width:600px){
+            .header{padding:4px 5px;gap:2px;max-height:64px}
+            .header button,.header a{padding:4px 6px;font-size:9px;min-height:28px;min-width:26px}
+            .header button.gps-btn,.header button.nav-btn,.header button.help-btn{font-size:14px}
+            .header select{font-size:8px;min-height:28px;max-width:60px}
+            
+            .info-bar{padding:8px 12px;bottom:48px;min-width:150px}
+            .info-bar .distance{font-size:22px}
+            .info-bar .time{font-size:18px}
+            .info-bar .distance-label,.info-bar .time-label{font-size:11px}
+            .info-bar .speed-kmh{font-size:12px}
+            .info-bar .status{font-size:10px}
+            
+            #routeDropdown .dd-content{padding:10px 12px}
+            #routeDropdown .route-item{font-size:12px;padding:6px 7px;min-height:36px}
+            #routeDropdown .route-item .rname{font-size:12px}
+            #routeDropdown .letter-header{font-size:14px}
+            
+            .blog-link{bottom:44px;right:6px;width:28px;height:28px}
+            .blog-link img{width:22px;height:22px}
+            .rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}
+            .rotation-indicator{font-size:9px;padding:2px 8px;top:72px}
+            .gps-notification{font-size:10px;padding:4px 12px;top:72px}
+            
             #helpModal .help-content { padding:14px; }
             #helpModal .help-item { font-size:11px; padding:6px 8px; }
             #helpModal .help-icon { font-size:17px; width:28px; }
             #helpModal .help-title h2 { font-size:15px; }
-        }
-        
-        @media(max-width:400px){
-            .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn { font-size:10px; padding:2px 4px; min-height:26px; height:26px; }
-            .header button.route-btn, .header button.dl-btn, .header button.offline-btn { font-size:8px; padding:2px 4px; min-height:26px; height:26px; }
-            .header .more-btn { font-size:10px; padding:2px 5px; min-height:26px; height:26px; }
-            .header select { font-size:7px; min-height:24px; height:24px; max-width:45px; }
-            .header .badge { font-size:5px; padding:1px 3px; min-height:14px; }
-            .header-dropdown { min-width:110px; }
-            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:9px; padding:4px 6px; min-height:24px; }
         }
     </style>
 </head>
@@ -841,63 +765,60 @@
         <div id="map"></div>
     </div>
     
+    <!-- ΕΝΔΕΙΞΗ ΓΩΝΙΑΣ ΠΕΡΙΣΤΡΟΦΗΣ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     
+    <!-- ΕΙΔΟΠΟΙΗΣΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗΣ GPS -->
     <div class="gps-notification" id="gpsNotification">
-        <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span>
+        <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν για να δείτε τη διαδρομή</span>
         <button class="close-notification" id="closeGpsNotification">✕</button>
     </div>
     
-    <div class="record-notification" id="recordNotification">
-        <span>🔴 Καταγραφή σε εξέλιξη...</span>
-        <button class="close-notification" id="closeRecordNotification">✕</button>
-    </div>
+    <!-- ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ -->
+    <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή χάρτη κατά 90°">🔄</button>
     
-    <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
-    
+    <!-- BLOG LINK -->
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
-    <div class="header" id="mainHeader">
-        <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍</button>
-        <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
-        <button id="recordBtn" class="record-btn" title="Καταγραφή">🔴</button>
-        <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
-        <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
-        <button id="offlineBtn" class="offline-btn" title="Offline">📴</button>
-        <button class="more-btn" id="moreBtn" title="Περισσότερες επιλογές">☰</button>
-        <span class="badge" id="cacheBadge" title="Αποθηκευμένα tiles">0</span>
-        <input type="file" id="fileInput" accept=".gpx" style="display:none">
-    </div>
-    
-    <div class="header-dropdown" id="headerDropdown">
-        <select id="areaSelect" title="Επιλογή περιοχής">
+    <!-- HEADER - ΠΑΝΩ ΜΠΑΡΑ -->
+    <div class="header">
+        <button id="gpsBtn" class="gps-btn" title="Εμφάνιση της τρέχουσας θέσης σας στον χάρτη">📍 Θέση</button>
+        <button id="navBtn" class="nav-btn" title="Ο χάρτης ακολουθεί αυτόματα την κίνησή σας">🧭 Follow</button>
+        <button id="routesBtn" class="route-btn" title="Εμφάνιση λίστας με 140+ διαδρομές στο Άγιο Όρος">🗺️ Διαδρομές</button>
+        <button id="loadBtn" class="load-btn" title="Φόρτωση GPX αρχείου από τον υπολογιστή σας">📂 GPX</button>
+        <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός της τρέχουσας διαδρομής από τον χάρτη">🗑️ Καθαρισμός</button>
+        <button id="resumeBtn" class="resume-btn" title="Συνέχεια της τελευταίας διαδρομής που είχατε ανοίξει">🔄 Συνέχεια</button>
+        <button id="helpBtn" class="help-btn" title="Βοήθεια - Πληροφορίες για τις λειτουργίες της εφαρμογής">❓ Βοήθεια</button>
+        <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση νέων διαδρομών">✏️ Σχεδίαση</a>
+        <select id="areaSelect" title="Επιλογή περιοχής για λήψη χαρτών">
             <option value="athos">🏔️ Άγιο Όρος</option>
             <option value="patras">🏙️ Πάτρα</option>
             <option value="athens">🏛️ Αθήνα</option>
             <option value="thessaloniki">🌊 Θεσ/νίκη</option>
             <option value="my_area">📍 Εδώ</option>
         </select>
-        <div class="dropdown-divider"></div>
-        <button id="loadBtn" class="load-btn" title="Φόρτωση GPX">📂 GPX</button>
-        <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός">🗑️ Καθαρισμός</button>
-        <button id="resumeBtn" class="resume-btn" title="Συνέχεια">🔄 Συνέχεια</button>
-        <button id="helpBtn" class="help-btn" title="Βοήθεια">❓ Βοήθεια</button>
-        <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση">✏️ Σχεδίαση</a>
+        <button id="downloadBtn" class="dl-btn" title="Λήψη χαρτών για offline χρήση (απαιτείται κωδικός)">📥 Λήψη</button>
+        <button id="offlineBtn" class="offline-btn" title="Εναλλαγή μεταξύ Online και Offline λειτουργίας">📴 Offline</button>
+        <span class="badge" id="cacheBadge" title="Αριθμός αποθηκευμένων tiles για offline χρήση">0</span>
+        <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
 
+    <!-- ΠΡΟΕΙΔΟΠΟΙΗΣΗ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ -->
     <div class="offroute-warning" id="offRouteWarning">
         <span id="offRouteMsg">⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ!</span>
         <button id="dismissAlertBtn">🔇 ΠΡΟΣΩΡΙΝΗ ΣΙΓΑΣΗ</button>
         <button id="disableAlertForeverBtn" class="disable-forever-btn">🚫 ΟΡΙΣΤΙΚΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</button>
     </div>
 
+    <!-- ΠΡΟΟΔΟΣ ΛΗΨΗΣ -->
     <div id="downloadProgress">
         <span id="progressText">Λήψη...</span>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
 
+    <!-- INFO BAR - ΚΑΤΩ ΠΑΝΕΛ ΜΕ ΣΤΟΙΧΕΙΑ ΔΙΑΔΡΟΜΗΣ -->
     <div class="info-bar" id="infoBar">
         <div>
             <span class="distance" id="distDisplay">0.00</span>
@@ -910,36 +831,39 @@
         <div class="dist-progress-inline" id="distProgressInline" style="display:none">
             📍 Διανυθέντα: <span id="distDone">0.00</span> χλμ | Υπολείπονται: <span id="distRemaining">0.00</span> χλμ
         </div>
-        <div class="status" id="statusDisplay">Πατήστε 📍 για GPS</div>
+        <div class="status" id="statusDisplay">Πατήστε 📍 Θέση για GPS</div>
         <div class="offroute" id="offRouteStatus">⚠️ Εκτός διαδρομής!</div>
     </div>
 
+    <!-- BOTTOM BAR - ΚΑΤΩ ΜΠΑΡΑ -->
     <div class="bottom-bar">
-        <button id="sosBottomBtn" class="sos-bottom-btn" title="SOS">🆘</button>
-        <button class="speed-btn" data-speed="3" title="Αργή (3 χλμ/ώρα)">🐢 3</button>
-        <button class="speed-btn active" data-speed="4" title="Μέτρια (4 χλμ/ώρα)">🚶 4</button>
-        <button class="speed-btn" data-speed="5" title="Γρήγορη (5 χλμ/ώρα)">🏃 5</button>
-        <button id="screenBtn" class="screen-btn" title="Οθόνη ON">🔆 Οθόνη</button>
-        <button id="downloadBottomBtn" class="download-bottom-btn" title="Λήψη χαρτών">📥 Λήψη</button>
+        <button id="sosBottomBtn" class="sos-bottom-btn" title="SOS - Μήνυμα έκτακτης ανάγκης">🆘 SOS</button>
+        <button class="speed-btn" data-speed="3" title="Αργή ταχύτητα (3 χλμ/ώρα)">🐢 3</button>
+        <button class="speed-btn active" data-speed="4" title="Μέτρια ταχύτητα (4 χλμ/ώρα)">🚶 4</button>
+        <button class="speed-btn" data-speed="5" title="Γρήγορη ταχύτητα (5 χλμ/ώρα)">🏃 5</button>
+        <button id="screenBtn" class="screen-btn" title="Διατήρηση οθόνης αναμμένης">🔆 Οθόνη ON</button>
     </div>
 
+    <!-- STATUS BADGE -->
     <div class="status-badge" id="statusBadge">📡 Online</div>
 
+    <!-- ΛΙΣΤΑ ΔΙΑΔΡΟΜΩΝ -->
     <div id="routeDropdown">
         <div class="dd-content">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
                 <h3>🗺️ Διαδρομές (<span id="routeCount">0</span>)</h3>
                 <button id="closeRoutesBtn" style="background:#555;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:11px;">✕</button>
             </div>
-            <input type="text" id="routeSearch" class="route-search" placeholder="🔍 Αναζήτηση...">
+            <input type="text" id="routeSearch" class="route-search" placeholder="🔍 Αναζήτηση διαδρομής...">
             <div id="routesList"></div>
             <button class="close-routes" id="closeRoutesBtn2">✕ Κλείσιμο</button>
         </div>
     </div>
 
+    <!-- SOS -->
     <div id="sosContainer">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:2px solid #f44336;padding-bottom:4px">
-            <span style="font-size:14px;font-weight:700;color:#f44336;">🆘 SOS</span>
+            <span style="font-size:14px;font-weight:700;color:#f44336;">🆘 SOS - Έκτακτη Ανάγκη</span>
             <button id="closeSosBtn" style="background:#555;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:12px;padding:0;line-height:24px;">✕</button>
         </div>
         <div style="font-size:9px;margin-bottom:6px;background:rgba(244,67,54,0.15);padding:5px;border-radius:5px;border-left:3px solid #f44336;">📍 <span id="sosCoords">Φόρτωση...</span></div>
@@ -958,9 +882,10 @@
         <button id="sosCall112" style="background:#f44336;">📞 112</button>
     </div>
 
+    <!-- CODE MODAL -->
     <div id="codeModal">
         <div class="modal-content">
-            <h3>🔐 Κωδικός Λήψης</h3>
+            <h3>🔐 Κωδικός Λήψης Χαρτών</h3>
             <p>Εισαγάγετε τον κωδικό για να κατεβάσετε χάρτες</p>
             <input type="password" id="codeInput" placeholder="••••••••" maxlength="20" autocomplete="off">
             <div class="error" id="codeError">❌ Λάθος κωδικός</div>
@@ -971,40 +896,147 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    ★★★ ΠΑΡΑΘΥΡΟ ΒΟΗΘΕΙΑΣ ★★★
+    ============================================================ -->
     <div id="helpModal">
         <div class="help-content">
             <div class="help-title">
-                <h2>❓ Βοήθεια</h2>
+                <h2>❓ Βοήθεια - Athos Maps</h2>
                 <button id="closeHelpBtn">✕</button>
             </div>
-            <div class="help-intro">Όλες οι λειτουργίες του Athos Maps</div>
-            <div class="help-section">
-                <div class="help-section-title">📍 Πλοήγηση</div>
-                <div class="help-item"><span class="help-icon">📍</span><div><strong>Θέση</strong><div class="help-desc">Εμφανίζει την τρέχουσα θέση σας</div></div></div>
-                <div class="help-item"><span class="help-icon">🧭</span><div><strong>Follow</strong><div class="help-desc">Ο χάρτης ακολουθεί την κίνησή σας</div></div></div>
-                <div class="help-item"><span class="help-icon">🔴</span><div><strong>Εγγραφή</strong><div class="help-desc">Καταγραφή διαδρομής → αποθήκευση GPX</div></div></div>
+            
+            <div class="help-intro">
+                Καλώς ήρθατε στο Athos Maps! Παρακάτω θα βρείτε όλες τις λειτουργίες της εφαρμογής.
             </div>
+            
+            <!-- ΚΥΡΙΕΣ ΛΕΙΤΟΥΡΓΙΕΣ -->
+            <div class="help-section">
+                <div class="help-section-title">📍 Πλοήγηση &amp; Θέση</div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📍</span>
+                    <div>
+                        <strong>Θέση</strong>
+                        <div class="help-desc">Εμφανίζει την τρέχουσα θέση σας στον χάρτη με ένα βέλος που δείχνει την κατεύθυνσή σας.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🧭</span>
+                    <div>
+                        <strong>Follow (Πλοήγηση)</strong>
+                        <div class="help-desc">Ο χάρτης ακολουθεί αυτόματα την κίνησή σας. Ιδανικό όταν περπατάτε ή οδηγείτε.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ΔΙΑΔΡΟΜΕΣ -->
             <div class="help-section">
                 <div class="help-section-title">🗺️ Διαδρομές</div>
-                <div class="help-item"><span class="help-icon">🗺️</span><div><strong>Διαδρομές</strong><div class="help-desc">140+ έτοιμες διαδρομές</div></div></div>
-                <div class="help-item"><span class="help-icon">📂</span><div><strong>GPX</strong><div class="help-desc">Φόρτωση δικού σας GPX</div></div></div>
-                <div class="help-item"><span class="help-icon">🗑️</span><div><strong>Καθαρισμός</strong><div class="help-desc">Αφαίρεση διαδρομής</div></div></div>
-                <div class="help-item"><span class="help-icon">🔄</span><div><strong>Συνέχεια</strong><div class="help-desc">Συνέχεια τελευταίας διαδρομής</div></div></div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🗺️</span>
+                    <div>
+                        <strong>Διαδρομές</strong>
+                        <div class="help-desc">Επιλέξτε από 140+ διαδρομές στο Άγιο Όρος. Η διαδρομή εμφανίζεται με κόκκινη γραμμή.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📂</span>
+                    <div>
+                        <strong>GPX</strong>
+                        <div class="help-desc">Φορτώστε το δικό σας GPX αρχείο από τον υπολογιστή ή το κινητό σας.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🗑️</span>
+                    <div>
+                        <strong>Καθαρισμός</strong>
+                        <div class="help-desc">Αφαιρεί την τρέχουσα διαδρομή από τον χάρτη.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🔄</span>
+                    <div>
+                        <strong>Συνέχεια</strong>
+                        <div class="help-desc">Συνεχίζει την τελευταία διαδρομή που είχατε ανοίξει, ακόμα και GPX αρχεία.</div>
+                    </div>
+                </div>
             </div>
+            
+            <!-- ΧΑΡΤΗΣ -->
             <div class="help-section">
                 <div class="help-section-title">🗺️ Χάρτης</div>
-                <div class="help-item"><span class="help-icon">🔄</span><div><strong>Περιστροφή</strong><div class="help-desc">90° περιστροφή</div></div></div>
-                <div class="help-item"><span class="help-icon">📥</span><div><strong>Λήψη</strong><div class="help-desc">Offline χάρτες</div></div></div>
-                <div class="help-item"><span class="help-icon">📴</span><div><strong>Offline</strong><div class="help-desc">Λειτουργία χωρίς internet</div></div></div>
-                <div class="help-item"><span class="help-icon">🔆</span><div><strong>Οθόνη ON</strong><div class="help-desc">Κρατά την οθόνη αναμμένη</div></div></div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🔄</span>
+                    <div>
+                        <strong>Περιστροφή</strong>
+                        <div class="help-desc">Περιστρέφει τον χάρτη κατά 90° δεξιόστροφα. Χρήσιμο για προσανατολισμό.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📥</span>
+                    <div>
+                        <strong>Λήψη Χαρτών</strong>
+                        <div class="help-desc">Κατεβάζει χάρτες για offline χρήση. <strong>Απαιτείται κωδικός (10101010)</strong></div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">📴</span>
+                    <div>
+                        <strong>Offline</strong>
+                        <div class="help-desc">Ενεργοποιεί την offline λειτουργία. Οι χάρτες φορτώνονται από την τοπική αποθήκευση.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🔆</span>
+                    <div>
+                        <strong>Οθόνη ON</strong>
+                        <div class="help-desc">Διατηρεί την οθόνη αναμμένη. Χρήσιμο κατά την πλοήγηση.</div>
+                    </div>
+                </div>
             </div>
+            
+            <!-- ΑΛΛΑ -->
             <div class="help-section">
-                <div class="help-section-title">🆘 Άλλες</div>
-                <div class="help-item"><span class="help-icon">🆘</span><div><strong>SOS</strong><div class="help-desc">Μήνυμα έκτακτης ανάγκης</div></div></div>
-                <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
-                <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
+                <div class="help-section-title">🆘 Άλλες Λειτουργίες</div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🆘</span>
+                    <div>
+                        <strong>SOS</strong>
+                        <div class="help-desc">Στείλτε μήνυμα έκτακτης ανάγκης με τις συντεταγμένες σας μέσω SMS ή Email.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">🐢🚶🏃</span>
+                    <div>
+                        <strong>Ταχύτητα</strong>
+                        <div class="help-desc">Αργή (3 χλμ/ώρα), Μέτρια (4 χλμ/ώρα) ή Γρήγορη (5 χλμ/ώρα) - επηρεάζει την εκτίμηση χρόνου.</div>
+                    </div>
+                </div>
+                
+                <div class="help-item">
+                    <span class="help-icon">✏️</span>
+                    <div>
+                        <strong>Σχεδίαση</strong>
+                        <div class="help-desc">Μεταφέρεστε σε εργαλείο σχεδίασης νέων διαδρομών.</div>
+                    </div>
+                </div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.1 · Άγιο Όρος</span></div>
+            
+            <div class="help-footer">
+                <span>Athos Maps v2.0 · Άγιο Όρος · Πατήστε ✕ ή έξω από το παράθυρο για κλείσιμο</span>
+            </div>
         </div>
     </div>
 
@@ -1016,13 +1048,6 @@
         const ACCESS_CODE = '10101010';
         let isDownloadAccessGranted = false;
         let currentRotation = 0;
-        
-        let isRecording = false;
-        let recordedPoints = [];
-        let recordedLine = null;
-        let recordedDistance = 0;
-        let lastRecordedPoint = null;
-        let recordStartTime = null;
         
         const OFF_ROUTE_THRESHOLD = 100;
         const NAV_UPDATE_INTERVAL = 300;
@@ -1040,7 +1065,9 @@
             'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
         };
 
+        // ============================================================
         // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★
+        // ============================================================
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1246,186 +1273,7 @@
         }
 
         // ============================================================
-        // DROPDOWN MENU
-        // ============================================================
-        
-        document.getElementById('moreBtn').addEventListener('click', function(e) {
-            e.stopPropagation();
-            document.getElementById('headerDropdown').classList.toggle('active');
-            this.classList.toggle('active');
-        });
-        
-        document.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('headerDropdown');
-            const moreBtn = document.getElementById('moreBtn');
-            if (!dropdown.contains(e.target) && e.target !== moreBtn) {
-                dropdown.classList.remove('active');
-                moreBtn.classList.remove('active');
-            }
-        });
-
-        // ============================================================
-        // ★★★ ΚΑΤΑΓΡΑΦΗ ΔΙΑΔΡΟΜΗΣ ★★★
-        // ============================================================
-        
-        function toggleRecording() {
-            if (!state.isGpsOn) {
-                showToast('⚠️ Πρώτα ενεργοποιήστε το GPS (📍 Θέση)', '#FF9800');
-                return;
-            }
-            
-            if (isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
-        }
-        
-        function startRecording() {
-            isRecording = true;
-            recordedPoints = [];
-            recordedDistance = 0;
-            lastRecordedPoint = null;
-            recordStartTime = Date.now();
-            
-            const btn = document.getElementById('recordBtn');
-            btn.textContent = '⏹️';
-            btn.classList.add('active');
-            btn.classList.remove('stop');
-            
-            document.getElementById('recordNotification').classList.add('active');
-            
-            const badge = document.getElementById('cacheBadge');
-            badge.textContent = '🔴 0';
-            badge.className = 'badge recording';
-            
-            if (state.lastPosition) {
-                addRecordPoint(state.lastPosition.lat, state.lastPosition.lng);
-            }
-            
-            showToast('🔴 Ξεκίνησε καταγραφή', '#f44336');
-        }
-        
-        function stopRecording() {
-            isRecording = false;
-            
-            const btn = document.getElementById('recordBtn');
-            btn.textContent = '🔴';
-            btn.classList.remove('active');
-            btn.classList.add('stop');
-            
-            document.getElementById('recordNotification').classList.remove('active');
-            
-            const badge = document.getElementById('cacheBadge');
-            updateCacheBadge();
-            
-            if (recordedPoints.length < 3) {
-                showToast('⚠️ Πολύ λίγα σημεία - δεν αποθηκεύτηκε', '#FF9800');
-                if (recordedLine) {
-                    state.map.removeLayer(recordedLine);
-                    recordedLine = null;
-                }
-                recordedPoints = [];
-                return;
-            }
-            
-            const gpxContent = generateGPX(recordedPoints);
-            const fileName = 'διαδρομή_' + new Date().toISOString().slice(0,10) + '_' + 
-                new Date().toTimeString().slice(0,5).replace(':', '-') + '.gpx';
-            
-            downloadGPX(gpxContent, fileName);
-            
-            showToast('✅ Καταγραφή αποθηκεύτηκε', '#4CAF50');
-            
-            if (recordedPoints.length > 0) {
-                const coords = recordedPoints.map(p => [p.lat, p.lng]);
-                localStorage.setItem('athos_recorded_route', JSON.stringify(coords));
-                localStorage.setItem('athos_recorded_name', fileName.replace('.gpx', ''));
-            }
-        }
-        
-        function addRecordPoint(lat, lng) {
-            if (!isRecording) return;
-            
-            const point = { lat, lng, time: Date.now() };
-            
-            if (lastRecordedPoint) {
-                const d = L.latLng(lastRecordedPoint.lat, lastRecordedPoint.lng)
-                    .distanceTo(L.latLng(lat, lng));
-                if (d < 2) return;
-                recordedDistance += d;
-            }
-            
-            recordedPoints.push(point);
-            lastRecordedPoint = point;
-            
-            const badge = document.getElementById('cacheBadge');
-            badge.textContent = '🔴 ' + recordedPoints.length;
-            
-            updateRecordedLine();
-            
-            document.getElementById('distDisplay').textContent = (recordedDistance / 1000).toFixed(2);
-            document.getElementById('timeDisplay').textContent = formatRecordTime();
-        }
-        
-        function updateRecordedLine() {
-            if (recordedLine) {
-                state.map.removeLayer(recordedLine);
-            }
-            
-            if (recordedPoints.length < 2) return;
-            
-            const coords = recordedPoints.map(p => [p.lat, p.lng]);
-            recordedLine = L.polyline(coords, {
-                color: '#FF1744',
-                weight: 4,
-                opacity: 0.9,
-                dashArray: '8, 4',
-                smoothFactor: 1
-            }).addTo(state.map);
-        }
-        
-        function formatRecordTime() {
-            if (!recordStartTime) return '00:00';
-            const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
-            const m = Math.floor(elapsed / 60);
-            const s = elapsed % 60;
-            return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-        }
-        
-        function generateGPX(points) {
-            let gpx = '<?xml version="1.0" encoding="UTF-8"?>\n';
-            gpx += '<gpx version="1.1" creator="Athos Maps" xmlns="http://www.topografix.com/GPX/1/1">\n';
-            gpx += '  <trk>\n';
-            gpx += '    <name>Καταγραφή ' + new Date().toLocaleString('el-GR') + '</name>\n';
-            gpx += '    <trkseg>\n';
-            
-            for (const p of points) {
-                gpx += '      <trkpt lat="' + p.lat.toFixed(6) + '" lon="' + p.lng.toFixed(6) + '">\n';
-                gpx += '        <time>' + new Date(p.time).toISOString() + '</time>\n';
-                gpx += '      </trkpt>\n';
-            }
-            
-            gpx += '    </trkseg>\n';
-            gpx += '  </trk>\n';
-            gpx += '</gpx>';
-            return gpx;
-        }
-        
-        function downloadGPX(content, fileName) {
-            const blob = new Blob([content], { type: 'application/gpx+xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // ============================================================
-        // ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS
+        // ★★★ ΑΥΤΟΜΑΤΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ GPS ΚΑΙ FOLLOW ★★★
         // ============================================================
         
         function disableGpsAndFollow() {
@@ -1513,12 +1361,6 @@
                 document.getElementById('gpsNotification').classList.remove('active');
             });
             
-            document.getElementById('closeRecordNotification').addEventListener('click', function() {
-                document.getElementById('recordNotification').classList.remove('active');
-            });
-            
-            document.getElementById('recordBtn').addEventListener('click', toggleRecording);
-            
             state.map.on('movestart zoomstart', () => {
                 state.lastUserInteraction = Date.now();
             });
@@ -1533,7 +1375,7 @@
             
             updateCacheBadge();
             document.getElementById('statusBadge').textContent = '📡 Online';
-            showToast('🌐 Online - Πατήστε ☰ για περισσότερα', '#4CAF50');
+            showToast('🌐 Online - Πατήστε ❓ για βοήθεια', '#4CAF50');
         }
 
         function createOfflineLayer() {
@@ -1674,11 +1516,6 @@
                 state.gpsWatchId = null;
             }
             if (state.isNavigating) stopNavigation();
-            
-            if (isRecording) {
-                stopRecording();
-            }
-            
             state.isGpsOn = false;
             document.getElementById('gpsBtn').textContent = '📍';
             document.getElementById('gpsBtn').classList.remove('active');
@@ -1702,11 +1539,6 @@
             
             document.getElementById('speedDisplay').textContent = state.currentSpeedKmh > 0.3 ? `${state.currentSpeedKmh.toFixed(1)} km/h` : '';
             updateUserMarker(lat, lng);
-            
-            if (isRecording) {
-                addRecordPoint(lat, lng);
-            }
-            
             if (state.routeGeometry) { checkOffRoute(lat, lng); updateDistProgress(); }
         }
 
@@ -2072,7 +1904,7 @@
         }
 
         // ============================================================
-        // SOS, SCREEN, DOWNLOAD, OFFLINE
+        // SOS, SCREEN
         // ============================================================
         
         function openSos() {
@@ -2158,6 +1990,10 @@
             document.getElementById('screenBtn').classList.remove('active');
         }
 
+        // ============================================================
+        // DOWNLOAD
+        // ============================================================
+        
         function getBoundsAround(la, ln, r) {
             const d = r / 111;
             const dl = r / (111 * Math.cos(la * Math.PI / 180));
@@ -2329,7 +2165,7 @@
         }
 
         // ============================================================
-        // DOM READY
+        // ★★★ DOM READY - ΒΟΗΘΕΙΑ ★★★
         // ============================================================
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -2339,51 +2175,9 @@
             
             initMap();
             
-            document.getElementById('loadBtn').addEventListener('click', function() {
-                document.getElementById('fileInput').click();
-                document.getElementById('headerDropdown').classList.remove('active');
-                document.getElementById('moreBtn').classList.remove('active');
-            });
-            
-            document.getElementById('clearRouteBtn').addEventListener('click', function() {
-                clearRoute();
-                document.getElementById('headerDropdown').classList.remove('active');
-                document.getElementById('moreBtn').classList.remove('active');
-            });
-            
-            document.getElementById('resumeBtn').addEventListener('click', function() {
-                const sr = localStorage.getItem('athos_last_route');
-                if (sr) {
-                    const r = JSON.parse(sr);
-                    disableGpsAndFollow();
-                    
-                    if (r.url && r.url.startsWith('file:')) {
-                        const gpxData = localStorage.getItem('athos_last_gpx_data');
-                        if (gpxData) {
-                            loadGpxFromData(gpxData, r.name);
-                            startGps();
-                            setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
-                            document.getElementById('headerDropdown').classList.remove('active');
-                            document.getElementById('moreBtn').classList.remove('active');
-                            return;
-                        }
-                    }
-                    if (r.url && r.name) {
-                        loadRouteFromUrl(r.url, r.name, r.dist, r.time);
-                        startGps();
-                        setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
-                    }
-                } else {
-                    showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336');
-                }
-                document.getElementById('headerDropdown').classList.remove('active');
-                document.getElementById('moreBtn').classList.remove('active');
-            });
-            
+            // ★★★ ΒΟΗΘΕΙΑ ★★★
             document.getElementById('helpBtn').addEventListener('click', function() {
                 document.getElementById('helpModal').classList.add('active');
-                document.getElementById('headerDropdown').classList.remove('active');
-                document.getElementById('moreBtn').classList.remove('active');
             });
             
             document.getElementById('closeHelpBtn').addEventListener('click', function() {
@@ -2395,8 +2189,6 @@
                     this.classList.remove('active');
                 }
             });
-            
-            document.getElementById('downloadBottomBtn').addEventListener('click', startDownload);
             
             const savedRoute = localStorage.getItem('athos_last_route');
             const wasNavigating = localStorage.getItem('athos_was_navigating') === 'true';
@@ -2434,16 +2226,44 @@
                 } catch(e) {}
             }
             
+            // Event listeners
             document.getElementById('gpsBtn').addEventListener('click', toggleGps);
             document.getElementById('navBtn').addEventListener('click', toggleNavigation);
             document.getElementById('routesBtn').addEventListener('click', showRoutes);
             document.getElementById('closeRoutesBtn').addEventListener('click', hideRoutes);
             document.getElementById('closeRoutesBtn2').addEventListener('click', hideRoutes);
             document.getElementById('routeSearch').addEventListener('input', e => renderRoutes(e.target.value));
+            document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
             document.getElementById('fileInput').addEventListener('change', e => {
                 if (e.target.files[0]) {
                     loadGpxFile(e.target.files[0]);
                     e.target.value = '';
+                }
+            });
+            document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+            
+            document.getElementById('resumeBtn').addEventListener('click', () => {
+                const sr = localStorage.getItem('athos_last_route');
+                if (sr) {
+                    const r = JSON.parse(sr);
+                    disableGpsAndFollow();
+                    
+                    if (r.url && r.url.startsWith('file:')) {
+                        const gpxData = localStorage.getItem('athos_last_gpx_data');
+                        if (gpxData) {
+                            loadGpxFromData(gpxData, r.name);
+                            startGps();
+                            setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
+                            return;
+                        }
+                    }
+                    if (r.url && r.name) {
+                        loadRouteFromUrl(r.url, r.name, r.dist, r.time);
+                        startGps();
+                        setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500);
+                    }
+                } else {
+                    showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336');
                 }
             });
             
