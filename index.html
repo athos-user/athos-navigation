@@ -39,14 +39,14 @@
             right:0;
             z-index:1000;
             background:rgba(13,17,23,0.95);
-            padding:5px 8px;
+            padding:4px 6px;
             display:flex;
             flex-wrap:nowrap;
-            gap:4px;
+            gap:3px;
             align-items:center;
             backdrop-filter:blur(8px);
             border-bottom:2px solid #2196F3;
-            height:54px;
+            height:48px;
             overflow-x:auto;
             overflow-y:hidden;
             -webkit-overflow-scrolling:touch;
@@ -55,100 +55,97 @@
         .header::-webkit-scrollbar { display:none; }
         
         .header button,.header a{
-            padding:5px 10px;
-            font-size:12px;
-            border-radius:8px;
+            padding:4px 7px;
+            font-size:10px;
+            border-radius:6px;
             border:none;
             color:white;
             cursor:pointer;
-            min-height:38px;
-            height:38px;
-            font-weight:700;
+            min-height:34px;
+            height:34px;
+            font-weight:600;
             transition:all 0.2s;
             touch-action:manipulation;
             text-decoration:none;
             display:inline-flex;
             align-items:center;
-            gap:4px;
+            gap:3px;
             white-space:nowrap;
             flex-shrink:0;
         }
-        .header button:active,.header a:active{transform:scale(0.92)}
+        .header button:active,.header a:active{transform:scale(0.94)}
         
-        .header button.gps-btn{background:#2196F3;font-size:18px;padding:5px 12px}
-        .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 16px rgba(0,188,212,0.5)}
-        .header button.nav-btn{background:#FF9800;font-size:18px;padding:5px 12px}
-        .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 16px rgba(255,87,34,0.5)}
-        .header button.route-btn{background:#8e44ad;font-size:13px;padding:5px 10px}
-        .header button.load-btn{background:#4CAF50;font-size:13px;padding:5px 10px}
-        .header button.clear-btn{background:#d35400;font-size:13px;padding:5px 10px}
-        .header button.dl-btn{background:#673AB7;font-size:14px;padding:5px 12px}
-        .header button.offline-btn{background:#2980b9;font-size:14px;padding:5px 12px}
+        .header button.gps-btn{background:#2196F3;font-size:14px}
+        .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
+        .header button.nav-btn{background:#FF9800;font-size:14px}
+        .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,0.5)}
+        .header button.route-btn{background:#8e44ad;font-size:10px}
+        .header button.load-btn{background:#4CAF50;font-size:10px}
+        .header button.clear-btn{background:#d35400;font-size:10px}
+        .header button.dl-btn{background:#673AB7;font-size:11px}
+        .header button.offline-btn{background:#2980b9;font-size:11px}
         .header button.offline-btn.active{background:#27ae60}
-        .header button.resume-btn{background:#e91e63;font-size:13px;padding:5px 10px}
-        .header button.help-btn{background:#9C27B0;font-size:18px;padding:5px 12px}
-        .header button.record-btn{background:#f44336;font-size:18px;padding:5px 12px}
+        .header button.resume-btn{background:#e91e63;font-size:10px}
+        .header button.help-btn{background:#9C27B0;font-size:14px}
+        .header button.record-btn{background:#f44336;font-size:14px}
         .header button.record-btn.active{background:#d32f2f;box-shadow:0 0 20px rgba(244,67,54,0.6);animation:pulse-record 1.5s infinite}
         .header button.record-btn.stop{background:#555}
-        @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 12px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
+        @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 10px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
         
-        .header button.camera-btn{background:#FF6F00;font-size:18px;padding:5px 12px}
-        .header a.design-btn{background:#4CAF50;font-size:13px;padding:5px 10px}
+        .header a.design-btn{background:#4CAF50;font-size:10px}
         .header select{
-            background:rgba(255,255,255,0.12);
+            background:rgba(255,255,255,0.1);
             color:#ddd;
-            padding:4px 8px;
-            border-radius:6px;
-            font-size:11px;
-            border:1px solid rgba(255,255,255,0.15);
-            min-height:34px;
-            height:34px;
-            max-width:80px;
+            padding:3px 5px;
+            border-radius:5px;
+            font-size:9px;
+            border:1px solid rgba(255,255,255,0.1);
+            min-height:30px;
+            height:30px;
+            max-width:70px;
             flex-shrink:0;
         }
         .header select option{color:#333}
         .header .badge{
-            font-size:9px;
-            background:rgba(255,255,255,0.12);
-            padding:3px 8px;
-            border-radius:6px;
+            font-size:7px;
+            background:rgba(255,255,255,0.1);
+            padding:2px 6px;
+            border-radius:5px;
             color:#aaa;
-            min-height:24px;
+            min-height:20px;
             display:inline-flex;
             align-items:center;
             flex-shrink:0;
-            font-weight:600;
         }
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
         .header .badge.recording{background:rgba(244,67,54,0.4);color:#f44336}
         
         .header .more-btn {
-            background:rgba(255,255,255,0.12);
-            font-size:18px;
-            padding:5px 12px;
-            min-height:38px;
-            height:38px;
+            background:rgba(255,255,255,0.1);
+            font-size:14px;
+            padding:4px 8px;
+            min-height:34px;
+            height:34px;
             flex-shrink:0;
             position:relative;
-            border-radius:8px;
         }
         .header .more-btn.active {
-            background:rgba(255,255,255,0.25);
+            background:rgba(255,255,255,0.2);
         }
         
         .header-dropdown {
             position:fixed;
-            top:54px;
-            right:8px;
+            top:48px;
+            right:6px;
             z-index:1001;
             background:rgba(13,17,23,0.98);
-            border:1px solid rgba(255,255,255,0.12);
-            border-radius:12px;
-            padding:8px;
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px;
+            padding:6px;
             display:none;
             flex-direction:column;
-            gap:4px;
-            min-width:160px;
+            gap:3px;
+            min-width:140px;
             box-shadow:0 8px 30px rgba(0,0,0,0.8);
             backdrop-filter:blur(10px);
         }
@@ -157,19 +154,19 @@
         .header-dropdown button,
         .header-dropdown a,
         .header-dropdown select {
-            padding:8px 12px;
-            font-size:13px;
-            border-radius:8px;
+            padding:6px 10px;
+            font-size:11px;
+            border-radius:6px;
             border:none;
             color:white;
             cursor:pointer;
-            background:rgba(255,255,255,0.06);
+            background:rgba(255,255,255,0.05);
             transition:all 0.2s;
             text-decoration:none;
             display:flex;
             align-items:center;
-            gap:8px;
-            min-height:36px;
+            gap:6px;
+            min-height:32px;
             font-weight:500;
             width:100%;
         }
@@ -178,16 +175,15 @@
             background:rgba(255,255,255,0.15);
         }
         .header-dropdown select {
-            background:rgba(255,255,255,0.1);
+            background:rgba(255,255,255,0.08);
             color:#ddd;
         }
         .header-dropdown .dropdown-divider {
             height:1px;
             background:rgba(255,255,255,0.08);
-            margin:3px 0;
+            margin:2px 0;
         }
         
-        /* ★★★ INFO BAR - ΣΥΜΠΑΓΕΣ ★★★ */
         .info-bar{
             position:fixed;
             bottom:56px;
@@ -195,7 +191,7 @@
             transform:translateX(-50%);
             z-index:900;
             background:rgba(13,17,23,0.95);
-            padding:8px 14px;
+            padding:10px 18px;
             border-radius:12px;
             box-shadow:0 4px 20px rgba(0,0,0,0.5);
             text-align:center;
@@ -205,23 +201,22 @@
             color:#eee;
             backdrop-filter:blur(8px);
             cursor:grab;
-            user-select:none;
+            user-select:none
         }
         .info-bar:active{cursor:grabbing}
         
-        .info-bar .distance{font-size:24px;font-weight:800;color:#4CAF50}
-        .info-bar .distance-label{font-size:11px;color:#888;font-weight:400}
-        .info-bar .time{font-size:20px;font-weight:700;color:#FF9800}
+        .info-bar .distance{font-size:28px;font-weight:800;color:#4CAF50}
+        .info-bar .distance-label{font-size:14px;color:#888;font-weight:400}
+        .info-bar .time{font-size:24px;font-weight:700;color:#FF9800}
         .info-bar .time.excel{color:#FF9800}
         .info-bar .time.calculated{color:#00BCD4}
-        .info-bar .time-label{font-size:11px;color:#888;font-weight:400}
-        .info-bar .speed-kmh{font-size:12px;color:#00BCD4;font-weight:700;margin-top:2px}
-        
-        .info-bar .dist-progress-inline{font-size:10px;color:#aaa;margin-top:2px}
+        .info-bar .time-label{font-size:14px;color:#888;font-weight:400}
+        .info-bar .speed-kmh{font-size:14px;color:#00BCD4;font-weight:700;margin-top:3px}
+        .info-bar .dist-progress-inline{font-size:12px;color:#aaa;margin-top:3px}
         .info-bar .dist-progress-inline span{color:#4CAF50;font-weight:700}
         .info-bar .dist-progress-inline .remaining{color:#FF9800}
-        .info-bar .status{font-size:10px;color:#aaa;margin-top:2px}
-        .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:12px}
+        .info-bar .status{font-size:11px;color:#aaa;margin-top:4px}
+        .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:13px}
         .info-bar .offroute.active{display:block}
         
         .bottom-bar{
@@ -298,7 +293,7 @@
         
         .offroute-warning{
             position:fixed;
-            top:58px;
+            top:52px;
             left:50%;
             transform:translateX(-50%);
             z-index:1001;
@@ -379,7 +374,7 @@
         
         #routeDropdown{
             position:fixed;
-            top:58px;
+            top:52px;
             left:0;
             right:0;
             bottom:0;
@@ -573,7 +568,7 @@
         
         .status-badge{
             position:fixed;
-            top:58px;
+            top:52px;
             right:4px;
             z-index:999;
             background:rgba(0,0,0,0.8);
@@ -585,7 +580,7 @@
             pointer-events:none
         }
         
-        .leaflet-control-zoom{z-index:800!important;margin-top:58px!important}
+        .leaflet-control-zoom{z-index:800!important;margin-top:52px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
         .rotate-btn-fixed {
@@ -597,9 +592,9 @@
             color:#eee;
             border:2px solid #2196F3;
             border-radius:50%;
-            width:48px;
-            height:48px;
-            font-size:20px;
+            width:44px;
+            height:44px;
+            font-size:18px;
             cursor:pointer;
             display:flex;
             align-items:center;
@@ -616,7 +611,7 @@
         
         .rotation-indicator {
             position:fixed;
-            top:58px;
+            top:52px;
             left:50%;
             transform:translateX(-50%);
             z-index:1001;
@@ -634,7 +629,7 @@
         
         .gps-notification {
             position:fixed;
-            top:58px;
+            top:52px;
             left:50%;
             transform:translateX(-50%);
             z-index:1002;
@@ -668,25 +663,23 @@
             background:rgba(255,255,255,0.4);
         }
         
-        /* ★★★ ΕΙΔΟΠΟΙΗΣΗ ΚΑΤΑΓΡΑΦΗΣ ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ */
         .record-notification {
             position:fixed;
-            top:58px;
+            top:52px;
             left:50%;
             transform:translateX(-50%);
             z-index:1002;
             background:rgba(244,67,54,0.95);
             color:white;
-            padding:8px 16px;
-            border-radius:12px;
+            padding:6px 16px;
+            border-radius:10px;
             font-size:12px;
             font-weight:600;
             display:none;
             box-shadow:0 4px 20px rgba(244,67,54,0.4);
             text-align:center;
-            max-width:95%;
+            max-width:90%;
             border:1px solid rgba(255,255,255,0.2);
-            min-width:200px;
         }
         .record-notification.active { display:block; }
         .record-notification .close-notification {
@@ -705,26 +698,6 @@
         .record-notification .close-notification:hover {
             background:rgba(255,255,255,0.4);
         }
-        
-        /* ★★★ ΣΤΑΤΙΣΤΙΚΑ ΜΕΣΑ ΣΤΗΝ ΕΙΔΟΠΟΙΗΣΗ ★★★ */
-        .record-stats {
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-            gap:4px 10px;
-            margin-top:4px;
-            font-size:11px;
-            border-top:1px solid rgba(255,255,255,0.15);
-            padding-top:4px;
-        }
-        .record-stats .stat-item {
-            display:inline-flex;
-            align-items:center;
-            gap:3px;
-        }
-        .record-stats .stat-item .stat-icon { font-size:12px; }
-        .record-stats .stat-item .stat-value { color:#fff; font-weight:700; font-size:12px; }
-        .record-stats .stat-item .stat-label { color:rgba(255,255,255,0.6); font-size:9px; }
         
         #helpModal {
             position:fixed;
@@ -816,125 +789,50 @@
         }
         #helpModal .help-footer span { color:#888; }
         
-        #cameraModal {
-            position:fixed;
-            top:0;
-            left:0;
-            right:0;
-            bottom:0;
-            z-index:5000;
-            background:rgba(0,0,0,0.95);
-            display:none;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            padding:16px;
-        }
-        #cameraModal.active { display:flex; }
-        #cameraModal video { max-width:100%; max-height:70vh; border-radius:12px; background:#000; transform:scaleX(-1); }
-        #cameraModal .camera-controls {
-            display:flex;
-            gap:16px;
-            margin-top:16px;
-            flex-wrap:wrap;
-            justify-content:center;
-        }
-        #cameraModal .camera-controls button {
-            padding:12px 24px;
-            border-radius:50%;
-            border:none;
-            font-size:24px;
-            cursor:pointer;
-            min-width:60px;
-            min-height:60px;
-            font-weight:700;
-            transition:all 0.2s;
-            touch-action:manipulation;
-        }
-        #cameraModal .camera-controls button:active { transform:scale(0.9); }
-        #cameraModal .camera-controls .capture-btn { background:#f44336; color:white; }
-        #cameraModal .camera-controls .close-camera-btn { background:#555; color:white; font-size:20px; }
-        #cameraModal .camera-controls .capture-btn:hover { background:#d32f2f; }
-        #cameraModal .camera-controls .close-camera-btn:hover { background:#777; }
-        #cameraModal .camera-preview {
-            max-width:100%;
-            max-height:70vh;
-            border-radius:12px;
-            display:none;
-            background:#000;
-        }
-        #cameraModal .camera-preview.active { display:block; }
-        
         @media(max-width:768px){
-            .header { height:50px; padding:4px 6px; gap:3px; }
-            .header button, .header a { padding:4px 8px; font-size:11px; min-height:34px; height:34px; }
+            .header { height:44px; padding:3px 4px; gap:2px; }
+            .header button, .header a { padding:3px 5px; font-size:9px; min-height:30px; height:30px; }
             .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn,
-            .header button.camera-btn { font-size:16px; padding:4px 10px; }
-            .header button.route-btn,.header button.load-btn,
-            .header button.clear-btn,.header button.resume-btn { font-size:12px; padding:4px 8px; }
-            .header button.dl-btn,.header button.offline-btn { font-size:13px; padding:4px 10px; }
-            .header select { font-size:10px; min-height:30px; height:30px; max-width:65px; padding:3px 6px; }
-            .header .badge { font-size:8px; padding:2px 6px; min-height:20px; }
-            .header .more-btn { font-size:16px; padding:4px 10px; min-height:34px; height:34px; }
-            .header-dropdown { top:50px; right:6px; min-width:150px; padding:6px; }
-            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:12px; padding:6px 10px; min-height:32px; }
-            
-            .info-bar{ padding:6px 10px; bottom:48px; min-width:150px; }
+            .header button.help-btn,.header button.record-btn { font-size:12px; padding:3px 5px; }
+            .header select { font-size:8px; min-height:26px; height:26px; max-width:55px; }
+            .header .badge { font-size:6px; padding:1px 4px; min-height:16px; }
+            .header .more-btn { font-size:12px; padding:3px 6px; min-height:30px; height:30px; }
+            .header-dropdown { top:44px; right:4px; min-width:130px; }
+            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:10px; padding:5px 8px; min-height:28px; }
+            .info-bar{ padding:6px 10px; bottom:48px; min-width:140px; }
             .info-bar .distance{font-size:20px}
             .info-bar .time{font-size:16px}
             .info-bar .distance-label,.info-bar .time-label{font-size:10px}
             .info-bar .speed-kmh{font-size:11px}
             .info-bar .status{font-size:9px}
-            
-            .record-notification { font-size:11px; padding:6px 12px; top:54px; }
-            .record-stats { font-size:10px; gap:3px 8px; }
-            .record-stats .stat-item .stat-value { font-size:11px; }
-            
             .bottom-bar{ padding:4px 4px; gap:3px; }
             .bottom-bar button{ font-size:10px; padding:4px 6px; min-height:26px; }
             .bottom-bar button.sos-bottom-btn{ font-size:14px; min-width:32px; min-height:28px; padding:3px 6px; }
             .bottom-bar button.speed-btn{ font-size:11px; padding:4px 6px; min-width:28px; }
             .bottom-bar button.screen-btn{ font-size:12px; padding:4px 8px; }
             .bottom-bar button.download-bottom-btn{ font-size:11px; padding:4px 10px; min-height:26px; }
-            
-            .offroute-warning{top:54px}
-            .status-badge{top:54px}
-            .rotation-indicator{top:54px}
-            .gps-notification{top:54px;font-size:10px;padding:4px 12px}
-            .leaflet-control-zoom{margin-top:54px!important}
-            #routeDropdown{top:54px}
-            
-            .rotate-btn-fixed { width:42px; height:42px; font-size:17px; bottom:100px; right:8px; }
-            
+            .offroute-warning{top:48px}
+            .status-badge{top:48px}
+            .rotation-indicator{top:48px}
+            .gps-notification{top:48px;font-size:10px;padding:4px 12px}
+            .record-notification{top:48px;font-size:10px;padding:4px 12px}
+            .leaflet-control-zoom{margin-top:48px!important}
+            #routeDropdown{top:48px}
             #helpModal .help-content { padding:14px; }
             #helpModal .help-item { font-size:11px; padding:6px 8px; }
             #helpModal .help-icon { font-size:17px; width:28px; }
             #helpModal .help-title h2 { font-size:15px; }
-            
-            #cameraModal .camera-controls button { width:50px; height:50px; font-size:18px; padding:0; }
         }
         
         @media(max-width:400px){
-            .header { height:46px; padding:3px 4px; gap:2px; }
-            .header button, .header a { padding:3px 6px; font-size:10px; min-height:30px; height:30px; }
             .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn,
-            .header button.camera-btn { font-size:14px; padding:3px 8px; }
-            .header button.route-btn,.header button.load-btn,
-            .header button.clear-btn,.header button.resume-btn { font-size:10px; padding:3px 6px; }
-            .header button.dl-btn,.header button.offline-btn { font-size:11px; padding:3px 8px; }
-            .header select { font-size:9px; min-height:26px; height:26px; max-width:55px; padding:2px 5px; }
-            .header .badge { font-size:7px; padding:1px 5px; min-height:18px; }
-            .header .more-btn { font-size:14px; padding:3px 8px; min-height:30px; height:30px; }
-            .header-dropdown { top:46px; right:4px; min-width:130px; padding:5px; }
-            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:11px; padding:5px 8px; min-height:28px; }
-            
-            .record-notification { font-size:10px; padding:4px 10px; top:50px; }
-            .record-stats { font-size:9px; gap:2px 6px; }
-            .record-stats .stat-item .stat-value { font-size:10px; }
-            
-            .rotate-btn-fixed { width:36px; height:36px; font-size:15px; bottom:96px; right:6px; }
+            .header button.help-btn,.header button.record-btn { font-size:10px; padding:2px 4px; min-height:26px; height:26px; }
+            .header button.route-btn, .header button.dl-btn, .header button.offline-btn { font-size:8px; padding:2px 4px; min-height:26px; height:26px; }
+            .header .more-btn { font-size:10px; padding:2px 5px; min-height:26px; height:26px; }
+            .header select { font-size:7px; min-height:24px; height:24px; max-width:45px; }
+            .header .badge { font-size:5px; padding:1px 3px; min-height:14px; }
+            .header-dropdown { min-width:110px; }
+            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:9px; padding:4px 6px; min-height:24px; }
         }
     </style>
 </head>
@@ -950,39 +848,9 @@
         <button class="close-notification" id="closeGpsNotification">✕</button>
     </div>
     
-    <!-- ★★★ ΕΙΔΟΠΟΙΗΣΗ ΚΑΤΑΓΡΑΦΗΣ ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ -->
     <div class="record-notification" id="recordNotification">
-        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
-            <span>🔴 Καταγραφή σε εξέλιξη...</span>
-            <button class="close-notification" id="closeRecordNotification">✕</button>
-        </div>
-        <div class="record-stats" id="recordStats">
-            <div class="stat-item">
-                <span class="stat-icon">⏱️</span>
-                <span class="stat-value" id="statTime">00:00</span>
-                <span class="stat-label">χρόνος</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">📏</span>
-                <span class="stat-value" id="statDist">0.00</span>
-                <span class="stat-label">χλμ</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">🏃</span>
-                <span class="stat-value" id="statAvgSpeed">0.0</span>
-                <span class="stat-label">χλμ/ώ</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">⛰️</span>
-                <span class="stat-value" id="statAltitude">--</span>
-                <span class="stat-label">υψόμετρο</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">📌</span>
-                <span class="stat-value" id="statPoints">0</span>
-                <span class="stat-label">σημεία</span>
-            </div>
-        </div>
+        <span>🔴 Καταγραφή σε εξέλιξη...</span>
+        <button class="close-notification" id="closeRecordNotification">✕</button>
     </div>
     
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
@@ -995,7 +863,6 @@
         <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
         <button id="recordBtn" class="record-btn" title="Καταγραφή">🔴</button>
-        <button id="cameraBtn" class="camera-btn" title="Φωτογραφία">📷</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
         <button id="offlineBtn" class="offline-btn" title="Offline">📴</button>
@@ -1116,7 +983,6 @@
                 <div class="help-item"><span class="help-icon">📍</span><div><strong>Θέση</strong><div class="help-desc">Εμφανίζει την τρέχουσα θέση σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🧭</span><div><strong>Follow</strong><div class="help-desc">Ο χάρτης ακολουθεί την κίνησή σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🔴</span><div><strong>Εγγραφή</strong><div class="help-desc">Καταγραφή διαδρομής → αποθήκευση GPX</div></div></div>
-                <div class="help-item"><span class="help-icon">📷</span><div><strong>Φωτογραφία</strong><div class="help-desc">Βγάλτε φωτογραφία χωρίς να φύγετε</div></div></div>
             </div>
             <div class="help-section">
                 <div class="help-section-title">🗺️ Διαδρομές</div>
@@ -1138,24 +1004,13 @@
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
                 <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.4 · Άγιο Όρος</span></div>
-        </div>
-    </div>
-
-    <div id="cameraModal">
-        <video id="cameraVideo" autoplay playsinline></video>
-        <canvas id="cameraCanvas" style="display:none;"></canvas>
-        <img id="cameraPreview" class="camera-preview" alt="Φωτογραφία">
-        <div class="camera-controls">
-            <button class="close-camera-btn" id="closeCameraBtn" title="Κλείσιμο">✕</button>
-            <button class="capture-btn" id="captureBtn" title="Φωτογραφία">📷</button>
-            <button id="savePhotoBtn" style="display:none;background:#4CAF50;color:white;border-radius:50%;width:60px;height:60px;font-size:20px;border:none;cursor:pointer;">💾</button>
+            <div class="help-footer"><span>Athos Maps v2.1 · Άγιο Όρος</span></div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // ATHOS MAPS - v2.4 ΜΕ ΣΤΑΤΙΣΤΙΚΑ ΣΤΗΝ ΕΙΔΟΠΟΙΗΣΗ
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -1168,8 +1023,6 @@
         let recordedDistance = 0;
         let lastRecordedPoint = null;
         let recordStartTime = null;
-        let recordStatsInterval = null;
-        let currentAltitude = null;
         
         const OFF_ROUTE_THRESHOLD = 100;
         const NAV_UPDATE_INTERVAL = 300;
@@ -1187,7 +1040,7 @@
             'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
         };
 
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★ (συντομευμένα - βάλε όλες)
+        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1352,10 +1205,7 @@
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
             currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null,
-            totalDistance: 0,
-            realSpeedHistory: [],
-            avgRealSpeed: 0
+            alertDismissed: false, alertDisabledForever: false, audioCtx: null
         };
 
         // ============================================================
@@ -1396,118 +1246,6 @@
         }
 
         // ============================================================
-        // ΚΑΜΕΡΑ
-        // ============================================================
-        
-        let cameraStream = null;
-        let capturedPhoto = null;
-        
-        document.getElementById('cameraBtn').addEventListener('click', openCamera);
-        document.getElementById('closeCameraBtn').addEventListener('click', closeCamera);
-        document.getElementById('captureBtn').addEventListener('click', capturePhoto);
-        document.getElementById('savePhotoBtn').addEventListener('click', savePhoto);
-        
-        function openCamera() {
-            const modal = document.getElementById('cameraModal');
-            const video = document.getElementById('cameraVideo');
-            const preview = document.getElementById('cameraPreview');
-            const saveBtn = document.getElementById('savePhotoBtn');
-            
-            modal.classList.add('active');
-            video.style.display = 'block';
-            preview.classList.remove('active');
-            preview.style.display = 'none';
-            saveBtn.style.display = 'none';
-            capturedPhoto = null;
-            
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
-                    audio: false 
-                })
-                .then(stream => {
-                    cameraStream = stream;
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(err => {
-                    showToast('❌ Δεν μπορεί να ανοίξει η κάμερα: ' + err.message, '#f44336');
-                    closeCamera();
-                });
-            } else {
-                showToast('❌ Η κάμερα δεν υποστηρίζεται', '#f44336');
-                closeCamera();
-            }
-        }
-        
-        function closeCamera() {
-            const modal = document.getElementById('cameraModal');
-            const video = document.getElementById('cameraVideo');
-            
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-            video.srcObject = null;
-            modal.classList.remove('active');
-            
-            const preview = document.getElementById('cameraPreview');
-            preview.classList.remove('active');
-            preview.style.display = 'none';
-            document.getElementById('savePhotoBtn').style.display = 'none';
-        }
-        
-        function capturePhoto() {
-            const video = document.getElementById('cameraVideo');
-            const canvas = document.getElementById('cameraCanvas');
-            const preview = document.getElementById('cameraPreview');
-            const saveBtn = document.getElementById('savePhotoBtn');
-            
-            canvas.width = video.videoWidth || 1280;
-            canvas.height = video.videoHeight || 720;
-            const ctx = canvas.getContext('2d');
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            capturedPhoto = canvas.toDataURL('image/jpeg', 0.95);
-            preview.src = capturedPhoto;
-            preview.style.display = 'block';
-            preview.classList.add('active');
-            video.style.display = 'none';
-            saveBtn.style.display = 'block';
-            
-            showToast('📷 Φωτογραφία τραβήχτηκε! Πατήστε 💾 για αποθήκευση', '#4CAF50');
-        }
-        
-        function savePhoto() {
-            if (!capturedPhoto) return;
-            
-            const link = document.createElement('a');
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-            link.download = 'athos_photo_' + timestamp + '.jpg';
-            link.href = capturedPhoto;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('✅ Φωτογραφία αποθηκεύτηκε', '#4CAF50');
-            
-            const video = document.getElementById('cameraVideo');
-            const preview = document.getElementById('cameraPreview');
-            const saveBtn = document.getElementById('savePhotoBtn');
-            preview.classList.remove('active');
-            preview.style.display = 'none';
-            saveBtn.style.display = 'none';
-            video.style.display = 'block';
-            capturedPhoto = null;
-        }
-        
-        document.getElementById('cameraModal').addEventListener('click', function(e) {
-            if (e.target === this) closeCamera();
-        });
-
-        // ============================================================
         // DROPDOWN MENU
         // ============================================================
         
@@ -1545,73 +1283,38 @@
         
         function startRecording() {
             isRecording = true;
-            
-            // ★★★ ΕΜΦΑΝΙΣΗ ΕΙΔΟΠΟΙΗΣΗΣ ★★★
-            document.getElementById('recordNotification').classList.add('active');
-            
-            const saved = localStorage.getItem('athos_recorded_points');
-            const savedTime = localStorage.getItem('athos_record_start_time');
-            
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (parsed.length > 0) {
-                        recordedPoints = parsed;
-                        lastRecordedPoint = recordedPoints[recordedPoints.length - 1];
-                        recordedDistance = localStorage.getItem('athos_recorded_distance') ? 
-                            parseFloat(localStorage.getItem('athos_recorded_distance')) : 0;
-                        recordStartTime = savedTime ? parseInt(savedTime) : Date.now();
-                        updateRecordedLine();
-                        updateRecordStats();
-                        const badge = document.getElementById('cacheBadge');
-                        badge.textContent = '🔴 ' + recordedPoints.length;
-                        badge.className = 'badge recording';
-                        showToast('🔄 Συνέχεια καταγραφής (' + recordedPoints.length + ' σημεία)', '#4CAF50');
-                    }
-                } catch(e) {}
-            }
-            
-            if (recordedPoints.length === 0) {
-                recordedPoints = [];
-                recordedDistance = 0;
-                lastRecordedPoint = null;
-                recordStartTime = Date.now();
-                if (state.lastPosition) {
-                    addRecordPoint(state.lastPosition.lat, state.lastPosition.lng);
-                }
-            }
+            recordedPoints = [];
+            recordedDistance = 0;
+            lastRecordedPoint = null;
+            recordStartTime = Date.now();
             
             const btn = document.getElementById('recordBtn');
             btn.textContent = '⏹️';
             btn.classList.add('active');
             btn.classList.remove('stop');
             
-            // ★★★ ΞΕΚΙΝΗΜΑ ΕΝΗΜΕΡΩΣΗΣ ΣΤΑΤΙΣΤΙΚΩΝ ★★★
-            if (recordStatsInterval) clearInterval(recordStatsInterval);
-            recordStatsInterval = setInterval(updateRecordStats, 1000);
+            document.getElementById('recordNotification').classList.add('active');
             
-            showToast('🔴 Καταγραφή σε εξέλιξη...', '#f44336');
+            const badge = document.getElementById('cacheBadge');
+            badge.textContent = '🔴 0';
+            badge.className = 'badge recording';
+            
+            if (state.lastPosition) {
+                addRecordPoint(state.lastPosition.lat, state.lastPosition.lng);
+            }
+            
+            showToast('🔴 Ξεκίνησε καταγραφή', '#f44336');
         }
         
         function stopRecording() {
             isRecording = false;
-            
-            // ★★★ ΑΠΟΚΡΥΨΗ ΕΙΔΟΠΟΙΗΣΗΣ ★★★
-            document.getElementById('recordNotification').classList.remove('active');
-            
-            if (recordStatsInterval) {
-                clearInterval(recordStatsInterval);
-                recordStatsInterval = null;
-            }
             
             const btn = document.getElementById('recordBtn');
             btn.textContent = '🔴';
             btn.classList.remove('active');
             btn.classList.add('stop');
             
-            localStorage.removeItem('athos_recorded_points');
-            localStorage.removeItem('athos_recorded_distance');
-            localStorage.removeItem('athos_record_start_time');
+            document.getElementById('recordNotification').classList.remove('active');
             
             const badge = document.getElementById('cacheBadge');
             updateCacheBadge();
@@ -1639,21 +1342,6 @@
                 localStorage.setItem('athos_recorded_route', JSON.stringify(coords));
                 localStorage.setItem('athos_recorded_name', fileName.replace('.gpx', ''));
             }
-            
-            recordedPoints = [];
-            if (recordedLine) {
-                state.map.removeLayer(recordedLine);
-                recordedLine = null;
-            }
-            recordedDistance = 0;
-            lastRecordedPoint = null;
-            document.getElementById('distDisplay').textContent = '0.00';
-            document.getElementById('timeDisplay').textContent = '--:--';
-            document.getElementById('statTime').textContent = '00:00';
-            document.getElementById('statDist').textContent = '0.00';
-            document.getElementById('statAvgSpeed').textContent = '0.0';
-            document.getElementById('statPoints').textContent = '0';
-            document.getElementById('statAltitude').textContent = '--';
         }
         
         function addRecordPoint(lat, lng) {
@@ -1671,19 +1359,13 @@
             recordedPoints.push(point);
             lastRecordedPoint = point;
             
-            try {
-                localStorage.setItem('athos_recorded_points', JSON.stringify(recordedPoints));
-                localStorage.setItem('athos_recorded_distance', recordedDistance.toString());
-                if (recordStartTime) {
-                    localStorage.setItem('athos_record_start_time', recordStartTime.toString());
-                }
-            } catch(e) {}
-            
             const badge = document.getElementById('cacheBadge');
             badge.textContent = '🔴 ' + recordedPoints.length;
             
             updateRecordedLine();
-            updateRecordStats();
+            
+            document.getElementById('distDisplay').textContent = (recordedDistance / 1000).toFixed(2);
+            document.getElementById('timeDisplay').textContent = formatRecordTime();
         }
         
         function updateRecordedLine() {
@@ -1695,34 +1377,12 @@
             
             const coords = recordedPoints.map(p => [p.lat, p.lng]);
             recordedLine = L.polyline(coords, {
-                color: '#2196F3',
+                color: '#FF1744',
                 weight: 4,
                 opacity: 0.9,
-                dashArray: '6, 3',
+                dashArray: '8, 4',
                 smoothFactor: 1
             }).addTo(state.map);
-        }
-        
-        // ★★★ ΕΝΗΜΕΡΩΣΗ ΣΤΑΤΙΣΤΙΚΩΝ ★★★
-        function updateRecordStats() {
-            if (!isRecording || recordedPoints.length === 0) return;
-            
-            const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
-            const m = Math.floor(elapsed / 60);
-            const s = elapsed % 60;
-            document.getElementById('statTime').textContent = 
-                String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-            
-            const distKm = recordedDistance / 1000;
-            document.getElementById('statDist').textContent = distKm.toFixed(2);
-            
-            const avgSpeed = elapsed > 0 ? (distKm / (elapsed / 3600)) : 0;
-            document.getElementById('statAvgSpeed').textContent = avgSpeed.toFixed(1);
-            
-            document.getElementById('statAltitude').textContent = 
-                currentAltitude !== null ? Math.round(currentAltitude) + 'm' : '--';
-            
-            document.getElementById('statPoints').textContent = recordedPoints.length;
         }
         
         function formatRecordTime() {
@@ -1858,19 +1518,6 @@
             });
             
             document.getElementById('recordBtn').addEventListener('click', toggleRecording);
-            
-            const savedPoints = localStorage.getItem('athos_recorded_points');
-            if (savedPoints) {
-                try {
-                    const parsed = JSON.parse(savedPoints);
-                    if (parsed.length > 0) {
-                        const badge = document.getElementById('cacheBadge');
-                        badge.textContent = '🔴 ' + parsed.length;
-                        badge.className = 'badge recording';
-                        showToast('📌 Υπάρχει αποθηκευμένη καταγραφή (' + parsed.length + ' σημεία)', '#2196F3');
-                    }
-                } catch(e) {}
-            }
             
             state.map.on('movestart zoomstart', () => {
                 state.lastUserInteraction = Date.now();
@@ -2028,6 +1675,10 @@
             }
             if (state.isNavigating) stopNavigation();
             
+            if (isRecording) {
+                stopRecording();
+            }
+            
             state.isGpsOn = false;
             document.getElementById('gpsBtn').textContent = '📍';
             document.getElementById('gpsBtn').classList.remove('active');
@@ -2043,33 +1694,10 @@
                 speed * 3.6 : 
                 (state.prevPosition ? L.latLng(state.prevPosition.lat, state.prevPosition.lng).distanceTo(L.latLng(lat, lng)) * 3.6 : 0);
             
-            if (state.currentSpeedKmh > 0.5) {
-                state.realSpeedHistory.push(state.currentSpeedKmh);
-                if (state.realSpeedHistory.length > 20) {
-                    state.realSpeedHistory.shift();
-                }
-                state.avgRealSpeed = state.realSpeedHistory.reduce((a,b) => a + b, 0) / state.realSpeedHistory.length;
-            }
-            
             if (heading !== null && heading !== undefined && heading >= 0 && state.currentSpeedKmh > 0.5) {
                 state.currentHeading = heading;
             } else if (state.prevPosition && state.currentSpeedKmh > 0.5) {
                 state.currentHeading = calculateBearing(state.prevPosition.lat, state.prevPosition.lng, lat, lng);
-            }
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    p => {
-                        if (p.coords.altitude !== null && p.coords.altitude !== undefined) {
-                            currentAltitude = p.coords.altitude;
-                            if (isRecording) {
-                                document.getElementById('statAltitude').textContent = Math.round(currentAltitude) + 'm';
-                            }
-                        }
-                    },
-                    () => {},
-                    { enableHighAccuracy: true, timeout: 5000 }
-                );
             }
             
             document.getElementById('speedDisplay').textContent = state.currentSpeedKmh > 0.3 ? `${state.currentSpeedKmh.toFixed(1)} km/h` : '';
@@ -2079,47 +1707,7 @@
                 addRecordPoint(lat, lng);
             }
             
-            if (state.routeGeometry) { 
-                checkOffRoute(lat, lng); 
-                updateDistProgress();
-                updateRealTimeEstimate();
-            }
-        }
-        
-        function updateRealTimeEstimate() {
-            const timeEl = document.getElementById('timeDisplay');
-            if (state.routeDistance > 0 && state.routeGeometry && state.lastPosition) {
-                let minDist = Infinity, closestIdx = 0;
-                for (let i = 0; i < state.routeGeometry.length; i++) {
-                    const d = L.latLng(state.lastPosition.lat, state.lastPosition.lng).distanceTo(
-                        L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
-                    );
-                    if (d < minDist) { minDist = d; closestIdx = i; }
-                }
-                let remainingDist = 0;
-                for (let i = closestIdx; i < state.routeGeometry.length - 1; i++) {
-                    remainingDist += L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0]).distanceTo(
-                        L.latLng(state.routeGeometry[i+1][1], state.routeGeometry[i+1][0])
-                    );
-                }
-                remainingDist /= 1000;
-                
-                const speedToUse = state.avgRealSpeed > 0.5 ? state.avgRealSpeed : state.currentSpeed;
-                const hours = remainingDist / speedToUse;
-                const minutes = Math.round(hours * 60);
-                if (minutes > 0 && speedToUse > 0.5) {
-                    const h = Math.floor(minutes / 60);
-                    const m = minutes % 60;
-                    timeEl.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
-                    timeEl.className = 'time calculated';
-                } else if (state.originalTime) {
-                    timeEl.textContent = state.originalTime;
-                    timeEl.className = 'time excel';
-                } else {
-                    timeEl.textContent = '--:--';
-                    timeEl.className = 'time';
-                }
-            }
+            if (state.routeGeometry) { checkOffRoute(lat, lng); updateDistProgress(); }
         }
 
         function calculateBearing(l1, ln1, l2, ln2) {
@@ -2183,7 +1771,7 @@
         }
 
         // ============================================================
-        // ROUTES (συντομευμένα)
+        // ROUTES
         // ============================================================
         
         function showRoutes() {
@@ -2228,8 +1816,6 @@
 
         function loadRouteFromUrl(url, name, dist, time) {
             disableGpsAndFollow();
-            state.realSpeedHistory = [];
-            state.avgRealSpeed = 0;
             
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
@@ -2274,8 +1860,6 @@
 
         function loadGpxFile(file) {
             disableGpsAndFollow();
-            state.realSpeedHistory = [];
-            state.avgRealSpeed = 0;
             
             const r = new FileReader();
             r.onload = function(e) {
@@ -2326,8 +1910,6 @@
 
         function loadGpxFromData(gpxData, name) {
             disableGpsAndFollow();
-            state.realSpeedHistory = [];
-            state.avgRealSpeed = 0;
             
             try {
                 if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
@@ -2401,8 +1983,7 @@
                     timeEl.textContent = state.originalTime;
                     timeEl.className = 'time excel';
                 } else {
-                    const speedToUse = state.avgRealSpeed > 0.5 ? state.avgRealSpeed : state.currentSpeed;
-                    const m = Math.round((state.routeDistance / speedToUse) * 60);
+                    const m = Math.round((state.routeDistance / state.currentSpeed) * 60);
                     const h = Math.floor(m / 60);
                     const mm = m % 60;
                     timeEl.textContent = h > 0 ? `${h}h ${mm}m` : `${mm}m`;
@@ -2423,8 +2004,6 @@
             state.routeDistance = 0;
             state.currentRouteName = '';
             state.originalTime = null;
-            state.realSpeedHistory = [];
-            state.avgRealSpeed = 0;
             
             document.getElementById('distDisplay').textContent = '0.00';
             document.getElementById('timeDisplay').textContent = '--:--';
@@ -2493,7 +2072,7 @@
         }
 
         // ============================================================
-        // SOS, SCREEN, DOWNLOAD, OFFLINE (συντομευμένα)
+        // SOS, SCREEN, DOWNLOAD, OFFLINE
         // ============================================================
         
         function openSos() {
