@@ -92,9 +92,7 @@
         .header button.record-btn.stop{background:#555}
         @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 12px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
         
-        /* ★★★ ΚΟΥΜΠΙ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ */
         .header button.camera-btn{background:#FF6F00;font-size:18px;padding:5px 12px}
-        
         .header a.design-btn{background:#4CAF50;font-size:13px;padding:5px 10px}
         .header select{
             background:rgba(255,255,255,0.12);
@@ -189,7 +187,7 @@
             margin:3px 0;
         }
         
-        /* ★★★ INFO BAR - ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ */
+        /* ★★★ INFO BAR - ΣΥΜΠΑΓΕΣ ★★★ */
         .info-bar{
             position:fixed;
             bottom:56px;
@@ -201,58 +199,28 @@
             border-radius:12px;
             box-shadow:0 4px 20px rgba(0,0,0,0.5);
             text-align:center;
-            min-width:200px;
+            min-width:180px;
             max-width:95%;
             border:2px solid #2196F3;
             color:#eee;
             backdrop-filter:blur(8px);
             cursor:grab;
             user-select:none;
-            transition:all 0.3s;
         }
         .info-bar:active{cursor:grabbing}
-        .info-bar.recording-mode {
-            border-color:#f44336;
-            background:rgba(13,17,23,0.98);
-        }
         
-        .info-bar .distance{font-size:26px;font-weight:800;color:#4CAF50}
-        .info-bar .distance-label{font-size:12px;color:#888;font-weight:400}
-        .info-bar .time{font-size:22px;font-weight:700;color:#FF9800}
+        .info-bar .distance{font-size:24px;font-weight:800;color:#4CAF50}
+        .info-bar .distance-label{font-size:11px;color:#888;font-weight:400}
+        .info-bar .time{font-size:20px;font-weight:700;color:#FF9800}
         .info-bar .time.excel{color:#FF9800}
         .info-bar .time.calculated{color:#00BCD4}
-        .info-bar .time-label{font-size:12px;color:#888;font-weight:400}
-        .info-bar .speed-kmh{font-size:13px;color:#00BCD4;font-weight:700;margin-top:2px}
+        .info-bar .time-label{font-size:11px;color:#888;font-weight:400}
+        .info-bar .speed-kmh{font-size:12px;color:#00BCD4;font-weight:700;margin-top:2px}
         
-        /* ★★★ ΣΤΑΤΙΣΤΙΚΑ ΚΑΤΑΓΡΑΦΗΣ ★★★ */
-        .info-bar .stats-recording {
-            display:none;
-            font-size:11px;
-            color:#aaa;
-            margin-top:4px;
-            padding-top:4px;
-            border-top:1px solid rgba(255,255,255,0.08);
-            gap:8px;
-            justify-content:center;
-            flex-wrap:wrap;
-        }
-        .info-bar .stats-recording.active { display:flex; }
-        .info-bar .stats-recording .stat-item {
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-            background:rgba(255,255,255,0.06);
-            padding:2px 10px;
-            border-radius:12px;
-        }
-        .info-bar .stats-recording .stat-item .stat-icon { font-size:13px; }
-        .info-bar .stats-recording .stat-item .stat-value { color:#4CAF50; font-weight:700; font-size:12px; }
-        .info-bar .stats-recording .stat-item .stat-label { color:#888; font-size:9px; }
-        
-        .info-bar .dist-progress-inline{font-size:11px;color:#aaa;margin-top:2px}
+        .info-bar .dist-progress-inline{font-size:10px;color:#aaa;margin-top:2px}
         .info-bar .dist-progress-inline span{color:#4CAF50;font-weight:700}
         .info-bar .dist-progress-inline .remaining{color:#FF9800}
-        .info-bar .status{font-size:10px;color:#aaa;margin-top:3px}
+        .info-bar .status{font-size:10px;color:#aaa;margin-top:2px}
         .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:12px}
         .info-bar .offroute.active{display:block}
         
@@ -700,6 +668,7 @@
             background:rgba(255,255,255,0.4);
         }
         
+        /* ★★★ ΕΙΔΟΠΟΙΗΣΗ ΚΑΤΑΓΡΑΦΗΣ ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ */
         .record-notification {
             position:fixed;
             top:58px;
@@ -708,15 +677,16 @@
             z-index:1002;
             background:rgba(244,67,54,0.95);
             color:white;
-            padding:6px 16px;
-            border-radius:10px;
+            padding:8px 16px;
+            border-radius:12px;
             font-size:12px;
             font-weight:600;
             display:none;
             box-shadow:0 4px 20px rgba(244,67,54,0.4);
             text-align:center;
-            max-width:90%;
+            max-width:95%;
             border:1px solid rgba(255,255,255,0.2);
+            min-width:200px;
         }
         .record-notification.active { display:block; }
         .record-notification .close-notification {
@@ -735,6 +705,26 @@
         .record-notification .close-notification:hover {
             background:rgba(255,255,255,0.4);
         }
+        
+        /* ★★★ ΣΤΑΤΙΣΤΙΚΑ ΜΕΣΑ ΣΤΗΝ ΕΙΔΟΠΟΙΗΣΗ ★★★ */
+        .record-stats {
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:4px 10px;
+            margin-top:4px;
+            font-size:11px;
+            border-top:1px solid rgba(255,255,255,0.15);
+            padding-top:4px;
+        }
+        .record-stats .stat-item {
+            display:inline-flex;
+            align-items:center;
+            gap:3px;
+        }
+        .record-stats .stat-item .stat-icon { font-size:12px; }
+        .record-stats .stat-item .stat-value { color:#fff; font-weight:700; font-size:12px; }
+        .record-stats .stat-item .stat-label { color:rgba(255,255,255,0.6); font-size:9px; }
         
         #helpModal {
             position:fixed;
@@ -826,7 +816,6 @@
         }
         #helpModal .help-footer span { color:#888; }
         
-        /* ★★★ ΠΑΡΑΘΥΡΟ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ */
         #cameraModal {
             position:fixed;
             top:0;
@@ -842,15 +831,7 @@
             padding:16px;
         }
         #cameraModal.active { display:flex; }
-        
-        #cameraModal video {
-            max-width:100%;
-            max-height:70vh;
-            border-radius:12px;
-            background:#000;
-            transform:scaleX(-1);
-        }
-        
+        #cameraModal video { max-width:100%; max-height:70vh; border-radius:12px; background:#000; transform:scaleX(-1); }
         #cameraModal .camera-controls {
             display:flex;
             gap:16px;
@@ -875,7 +856,6 @@
         #cameraModal .camera-controls .close-camera-btn { background:#555; color:white; font-size:20px; }
         #cameraModal .camera-controls .capture-btn:hover { background:#d32f2f; }
         #cameraModal .camera-controls .close-camera-btn:hover { background:#777; }
-        
         #cameraModal .camera-preview {
             max-width:100%;
             max-height:70vh;
@@ -906,8 +886,10 @@
             .info-bar .distance-label,.info-bar .time-label{font-size:10px}
             .info-bar .speed-kmh{font-size:11px}
             .info-bar .status{font-size:9px}
-            .info-bar .stats-recording .stat-item { font-size:10px; padding:1px 6px; }
-            .info-bar .stats-recording .stat-item .stat-value { font-size:11px; }
+            
+            .record-notification { font-size:11px; padding:6px 12px; top:54px; }
+            .record-stats { font-size:10px; gap:3px 8px; }
+            .record-stats .stat-item .stat-value { font-size:11px; }
             
             .bottom-bar{ padding:4px 4px; gap:3px; }
             .bottom-bar button{ font-size:10px; padding:4px 6px; min-height:26px; }
@@ -920,7 +902,6 @@
             .status-badge{top:54px}
             .rotation-indicator{top:54px}
             .gps-notification{top:54px;font-size:10px;padding:4px 12px}
-            .record-notification{top:54px;font-size:10px;padding:4px 12px}
             .leaflet-control-zoom{margin-top:54px!important}
             #routeDropdown{top:54px}
             
@@ -949,6 +930,10 @@
             .header-dropdown { top:46px; right:4px; min-width:130px; padding:5px; }
             .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:11px; padding:5px 8px; min-height:28px; }
             
+            .record-notification { font-size:10px; padding:4px 10px; top:50px; }
+            .record-stats { font-size:9px; gap:2px 6px; }
+            .record-stats .stat-item .stat-value { font-size:10px; }
+            
             .rotate-btn-fixed { width:36px; height:36px; font-size:15px; bottom:96px; right:6px; }
         }
     </style>
@@ -965,9 +950,39 @@
         <button class="close-notification" id="closeGpsNotification">✕</button>
     </div>
     
+    <!-- ★★★ ΕΙΔΟΠΟΙΗΣΗ ΚΑΤΑΓΡΑΦΗΣ ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ -->
     <div class="record-notification" id="recordNotification">
-        <span>🔴 Καταγραφή σε εξέλιξη...</span>
-        <button class="close-notification" id="closeRecordNotification">✕</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+            <span>🔴 Καταγραφή σε εξέλιξη...</span>
+            <button class="close-notification" id="closeRecordNotification">✕</button>
+        </div>
+        <div class="record-stats" id="recordStats">
+            <div class="stat-item">
+                <span class="stat-icon">⏱️</span>
+                <span class="stat-value" id="statTime">00:00</span>
+                <span class="stat-label">χρόνος</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📏</span>
+                <span class="stat-value" id="statDist">0.00</span>
+                <span class="stat-label">χλμ</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🏃</span>
+                <span class="stat-value" id="statAvgSpeed">0.0</span>
+                <span class="stat-label">χλμ/ώ</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">⛰️</span>
+                <span class="stat-value" id="statAltitude">--</span>
+                <span class="stat-label">υψόμετρο</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📌</span>
+                <span class="stat-value" id="statPoints">0</span>
+                <span class="stat-label">σημεία</span>
+            </div>
+        </div>
     </div>
     
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
@@ -980,7 +995,6 @@
         <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
         <button id="recordBtn" class="record-btn" title="Καταγραφή">🔴</button>
-        <!-- ★★★ ΚΟΥΜΠΙ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ -->
         <button id="cameraBtn" class="camera-btn" title="Φωτογραφία">📷</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
@@ -1017,7 +1031,6 @@
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
 
-    <!-- ★★★ INFO BAR - ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ -->
     <div class="info-bar" id="infoBar">
         <div>
             <span class="distance" id="distDisplay">0.00</span>
@@ -1027,36 +1040,6 @@
             <span class="time-label">εκτίμηση</span>
         </div>
         <div class="speed-kmh" id="speedDisplay"></div>
-        
-        <!-- ★★★ ΣΤΑΤΙΣΤΙΚΑ ΚΑΤΑΓΡΑΦΗΣ ★★★ -->
-        <div class="stats-recording" id="statsRecording">
-            <div class="stat-item">
-                <span class="stat-icon">⏱️</span>
-                <span class="stat-value" id="statTime">00:00</span>
-                <span class="stat-label">χρόνος</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">📏</span>
-                <span class="stat-value" id="statDist">0.00</span>
-                <span class="stat-label">χλμ</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">🏃</span>
-                <span class="stat-value" id="statAvgSpeed">0.0</span>
-                <span class="stat-label">χλμ/ώρα</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">⛰️</span>
-                <span class="stat-value" id="statAltitude">--</span>
-                <span class="stat-label">υψόμετρο</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-icon">📌</span>
-                <span class="stat-value" id="statPoints">0</span>
-                <span class="stat-label">σημεία</span>
-            </div>
-        </div>
-        
         <div class="dist-progress-inline" id="distProgressInline" style="display:none">
             📍 Διανυθέντα: <span id="distDone">0.00</span> χλμ | Υπολείπονται: <span id="distRemaining">0.00</span> χλμ
         </div>
@@ -1133,7 +1116,7 @@
                 <div class="help-item"><span class="help-icon">📍</span><div><strong>Θέση</strong><div class="help-desc">Εμφανίζει την τρέχουσα θέση σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🧭</span><div><strong>Follow</strong><div class="help-desc">Ο χάρτης ακολουθεί την κίνησή σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🔴</span><div><strong>Εγγραφή</strong><div class="help-desc">Καταγραφή διαδρομής → αποθήκευση GPX</div></div></div>
-                <div class="help-item"><span class="help-icon">📷</span><div><strong>Φωτογραφία</strong><div class="help-desc">Βγάλτε φωτογραφία χωρίς να φύγετε από την εφαρμογή</div></div></div>
+                <div class="help-item"><span class="help-icon">📷</span><div><strong>Φωτογραφία</strong><div class="help-desc">Βγάλτε φωτογραφία χωρίς να φύγετε</div></div></div>
             </div>
             <div class="help-section">
                 <div class="help-section-title">🗺️ Διαδρομές</div>
@@ -1155,11 +1138,10 @@
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
                 <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.3 · Άγιο Όρος</span></div>
+            <div class="help-footer"><span>Athos Maps v2.4 · Άγιο Όρος</span></div>
         </div>
     </div>
 
-    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ -->
     <div id="cameraModal">
         <video id="cameraVideo" autoplay playsinline></video>
         <canvas id="cameraCanvas" style="display:none;"></canvas>
@@ -1173,7 +1155,7 @@
 
     <script>
         // ============================================================
-        // ATHOS MAPS - v2.3 ΜΕ ΚΑΜΕΡΑ ΚΑΙ ΣΤΑΤΙΣΤΙΚΑ
+        // ATHOS MAPS - v2.4 ΜΕ ΣΤΑΤΙΣΤΙΚΑ ΣΤΗΝ ΕΙΔΟΠΟΙΗΣΗ
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -1372,7 +1354,6 @@
             currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
             alertDismissed: false, alertDisabledForever: false, audioCtx: null,
             totalDistance: 0,
-            // ★★★ ΓΙΑ ΕΚΤΙΜΗΣΗ ΧΡΟΝΟΥ ΜΕ ΒΑΣΗ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ★★★
             realSpeedHistory: [],
             avgRealSpeed: 0
         };
@@ -1415,7 +1396,7 @@
         }
 
         // ============================================================
-        // ★★★ ΚΑΜΕΡΑ ★★★
+        // ΚΑΜΕΡΑ
         // ============================================================
         
         let cameraStream = null;
@@ -1512,7 +1493,6 @@
             
             showToast('✅ Φωτογραφία αποθηκεύτηκε', '#4CAF50');
             
-            // Επαναφορά για νέα φωτογραφία
             const video = document.getElementById('cameraVideo');
             const preview = document.getElementById('cameraPreview');
             const saveBtn = document.getElementById('savePhotoBtn');
@@ -1523,7 +1503,6 @@
             capturedPhoto = null;
         }
         
-        // Κλείσιμο κάμερας με κλικ έξω
         document.getElementById('cameraModal').addEventListener('click', function(e) {
             if (e.target === this) closeCamera();
         });
@@ -1567,9 +1546,8 @@
         function startRecording() {
             isRecording = true;
             
-            // ★★★ ΕΝΗΜΕΡΩΣΗ INFO BAR ★★★
-            document.getElementById('infoBar').classList.add('recording-mode');
-            document.getElementById('statsRecording').classList.add('active');
+            // ★★★ ΕΜΦΑΝΙΣΗ ΕΙΔΟΠΟΙΗΣΗΣ ★★★
+            document.getElementById('recordNotification').classList.add('active');
             
             const saved = localStorage.getItem('athos_recorded_points');
             const savedTime = localStorage.getItem('athos_record_start_time');
@@ -1608,8 +1586,6 @@
             btn.classList.add('active');
             btn.classList.remove('stop');
             
-            document.getElementById('recordNotification').classList.add('active');
-            
             // ★★★ ΞΕΚΙΝΗΜΑ ΕΝΗΜΕΡΩΣΗΣ ΣΤΑΤΙΣΤΙΚΩΝ ★★★
             if (recordStatsInterval) clearInterval(recordStatsInterval);
             recordStatsInterval = setInterval(updateRecordStats, 1000);
@@ -1620,9 +1596,9 @@
         function stopRecording() {
             isRecording = false;
             
-            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ STATS ★★★
-            document.getElementById('infoBar').classList.remove('recording-mode');
-            document.getElementById('statsRecording').classList.remove('active');
+            // ★★★ ΑΠΟΚΡΥΨΗ ΕΙΔΟΠΟΙΗΣΗΣ ★★★
+            document.getElementById('recordNotification').classList.remove('active');
+            
             if (recordStatsInterval) {
                 clearInterval(recordStatsInterval);
                 recordStatsInterval = null;
@@ -1632,8 +1608,6 @@
             btn.textContent = '🔴';
             btn.classList.remove('active');
             btn.classList.add('stop');
-            
-            document.getElementById('recordNotification').classList.remove('active');
             
             localStorage.removeItem('athos_recorded_points');
             localStorage.removeItem('athos_recorded_distance');
@@ -1679,6 +1653,7 @@
             document.getElementById('statDist').textContent = '0.00';
             document.getElementById('statAvgSpeed').textContent = '0.0';
             document.getElementById('statPoints').textContent = '0';
+            document.getElementById('statAltitude').textContent = '--';
         }
         
         function addRecordPoint(lat, lng) {
@@ -1696,7 +1671,6 @@
             recordedPoints.push(point);
             lastRecordedPoint = point;
             
-            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ★★★
             try {
                 localStorage.setItem('athos_recorded_points', JSON.stringify(recordedPoints));
                 localStorage.setItem('athos_recorded_distance', recordedDistance.toString());
@@ -1733,26 +1707,21 @@
         function updateRecordStats() {
             if (!isRecording || recordedPoints.length === 0) return;
             
-            // Χρόνος
             const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
             const m = Math.floor(elapsed / 60);
             const s = elapsed % 60;
             document.getElementById('statTime').textContent = 
                 String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
             
-            // Απόσταση
             const distKm = recordedDistance / 1000;
             document.getElementById('statDist').textContent = distKm.toFixed(2);
             
-            // Μέση ταχύτητα
             const avgSpeed = elapsed > 0 ? (distKm / (elapsed / 3600)) : 0;
             document.getElementById('statAvgSpeed').textContent = avgSpeed.toFixed(1);
             
-            // Υψόμετρο
             document.getElementById('statAltitude').textContent = 
                 currentAltitude !== null ? Math.round(currentAltitude) + 'm' : '--';
             
-            // Σημεία
             document.getElementById('statPoints').textContent = recordedPoints.length;
         }
         
@@ -2074,7 +2043,6 @@
                 speed * 3.6 : 
                 (state.prevPosition ? L.latLng(state.prevPosition.lat, state.prevPosition.lng).distanceTo(L.latLng(lat, lng)) * 3.6 : 0);
             
-            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ΓΙΑ ΕΚΤΙΜΗΣΗ ★★★
             if (state.currentSpeedKmh > 0.5) {
                 state.realSpeedHistory.push(state.currentSpeedKmh);
                 if (state.realSpeedHistory.length > 20) {
@@ -2089,10 +2057,7 @@
                 state.currentHeading = calculateBearing(state.prevPosition.lat, state.prevPosition.lng, lat, lng);
             }
             
-            // ★★★ ΥΨΟΜΕΤΡΟ ★★★
             if (navigator.geolocation) {
-                // Το υψόμετρο δεν έρχεται πάντα από το watchPosition
-                // Το παίρνουμε από το τρέχον αίτημα
                 navigator.geolocation.getCurrentPosition(
                     p => {
                         if (p.coords.altitude !== null && p.coords.altitude !== undefined) {
@@ -2117,16 +2082,13 @@
             if (state.routeGeometry) { 
                 checkOffRoute(lat, lng); 
                 updateDistProgress();
-                // ★★★ ΕΚΤΙΜΗΣΗ ΧΡΟΝΟΥ ΜΕ ΒΑΣΗ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ★★★
                 updateRealTimeEstimate();
             }
         }
         
-        // ★★★ ΕΚΤΙΜΗΣΗ ΧΡΟΝΟΥ ΜΕ ΒΑΣΗ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ★★★
         function updateRealTimeEstimate() {
             const timeEl = document.getElementById('timeDisplay');
             if (state.routeDistance > 0 && state.routeGeometry && state.lastPosition) {
-                // Υπολογισμός εναπομένουσας απόστασης
                 let minDist = Infinity, closestIdx = 0;
                 for (let i = 0; i < state.routeGeometry.length; i++) {
                     const d = L.latLng(state.lastPosition.lat, state.lastPosition.lng).distanceTo(
@@ -2140,9 +2102,8 @@
                         L.latLng(state.routeGeometry[i+1][1], state.routeGeometry[i+1][0])
                     );
                 }
-                remainingDist /= 1000; // σε χλμ
+                remainingDist /= 1000;
                 
-                // Χρήση πραγματικής μέσης ταχύτητας αν υπάρχει, αλλιώς της επιλεγμένης
                 const speedToUse = state.avgRealSpeed > 0.5 ? state.avgRealSpeed : state.currentSpeed;
                 const hours = remainingDist / speedToUse;
                 const minutes = Math.round(hours * 60);
@@ -2222,7 +2183,7 @@
         }
 
         // ============================================================
-        // ROUTES
+        // ROUTES (συντομευμένα)
         // ============================================================
         
         function showRoutes() {
@@ -2267,8 +2228,6 @@
 
         function loadRouteFromUrl(url, name, dist, time) {
             disableGpsAndFollow();
-            
-            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
             state.realSpeedHistory = [];
             state.avgRealSpeed = 0;
             
@@ -2315,8 +2274,6 @@
 
         function loadGpxFile(file) {
             disableGpsAndFollow();
-            
-            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
             state.realSpeedHistory = [];
             state.avgRealSpeed = 0;
             
@@ -2369,8 +2326,6 @@
 
         function loadGpxFromData(gpxData, name) {
             disableGpsAndFollow();
-            
-            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
             state.realSpeedHistory = [];
             state.avgRealSpeed = 0;
             
@@ -2446,7 +2401,6 @@
                     timeEl.textContent = state.originalTime;
                     timeEl.className = 'time excel';
                 } else {
-                    // ★★★ ΧΡΗΣΙΜΟΠΟΙΟΥΜΕ ΤΗΝ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ΑΝ ΥΠΑΡΧΕΙ ★★★
                     const speedToUse = state.avgRealSpeed > 0.5 ? state.avgRealSpeed : state.currentSpeed;
                     const m = Math.round((state.routeDistance / speedToUse) * 60);
                     const h = Math.floor(m / 60);
@@ -2469,8 +2423,6 @@
             state.routeDistance = 0;
             state.currentRouteName = '';
             state.originalTime = null;
-            
-            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
             state.realSpeedHistory = [];
             state.avgRealSpeed = 0;
             
@@ -2541,7 +2493,7 @@
         }
 
         // ============================================================
-        // SOS, SCREEN, DOWNLOAD, OFFLINE
+        // SOS, SCREEN, DOWNLOAD, OFFLINE (συντομευμένα)
         // ============================================================
         
         function openSos() {
