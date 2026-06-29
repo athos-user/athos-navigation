@@ -92,6 +92,9 @@
         .header button.record-btn.stop{background:#555}
         @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 12px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
         
+        /* ★★★ ΚΟΥΜΠΙ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ */
+        .header button.camera-btn{background:#FF6F00;font-size:18px;padding:5px 12px}
+        
         .header a.design-btn{background:#4CAF50;font-size:13px;padding:5px 10px}
         .header select{
             background:rgba(255,255,255,0.12);
@@ -186,6 +189,7 @@
             margin:3px 0;
         }
         
+        /* ★★★ INFO BAR - ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ */
         .info-bar{
             position:fixed;
             bottom:56px;
@@ -193,32 +197,63 @@
             transform:translateX(-50%);
             z-index:900;
             background:rgba(13,17,23,0.95);
-            padding:10px 18px;
+            padding:8px 14px;
             border-radius:12px;
             box-shadow:0 4px 20px rgba(0,0,0,0.5);
             text-align:center;
-            min-width:180px;
+            min-width:200px;
             max-width:95%;
             border:2px solid #2196F3;
             color:#eee;
             backdrop-filter:blur(8px);
             cursor:grab;
-            user-select:none
+            user-select:none;
+            transition:all 0.3s;
         }
         .info-bar:active{cursor:grabbing}
+        .info-bar.recording-mode {
+            border-color:#f44336;
+            background:rgba(13,17,23,0.98);
+        }
         
-        .info-bar .distance{font-size:28px;font-weight:800;color:#4CAF50}
-        .info-bar .distance-label{font-size:14px;color:#888;font-weight:400}
-        .info-bar .time{font-size:24px;font-weight:700;color:#FF9800}
+        .info-bar .distance{font-size:26px;font-weight:800;color:#4CAF50}
+        .info-bar .distance-label{font-size:12px;color:#888;font-weight:400}
+        .info-bar .time{font-size:22px;font-weight:700;color:#FF9800}
         .info-bar .time.excel{color:#FF9800}
         .info-bar .time.calculated{color:#00BCD4}
-        .info-bar .time-label{font-size:14px;color:#888;font-weight:400}
-        .info-bar .speed-kmh{font-size:14px;color:#00BCD4;font-weight:700;margin-top:3px}
-        .info-bar .dist-progress-inline{font-size:12px;color:#aaa;margin-top:3px}
+        .info-bar .time-label{font-size:12px;color:#888;font-weight:400}
+        .info-bar .speed-kmh{font-size:13px;color:#00BCD4;font-weight:700;margin-top:2px}
+        
+        /* ★★★ ΣΤΑΤΙΣΤΙΚΑ ΚΑΤΑΓΡΑΦΗΣ ★★★ */
+        .info-bar .stats-recording {
+            display:none;
+            font-size:11px;
+            color:#aaa;
+            margin-top:4px;
+            padding-top:4px;
+            border-top:1px solid rgba(255,255,255,0.08);
+            gap:8px;
+            justify-content:center;
+            flex-wrap:wrap;
+        }
+        .info-bar .stats-recording.active { display:flex; }
+        .info-bar .stats-recording .stat-item {
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            background:rgba(255,255,255,0.06);
+            padding:2px 10px;
+            border-radius:12px;
+        }
+        .info-bar .stats-recording .stat-item .stat-icon { font-size:13px; }
+        .info-bar .stats-recording .stat-item .stat-value { color:#4CAF50; font-weight:700; font-size:12px; }
+        .info-bar .stats-recording .stat-item .stat-label { color:#888; font-size:9px; }
+        
+        .info-bar .dist-progress-inline{font-size:11px;color:#aaa;margin-top:2px}
         .info-bar .dist-progress-inline span{color:#4CAF50;font-weight:700}
         .info-bar .dist-progress-inline .remaining{color:#FF9800}
-        .info-bar .status{font-size:11px;color:#aaa;margin-top:4px}
-        .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:13px}
+        .info-bar .status{font-size:10px;color:#aaa;margin-top:3px}
+        .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:12px}
         .info-bar .offroute.active{display:block}
         
         .bottom-bar{
@@ -791,11 +826,71 @@
         }
         #helpModal .help-footer span { color:#888; }
         
+        /* ★★★ ΠΑΡΑΘΥΡΟ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ */
+        #cameraModal {
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index:5000;
+            background:rgba(0,0,0,0.95);
+            display:none;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            padding:16px;
+        }
+        #cameraModal.active { display:flex; }
+        
+        #cameraModal video {
+            max-width:100%;
+            max-height:70vh;
+            border-radius:12px;
+            background:#000;
+            transform:scaleX(-1);
+        }
+        
+        #cameraModal .camera-controls {
+            display:flex;
+            gap:16px;
+            margin-top:16px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+        #cameraModal .camera-controls button {
+            padding:12px 24px;
+            border-radius:50%;
+            border:none;
+            font-size:24px;
+            cursor:pointer;
+            min-width:60px;
+            min-height:60px;
+            font-weight:700;
+            transition:all 0.2s;
+            touch-action:manipulation;
+        }
+        #cameraModal .camera-controls button:active { transform:scale(0.9); }
+        #cameraModal .camera-controls .capture-btn { background:#f44336; color:white; }
+        #cameraModal .camera-controls .close-camera-btn { background:#555; color:white; font-size:20px; }
+        #cameraModal .camera-controls .capture-btn:hover { background:#d32f2f; }
+        #cameraModal .camera-controls .close-camera-btn:hover { background:#777; }
+        
+        #cameraModal .camera-preview {
+            max-width:100%;
+            max-height:70vh;
+            border-radius:12px;
+            display:none;
+            background:#000;
+        }
+        #cameraModal .camera-preview.active { display:block; }
+        
         @media(max-width:768px){
             .header { height:50px; padding:4px 6px; gap:3px; }
             .header button, .header a { padding:4px 8px; font-size:11px; min-height:34px; height:34px; }
             .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn { font-size:16px; padding:4px 10px; }
+            .header button.help-btn,.header button.record-btn,
+            .header button.camera-btn { font-size:16px; padding:4px 10px; }
             .header button.route-btn,.header button.load-btn,
             .header button.clear-btn,.header button.resume-btn { font-size:12px; padding:4px 8px; }
             .header button.dl-btn,.header button.offline-btn { font-size:13px; padding:4px 10px; }
@@ -805,12 +900,14 @@
             .header-dropdown { top:50px; right:6px; min-width:150px; padding:6px; }
             .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:12px; padding:6px 10px; min-height:32px; }
             
-            .info-bar{ padding:6px 10px; bottom:48px; min-width:140px; }
+            .info-bar{ padding:6px 10px; bottom:48px; min-width:150px; }
             .info-bar .distance{font-size:20px}
             .info-bar .time{font-size:16px}
             .info-bar .distance-label,.info-bar .time-label{font-size:10px}
             .info-bar .speed-kmh{font-size:11px}
             .info-bar .status{font-size:9px}
+            .info-bar .stats-recording .stat-item { font-size:10px; padding:1px 6px; }
+            .info-bar .stats-recording .stat-item .stat-value { font-size:11px; }
             
             .bottom-bar{ padding:4px 4px; gap:3px; }
             .bottom-bar button{ font-size:10px; padding:4px 6px; min-height:26px; }
@@ -833,13 +930,16 @@
             #helpModal .help-item { font-size:11px; padding:6px 8px; }
             #helpModal .help-icon { font-size:17px; width:28px; }
             #helpModal .help-title h2 { font-size:15px; }
+            
+            #cameraModal .camera-controls button { width:50px; height:50px; font-size:18px; padding:0; }
         }
         
         @media(max-width:400px){
             .header { height:46px; padding:3px 4px; gap:2px; }
             .header button, .header a { padding:3px 6px; font-size:10px; min-height:30px; height:30px; }
             .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn { font-size:14px; padding:3px 8px; }
+            .header button.help-btn,.header button.record-btn,
+            .header button.camera-btn { font-size:14px; padding:3px 8px; }
             .header button.route-btn,.header button.load-btn,
             .header button.clear-btn,.header button.resume-btn { font-size:10px; padding:3px 6px; }
             .header button.dl-btn,.header button.offline-btn { font-size:11px; padding:3px 8px; }
@@ -880,6 +980,8 @@
         <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
         <button id="recordBtn" class="record-btn" title="Καταγραφή">🔴</button>
+        <!-- ★★★ ΚΟΥΜΠΙ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ -->
+        <button id="cameraBtn" class="camera-btn" title="Φωτογραφία">📷</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
         <button id="offlineBtn" class="offline-btn" title="Offline">📴</button>
@@ -915,6 +1017,7 @@
         <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
 
+    <!-- ★★★ INFO BAR - ΜΕ ΣΤΑΤΙΣΤΙΚΑ ★★★ -->
     <div class="info-bar" id="infoBar">
         <div>
             <span class="distance" id="distDisplay">0.00</span>
@@ -924,6 +1027,36 @@
             <span class="time-label">εκτίμηση</span>
         </div>
         <div class="speed-kmh" id="speedDisplay"></div>
+        
+        <!-- ★★★ ΣΤΑΤΙΣΤΙΚΑ ΚΑΤΑΓΡΑΦΗΣ ★★★ -->
+        <div class="stats-recording" id="statsRecording">
+            <div class="stat-item">
+                <span class="stat-icon">⏱️</span>
+                <span class="stat-value" id="statTime">00:00</span>
+                <span class="stat-label">χρόνος</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📏</span>
+                <span class="stat-value" id="statDist">0.00</span>
+                <span class="stat-label">χλμ</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🏃</span>
+                <span class="stat-value" id="statAvgSpeed">0.0</span>
+                <span class="stat-label">χλμ/ώρα</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">⛰️</span>
+                <span class="stat-value" id="statAltitude">--</span>
+                <span class="stat-label">υψόμετρο</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📌</span>
+                <span class="stat-value" id="statPoints">0</span>
+                <span class="stat-label">σημεία</span>
+            </div>
+        </div>
+        
         <div class="dist-progress-inline" id="distProgressInline" style="display:none">
             📍 Διανυθέντα: <span id="distDone">0.00</span> χλμ | Υπολείπονται: <span id="distRemaining">0.00</span> χλμ
         </div>
@@ -1000,6 +1133,7 @@
                 <div class="help-item"><span class="help-icon">📍</span><div><strong>Θέση</strong><div class="help-desc">Εμφανίζει την τρέχουσα θέση σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🧭</span><div><strong>Follow</strong><div class="help-desc">Ο χάρτης ακολουθεί την κίνησή σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🔴</span><div><strong>Εγγραφή</strong><div class="help-desc">Καταγραφή διαδρομής → αποθήκευση GPX</div></div></div>
+                <div class="help-item"><span class="help-icon">📷</span><div><strong>Φωτογραφία</strong><div class="help-desc">Βγάλτε φωτογραφία χωρίς να φύγετε από την εφαρμογή</div></div></div>
             </div>
             <div class="help-section">
                 <div class="help-section-title">🗺️ Διαδρομές</div>
@@ -1021,16 +1155,25 @@
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
                 <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.2 · Άγιο Όρος</span></div>
+            <div class="help-footer"><span>Athos Maps v2.3 · Άγιο Όρος</span></div>
+        </div>
+    </div>
+
+    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΦΩΤΟΓΡΑΦΙΑΣ ★★★ -->
+    <div id="cameraModal">
+        <video id="cameraVideo" autoplay playsinline></video>
+        <canvas id="cameraCanvas" style="display:none;"></canvas>
+        <img id="cameraPreview" class="camera-preview" alt="Φωτογραφία">
+        <div class="camera-controls">
+            <button class="close-camera-btn" id="closeCameraBtn" title="Κλείσιμο">✕</button>
+            <button class="capture-btn" id="captureBtn" title="Φωτογραφία">📷</button>
+            <button id="savePhotoBtn" style="display:none;background:#4CAF50;color:white;border-radius:50%;width:60px;height:60px;font-size:20px;border:none;cursor:pointer;">💾</button>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ v2.2
-        // - Αποθήκευση καταγραφής στο localStorage
-        // - Μπλε χρώμα για το ίχνος (αντί για κόκκινο)
-        // - Επαναφορά καταγραφής αν κλείσει η εφαρμογή
+        // ATHOS MAPS - v2.3 ΜΕ ΚΑΜΕΡΑ ΚΑΙ ΣΤΑΤΙΣΤΙΚΑ
         // ============================================================
         
         const ACCESS_CODE = '10101010';
@@ -1043,6 +1186,8 @@
         let recordedDistance = 0;
         let lastRecordedPoint = null;
         let recordStartTime = null;
+        let recordStatsInterval = null;
+        let currentAltitude = null;
         
         const OFF_ROUTE_THRESHOLD = 100;
         const NAV_UPDATE_INTERVAL = 300;
@@ -1060,7 +1205,7 @@
             'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
         };
 
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★ (συντομευμένα εδώ - βάλε όλες τις διαδρομές σου)
+        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★ (συντομευμένα - βάλε όλες)
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1225,7 +1370,11 @@
             lastPosition: null, prevPosition: null, currentHeading: 0,
             wakeLock: null, lastUserInteraction: 0,
             currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null
+            alertDismissed: false, alertDisabledForever: false, audioCtx: null,
+            totalDistance: 0,
+            // ★★★ ΓΙΑ ΕΚΤΙΜΗΣΗ ΧΡΟΝΟΥ ΜΕ ΒΑΣΗ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ★★★
+            realSpeedHistory: [],
+            avgRealSpeed: 0
         };
 
         // ============================================================
@@ -1266,6 +1415,120 @@
         }
 
         // ============================================================
+        // ★★★ ΚΑΜΕΡΑ ★★★
+        // ============================================================
+        
+        let cameraStream = null;
+        let capturedPhoto = null;
+        
+        document.getElementById('cameraBtn').addEventListener('click', openCamera);
+        document.getElementById('closeCameraBtn').addEventListener('click', closeCamera);
+        document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+        document.getElementById('savePhotoBtn').addEventListener('click', savePhoto);
+        
+        function openCamera() {
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            const preview = document.getElementById('cameraPreview');
+            const saveBtn = document.getElementById('savePhotoBtn');
+            
+            modal.classList.add('active');
+            video.style.display = 'block';
+            preview.classList.remove('active');
+            preview.style.display = 'none';
+            saveBtn.style.display = 'none';
+            capturedPhoto = null;
+            
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+                    audio: false 
+                })
+                .then(stream => {
+                    cameraStream = stream;
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(err => {
+                    showToast('❌ Δεν μπορεί να ανοίξει η κάμερα: ' + err.message, '#f44336');
+                    closeCamera();
+                });
+            } else {
+                showToast('❌ Η κάμερα δεν υποστηρίζεται', '#f44336');
+                closeCamera();
+            }
+        }
+        
+        function closeCamera() {
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            video.srcObject = null;
+            modal.classList.remove('active');
+            
+            const preview = document.getElementById('cameraPreview');
+            preview.classList.remove('active');
+            preview.style.display = 'none';
+            document.getElementById('savePhotoBtn').style.display = 'none';
+        }
+        
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const preview = document.getElementById('cameraPreview');
+            const saveBtn = document.getElementById('savePhotoBtn');
+            
+            canvas.width = video.videoWidth || 1280;
+            canvas.height = video.videoHeight || 720;
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            capturedPhoto = canvas.toDataURL('image/jpeg', 0.95);
+            preview.src = capturedPhoto;
+            preview.style.display = 'block';
+            preview.classList.add('active');
+            video.style.display = 'none';
+            saveBtn.style.display = 'block';
+            
+            showToast('📷 Φωτογραφία τραβήχτηκε! Πατήστε 💾 για αποθήκευση', '#4CAF50');
+        }
+        
+        function savePhoto() {
+            if (!capturedPhoto) return;
+            
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            link.download = 'athos_photo_' + timestamp + '.jpg';
+            link.href = capturedPhoto;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('✅ Φωτογραφία αποθηκεύτηκε', '#4CAF50');
+            
+            // Επαναφορά για νέα φωτογραφία
+            const video = document.getElementById('cameraVideo');
+            const preview = document.getElementById('cameraPreview');
+            const saveBtn = document.getElementById('savePhotoBtn');
+            preview.classList.remove('active');
+            preview.style.display = 'none';
+            saveBtn.style.display = 'none';
+            video.style.display = 'block';
+            capturedPhoto = null;
+        }
+        
+        // Κλείσιμο κάμερας με κλικ έξω
+        document.getElementById('cameraModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCamera();
+        });
+
+        // ============================================================
         // DROPDOWN MENU
         // ============================================================
         
@@ -1285,7 +1548,7 @@
         });
 
         // ============================================================
-        // ★★★ ΚΑΤΑΓΡΑΦΗ ΔΙΑΔΡΟΜΗΣ - ΜΕ ΑΠΟΘΗΚΕΥΣΗ ★★★
+        // ★★★ ΚΑΤΑΓΡΑΦΗ ΔΙΑΔΡΟΜΗΣ ★★★
         // ============================================================
         
         function toggleRecording() {
@@ -1304,7 +1567,10 @@
         function startRecording() {
             isRecording = true;
             
-            // ★★★ ΦΟΡΤΩΣΗ ΑΠΟΘΗΚΕΥΜΕΝΩΝ ΣΗΜΕΙΩΝ ★★★
+            // ★★★ ΕΝΗΜΕΡΩΣΗ INFO BAR ★★★
+            document.getElementById('infoBar').classList.add('recording-mode');
+            document.getElementById('statsRecording').classList.add('active');
+            
             const saved = localStorage.getItem('athos_recorded_points');
             const savedTime = localStorage.getItem('athos_record_start_time');
             
@@ -1317,11 +1583,8 @@
                         recordedDistance = localStorage.getItem('athos_recorded_distance') ? 
                             parseFloat(localStorage.getItem('athos_recorded_distance')) : 0;
                         recordStartTime = savedTime ? parseInt(savedTime) : Date.now();
-                        // Επαναφορά της γραμμής
                         updateRecordedLine();
-                        // Ενημέρωση οθόνης
-                        document.getElementById('distDisplay').textContent = (recordedDistance / 1000).toFixed(2);
-                        document.getElementById('timeDisplay').textContent = formatRecordTime();
+                        updateRecordStats();
                         const badge = document.getElementById('cacheBadge');
                         badge.textContent = '🔴 ' + recordedPoints.length;
                         badge.className = 'badge recording';
@@ -1347,11 +1610,23 @@
             
             document.getElementById('recordNotification').classList.add('active');
             
+            // ★★★ ΞΕΚΙΝΗΜΑ ΕΝΗΜΕΡΩΣΗΣ ΣΤΑΤΙΣΤΙΚΩΝ ★★★
+            if (recordStatsInterval) clearInterval(recordStatsInterval);
+            recordStatsInterval = setInterval(updateRecordStats, 1000);
+            
             showToast('🔴 Καταγραφή σε εξέλιξη...', '#f44336');
         }
         
         function stopRecording() {
             isRecording = false;
+            
+            // ★★★ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ STATS ★★★
+            document.getElementById('infoBar').classList.remove('recording-mode');
+            document.getElementById('statsRecording').classList.remove('active');
+            if (recordStatsInterval) {
+                clearInterval(recordStatsInterval);
+                recordStatsInterval = null;
+            }
             
             const btn = document.getElementById('recordBtn');
             btn.textContent = '🔴';
@@ -1360,7 +1635,6 @@
             
             document.getElementById('recordNotification').classList.remove('active');
             
-            // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΑΠΟΘΗΚΕΥΣΗΣ ★★★
             localStorage.removeItem('athos_recorded_points');
             localStorage.removeItem('athos_recorded_distance');
             localStorage.removeItem('athos_record_start_time');
@@ -1392,7 +1666,6 @@
                 localStorage.setItem('athos_recorded_name', fileName.replace('.gpx', ''));
             }
             
-            // Καθαρισμός σημείων μετά την αποθήκευση
             recordedPoints = [];
             if (recordedLine) {
                 state.map.removeLayer(recordedLine);
@@ -1402,6 +1675,10 @@
             lastRecordedPoint = null;
             document.getElementById('distDisplay').textContent = '0.00';
             document.getElementById('timeDisplay').textContent = '--:--';
+            document.getElementById('statTime').textContent = '00:00';
+            document.getElementById('statDist').textContent = '0.00';
+            document.getElementById('statAvgSpeed').textContent = '0.0';
+            document.getElementById('statPoints').textContent = '0';
         }
         
         function addRecordPoint(lat, lng) {
@@ -1419,7 +1696,7 @@
             recordedPoints.push(point);
             lastRecordedPoint = point;
             
-            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ΣΤΟ LOCALSTORAGE ★★★
+            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ★★★
             try {
                 localStorage.setItem('athos_recorded_points', JSON.stringify(recordedPoints));
                 localStorage.setItem('athos_recorded_distance', recordedDistance.toString());
@@ -1432,9 +1709,7 @@
             badge.textContent = '🔴 ' + recordedPoints.length;
             
             updateRecordedLine();
-            
-            document.getElementById('distDisplay').textContent = (recordedDistance / 1000).toFixed(2);
-            document.getElementById('timeDisplay').textContent = formatRecordTime();
+            updateRecordStats();
         }
         
         function updateRecordedLine() {
@@ -1445,15 +1720,40 @@
             if (recordedPoints.length < 2) return;
             
             const coords = recordedPoints.map(p => [p.lat, p.lng]);
-            
-            // ★★★ ΜΠΛΕ ΧΡΩΜΑ ΓΙΑ ΤΟ ΙΧΝΟΣ (αντί για κόκκινο) ★★★
             recordedLine = L.polyline(coords, {
-                color: '#2196F3',     // Μπλε
+                color: '#2196F3',
                 weight: 4,
                 opacity: 0.9,
                 dashArray: '6, 3',
                 smoothFactor: 1
             }).addTo(state.map);
+        }
+        
+        // ★★★ ΕΝΗΜΕΡΩΣΗ ΣΤΑΤΙΣΤΙΚΩΝ ★★★
+        function updateRecordStats() {
+            if (!isRecording || recordedPoints.length === 0) return;
+            
+            // Χρόνος
+            const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+            const m = Math.floor(elapsed / 60);
+            const s = elapsed % 60;
+            document.getElementById('statTime').textContent = 
+                String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            
+            // Απόσταση
+            const distKm = recordedDistance / 1000;
+            document.getElementById('statDist').textContent = distKm.toFixed(2);
+            
+            // Μέση ταχύτητα
+            const avgSpeed = elapsed > 0 ? (distKm / (elapsed / 3600)) : 0;
+            document.getElementById('statAvgSpeed').textContent = avgSpeed.toFixed(1);
+            
+            // Υψόμετρο
+            document.getElementById('statAltitude').textContent = 
+                currentAltitude !== null ? Math.round(currentAltitude) + 'm' : '--';
+            
+            // Σημεία
+            document.getElementById('statPoints').textContent = recordedPoints.length;
         }
         
         function formatRecordTime() {
@@ -1590,7 +1890,6 @@
             
             document.getElementById('recordBtn').addEventListener('click', toggleRecording);
             
-            // ★★★ ΑΝ ΥΠΑΡΧΕΙ ΑΠΟΘΗΚΕΥΜΕΝΗ ΚΑΤΑΓΡΑΦΗ, ΕΝΗΜΕΡΩΣΗ ★★★
             const savedPoints = localStorage.getItem('athos_recorded_points');
             if (savedPoints) {
                 try {
@@ -1599,7 +1898,6 @@
                         const badge = document.getElementById('cacheBadge');
                         badge.textContent = '🔴 ' + parsed.length;
                         badge.className = 'badge recording';
-                        // Δεν ξεκινάμε αυτόματα την καταγραφή, αλλά δείχνουμε ότι υπάρχει
                         showToast('📌 Υπάρχει αποθηκευμένη καταγραφή (' + parsed.length + ' σημεία)', '#2196F3');
                     }
                 } catch(e) {}
@@ -1761,9 +2059,6 @@
             }
             if (state.isNavigating) stopNavigation();
             
-            // ★★★ ΑΝ ΣΤΑΜΑΤΑΕΙ ΤΟ GPS, ΣΥΝΕΧΙΖΕΙ Η ΚΑΤΑΓΡΑΦΗ ΜΕ ΤΑ ΑΠΟΘΗΚΕΥΜΕΝΑ ★★★
-            // Δεν σταματάμε την καταγραφή, απλά δεν προσθέτουμε νέα σημεία
-            
             state.isGpsOn = false;
             document.getElementById('gpsBtn').textContent = '📍';
             document.getElementById('gpsBtn').classList.remove('active');
@@ -1779,21 +2074,91 @@
                 speed * 3.6 : 
                 (state.prevPosition ? L.latLng(state.prevPosition.lat, state.prevPosition.lng).distanceTo(L.latLng(lat, lng)) * 3.6 : 0);
             
+            // ★★★ ΑΠΟΘΗΚΕΥΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ΓΙΑ ΕΚΤΙΜΗΣΗ ★★★
+            if (state.currentSpeedKmh > 0.5) {
+                state.realSpeedHistory.push(state.currentSpeedKmh);
+                if (state.realSpeedHistory.length > 20) {
+                    state.realSpeedHistory.shift();
+                }
+                state.avgRealSpeed = state.realSpeedHistory.reduce((a,b) => a + b, 0) / state.realSpeedHistory.length;
+            }
+            
             if (heading !== null && heading !== undefined && heading >= 0 && state.currentSpeedKmh > 0.5) {
                 state.currentHeading = heading;
             } else if (state.prevPosition && state.currentSpeedKmh > 0.5) {
                 state.currentHeading = calculateBearing(state.prevPosition.lat, state.prevPosition.lng, lat, lng);
             }
             
+            // ★★★ ΥΨΟΜΕΤΡΟ ★★★
+            if (navigator.geolocation) {
+                // Το υψόμετρο δεν έρχεται πάντα από το watchPosition
+                // Το παίρνουμε από το τρέχον αίτημα
+                navigator.geolocation.getCurrentPosition(
+                    p => {
+                        if (p.coords.altitude !== null && p.coords.altitude !== undefined) {
+                            currentAltitude = p.coords.altitude;
+                            if (isRecording) {
+                                document.getElementById('statAltitude').textContent = Math.round(currentAltitude) + 'm';
+                            }
+                        }
+                    },
+                    () => {},
+                    { enableHighAccuracy: true, timeout: 5000 }
+                );
+            }
+            
             document.getElementById('speedDisplay').textContent = state.currentSpeedKmh > 0.3 ? `${state.currentSpeedKmh.toFixed(1)} km/h` : '';
             updateUserMarker(lat, lng);
             
-            // ★★★ ΠΡΟΣΘΗΚΗ ΣΗΜΕΙΟΥ ΣΤΗΝ ΚΑΤΑΓΡΑΦΗ ★★★
             if (isRecording) {
                 addRecordPoint(lat, lng);
             }
             
-            if (state.routeGeometry) { checkOffRoute(lat, lng); updateDistProgress(); }
+            if (state.routeGeometry) { 
+                checkOffRoute(lat, lng); 
+                updateDistProgress();
+                // ★★★ ΕΚΤΙΜΗΣΗ ΧΡΟΝΟΥ ΜΕ ΒΑΣΗ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ★★★
+                updateRealTimeEstimate();
+            }
+        }
+        
+        // ★★★ ΕΚΤΙΜΗΣΗ ΧΡΟΝΟΥ ΜΕ ΒΑΣΗ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ★★★
+        function updateRealTimeEstimate() {
+            const timeEl = document.getElementById('timeDisplay');
+            if (state.routeDistance > 0 && state.routeGeometry && state.lastPosition) {
+                // Υπολογισμός εναπομένουσας απόστασης
+                let minDist = Infinity, closestIdx = 0;
+                for (let i = 0; i < state.routeGeometry.length; i++) {
+                    const d = L.latLng(state.lastPosition.lat, state.lastPosition.lng).distanceTo(
+                        L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
+                    );
+                    if (d < minDist) { minDist = d; closestIdx = i; }
+                }
+                let remainingDist = 0;
+                for (let i = closestIdx; i < state.routeGeometry.length - 1; i++) {
+                    remainingDist += L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0]).distanceTo(
+                        L.latLng(state.routeGeometry[i+1][1], state.routeGeometry[i+1][0])
+                    );
+                }
+                remainingDist /= 1000; // σε χλμ
+                
+                // Χρήση πραγματικής μέσης ταχύτητας αν υπάρχει, αλλιώς της επιλεγμένης
+                const speedToUse = state.avgRealSpeed > 0.5 ? state.avgRealSpeed : state.currentSpeed;
+                const hours = remainingDist / speedToUse;
+                const minutes = Math.round(hours * 60);
+                if (minutes > 0 && speedToUse > 0.5) {
+                    const h = Math.floor(minutes / 60);
+                    const m = minutes % 60;
+                    timeEl.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
+                    timeEl.className = 'time calculated';
+                } else if (state.originalTime) {
+                    timeEl.textContent = state.originalTime;
+                    timeEl.className = 'time excel';
+                } else {
+                    timeEl.textContent = '--:--';
+                    timeEl.className = 'time';
+                }
+            }
         }
 
         function calculateBearing(l1, ln1, l2, ln2) {
@@ -1903,6 +2268,10 @@
         function loadRouteFromUrl(url, name, dist, time) {
             disableGpsAndFollow();
             
+            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
+            state.realSpeedHistory = [];
+            state.avgRealSpeed = 0;
+            
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1946,6 +2315,10 @@
 
         function loadGpxFile(file) {
             disableGpsAndFollow();
+            
+            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
+            state.realSpeedHistory = [];
+            state.avgRealSpeed = 0;
             
             const r = new FileReader();
             r.onload = function(e) {
@@ -1996,6 +2369,10 @@
 
         function loadGpxFromData(gpxData, name) {
             disableGpsAndFollow();
+            
+            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
+            state.realSpeedHistory = [];
+            state.avgRealSpeed = 0;
             
             try {
                 if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
@@ -2069,7 +2446,9 @@
                     timeEl.textContent = state.originalTime;
                     timeEl.className = 'time excel';
                 } else {
-                    const m = Math.round((state.routeDistance / state.currentSpeed) * 60);
+                    // ★★★ ΧΡΗΣΙΜΟΠΟΙΟΥΜΕ ΤΗΝ ΠΡΑΓΜΑΤΙΚΗ ΤΑΧΥΤΗΤΑ ΑΝ ΥΠΑΡΧΕΙ ★★★
+                    const speedToUse = state.avgRealSpeed > 0.5 ? state.avgRealSpeed : state.currentSpeed;
+                    const m = Math.round((state.routeDistance / speedToUse) * 60);
                     const h = Math.floor(m / 60);
                     const mm = m % 60;
                     timeEl.textContent = h > 0 ? `${h}h ${mm}m` : `${mm}m`;
@@ -2090,6 +2469,10 @@
             state.routeDistance = 0;
             state.currentRouteName = '';
             state.originalTime = null;
+            
+            // ★★★ ΕΚΚΑΘΑΡΙΣΗ ΠΡΑΓΜΑΤΙΚΗΣ ΤΑΧΥΤΗΤΑΣ ★★★
+            state.realSpeedHistory = [];
+            state.avgRealSpeed = 0;
             
             document.getElementById('distDisplay').textContent = '0.00';
             document.getElementById('timeDisplay').textContent = '--:--';
