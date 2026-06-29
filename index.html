@@ -32,6 +32,9 @@
             pointer-events: auto;
         }
         
+        /* ============================================================
+           HEADER - ΠΑΝΩ ΜΠΑΡΑ (ΜΕΓΑΛΥΤΕΡΑ ΕΙΚΟΝΙΔΙΑ)
+           ============================================================ */
         .header{
             position:fixed;
             top:0;
@@ -39,14 +42,14 @@
             right:0;
             z-index:1000;
             background:rgba(13,17,23,0.95);
-            padding:4px 6px;
+            padding:5px 8px;
             display:flex;
             flex-wrap:nowrap;
-            gap:3px;
+            gap:4px;
             align-items:center;
             backdrop-filter:blur(8px);
             border-bottom:2px solid #2196F3;
-            height:48px;
+            height:54px;
             overflow-x:auto;
             overflow-y:hidden;
             -webkit-overflow-scrolling:touch;
@@ -55,97 +58,100 @@
         .header::-webkit-scrollbar { display:none; }
         
         .header button,.header a{
-            padding:4px 7px;
-            font-size:10px;
-            border-radius:6px;
+            padding:5px 10px;
+            font-size:12px;
+            border-radius:8px;
             border:none;
             color:white;
             cursor:pointer;
-            min-height:34px;
-            height:34px;
-            font-weight:600;
+            min-height:38px;
+            height:38px;
+            font-weight:700;
             transition:all 0.2s;
             touch-action:manipulation;
             text-decoration:none;
             display:inline-flex;
             align-items:center;
-            gap:3px;
+            gap:4px;
             white-space:nowrap;
             flex-shrink:0;
         }
-        .header button:active,.header a:active{transform:scale(0.94)}
+        .header button:active,.header a:active{transform:scale(0.92)}
         
-        .header button.gps-btn{background:#2196F3;font-size:14px}
-        .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
-        .header button.nav-btn{background:#FF9800;font-size:14px}
-        .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,0.5)}
-        .header button.route-btn{background:#8e44ad;font-size:10px}
-        .header button.load-btn{background:#4CAF50;font-size:10px}
-        .header button.clear-btn{background:#d35400;font-size:10px}
-        .header button.dl-btn{background:#673AB7;font-size:11px}
-        .header button.offline-btn{background:#2980b9;font-size:11px}
+        /* ★★★ ΜΕΓΑΛΥΤΕΡΑ ΕΙΚΟΝΙΔΙΑ ★★★ */
+        .header button.gps-btn{background:#2196F3;font-size:18px;padding:5px 12px}
+        .header button.gps-btn.active{background:#00BCD4;box-shadow:0 0 16px rgba(0,188,212,0.5)}
+        .header button.nav-btn{background:#FF9800;font-size:18px;padding:5px 12px}
+        .header button.nav-btn.active{background:#FF5722;box-shadow:0 0 16px rgba(255,87,34,0.5)}
+        .header button.route-btn{background:#8e44ad;font-size:13px;padding:5px 10px}
+        .header button.load-btn{background:#4CAF50;font-size:13px;padding:5px 10px}
+        .header button.clear-btn{background:#d35400;font-size:13px;padding:5px 10px}
+        .header button.dl-btn{background:#673AB7;font-size:14px;padding:5px 12px}
+        .header button.offline-btn{background:#2980b9;font-size:14px;padding:5px 12px}
         .header button.offline-btn.active{background:#27ae60}
-        .header button.resume-btn{background:#e91e63;font-size:10px}
-        .header button.help-btn{background:#9C27B0;font-size:14px}
-        .header button.record-btn{background:#f44336;font-size:14px}
+        .header button.resume-btn{background:#e91e63;font-size:13px;padding:5px 10px}
+        .header button.help-btn{background:#9C27B0;font-size:18px;padding:5px 12px}
+        .header button.record-btn{background:#f44336;font-size:18px;padding:5px 12px}
         .header button.record-btn.active{background:#d32f2f;box-shadow:0 0 20px rgba(244,67,54,0.6);animation:pulse-record 1.5s infinite}
         .header button.record-btn.stop{background:#555}
-        @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 10px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
+        @keyframes pulse-record{0%{box-shadow:0 0 0 0 rgba(244,67,54,0.6)}70%{box-shadow:0 0 0 12px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
         
-        .header a.design-btn{background:#4CAF50;font-size:10px}
+        .header a.design-btn{background:#4CAF50;font-size:13px;padding:5px 10px}
         .header select{
-            background:rgba(255,255,255,0.1);
+            background:rgba(255,255,255,0.12);
             color:#ddd;
-            padding:3px 5px;
-            border-radius:5px;
-            font-size:9px;
-            border:1px solid rgba(255,255,255,0.1);
-            min-height:30px;
-            height:30px;
-            max-width:70px;
+            padding:4px 8px;
+            border-radius:6px;
+            font-size:11px;
+            border:1px solid rgba(255,255,255,0.15);
+            min-height:34px;
+            height:34px;
+            max-width:80px;
             flex-shrink:0;
         }
         .header select option{color:#333}
         .header .badge{
-            font-size:7px;
-            background:rgba(255,255,255,0.1);
-            padding:2px 6px;
-            border-radius:5px;
+            font-size:9px;
+            background:rgba(255,255,255,0.12);
+            padding:3px 8px;
+            border-radius:6px;
             color:#aaa;
-            min-height:20px;
+            min-height:24px;
             display:inline-flex;
             align-items:center;
             flex-shrink:0;
+            font-weight:600;
         }
         .header .badge.has-tiles{background:rgba(39,174,96,0.3);color:#4CAF50}
         .header .badge.recording{background:rgba(244,67,54,0.4);color:#f44336}
         
         .header .more-btn {
-            background:rgba(255,255,255,0.1);
-            font-size:14px;
-            padding:4px 8px;
-            min-height:34px;
-            height:34px;
+            background:rgba(255,255,255,0.12);
+            font-size:18px;
+            padding:5px 12px;
+            min-height:38px;
+            height:38px;
             flex-shrink:0;
             position:relative;
+            border-radius:8px;
         }
         .header .more-btn.active {
-            background:rgba(255,255,255,0.2);
+            background:rgba(255,255,255,0.25);
         }
         
         .header-dropdown {
             position:fixed;
-            top:48px;
-            right:6px;
+            top:54px;
+            right:8px;
             z-index:1001;
             background:rgba(13,17,23,0.98);
-            border:1px solid rgba(255,255,255,0.1);
-            border-radius:10px;
-            padding:6px;
+            border:1px solid rgba(255,255,255,0.12);
+            border-radius:12px;
+            padding:8px;
             display:none;
             flex-direction:column;
-            gap:3px;
-            min-width:140px;
+            gap:4px;
+            min-width:160px;
             box-shadow:0 8px 30px rgba(0,0,0,0.8);
             backdrop-filter:blur(10px);
         }
@@ -154,19 +160,19 @@
         .header-dropdown button,
         .header-dropdown a,
         .header-dropdown select {
-            padding:6px 10px;
-            font-size:11px;
-            border-radius:6px;
+            padding:8px 12px;
+            font-size:13px;
+            border-radius:8px;
             border:none;
             color:white;
             cursor:pointer;
-            background:rgba(255,255,255,0.05);
+            background:rgba(255,255,255,0.06);
             transition:all 0.2s;
             text-decoration:none;
             display:flex;
             align-items:center;
-            gap:6px;
-            min-height:32px;
+            gap:8px;
+            min-height:36px;
             font-weight:500;
             width:100%;
         }
@@ -175,13 +181,13 @@
             background:rgba(255,255,255,0.15);
         }
         .header-dropdown select {
-            background:rgba(255,255,255,0.08);
+            background:rgba(255,255,255,0.1);
             color:#ddd;
         }
         .header-dropdown .dropdown-divider {
             height:1px;
             background:rgba(255,255,255,0.08);
-            margin:2px 0;
+            margin:3px 0;
         }
         
         .info-bar{
@@ -293,7 +299,7 @@
         
         .offroute-warning{
             position:fixed;
-            top:52px;
+            top:58px;
             left:50%;
             transform:translateX(-50%);
             z-index:1001;
@@ -374,7 +380,7 @@
         
         #routeDropdown{
             position:fixed;
-            top:52px;
+            top:58px;
             left:0;
             right:0;
             bottom:0;
@@ -568,7 +574,7 @@
         
         .status-badge{
             position:fixed;
-            top:52px;
+            top:58px;
             right:4px;
             z-index:999;
             background:rgba(0,0,0,0.8);
@@ -580,7 +586,7 @@
             pointer-events:none
         }
         
-        .leaflet-control-zoom{z-index:800!important;margin-top:52px!important}
+        .leaflet-control-zoom{z-index:800!important;margin-top:58px!important}
         .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         
         .rotate-btn-fixed {
@@ -592,9 +598,9 @@
             color:#eee;
             border:2px solid #2196F3;
             border-radius:50%;
-            width:44px;
-            height:44px;
-            font-size:18px;
+            width:48px;
+            height:48px;
+            font-size:20px;
             cursor:pointer;
             display:flex;
             align-items:center;
@@ -611,7 +617,7 @@
         
         .rotation-indicator {
             position:fixed;
-            top:52px;
+            top:58px;
             left:50%;
             transform:translateX(-50%);
             z-index:1001;
@@ -629,7 +635,7 @@
         
         .gps-notification {
             position:fixed;
-            top:52px;
+            top:58px;
             left:50%;
             transform:translateX(-50%);
             z-index:1002;
@@ -665,7 +671,7 @@
         
         .record-notification {
             position:fixed;
-            top:52px;
+            top:58px;
             left:50%;
             transform:translateX(-50%);
             z-index:1002;
@@ -789,35 +795,47 @@
         }
         #helpModal .help-footer span { color:#888; }
         
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media(max-width:768px){
-            .header { height:44px; padding:3px 4px; gap:2px; }
-            .header button, .header a { padding:3px 5px; font-size:9px; min-height:30px; height:30px; }
+            .header { height:50px; padding:4px 6px; gap:3px; }
+            .header button, .header a { padding:4px 8px; font-size:11px; min-height:34px; height:34px; }
             .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn { font-size:12px; padding:3px 5px; }
-            .header select { font-size:8px; min-height:26px; height:26px; max-width:55px; }
-            .header .badge { font-size:6px; padding:1px 4px; min-height:16px; }
-            .header .more-btn { font-size:12px; padding:3px 6px; min-height:30px; height:30px; }
-            .header-dropdown { top:44px; right:4px; min-width:130px; }
-            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:10px; padding:5px 8px; min-height:28px; }
+            .header button.help-btn,.header button.record-btn { font-size:16px; padding:4px 10px; }
+            .header button.route-btn,.header button.load-btn,
+            .header button.clear-btn,.header button.resume-btn { font-size:12px; padding:4px 8px; }
+            .header button.dl-btn,.header button.offline-btn { font-size:13px; padding:4px 10px; }
+            .header select { font-size:10px; min-height:30px; height:30px; max-width:65px; padding:3px 6px; }
+            .header .badge { font-size:8px; padding:2px 6px; min-height:20px; }
+            .header .more-btn { font-size:16px; padding:4px 10px; min-height:34px; height:34px; }
+            .header-dropdown { top:50px; right:6px; min-width:150px; padding:6px; }
+            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:12px; padding:6px 10px; min-height:32px; }
+            
             .info-bar{ padding:6px 10px; bottom:48px; min-width:140px; }
             .info-bar .distance{font-size:20px}
             .info-bar .time{font-size:16px}
             .info-bar .distance-label,.info-bar .time-label{font-size:10px}
             .info-bar .speed-kmh{font-size:11px}
             .info-bar .status{font-size:9px}
+            
             .bottom-bar{ padding:4px 4px; gap:3px; }
             .bottom-bar button{ font-size:10px; padding:4px 6px; min-height:26px; }
             .bottom-bar button.sos-bottom-btn{ font-size:14px; min-width:32px; min-height:28px; padding:3px 6px; }
             .bottom-bar button.speed-btn{ font-size:11px; padding:4px 6px; min-width:28px; }
             .bottom-bar button.screen-btn{ font-size:12px; padding:4px 8px; }
             .bottom-bar button.download-bottom-btn{ font-size:11px; padding:4px 10px; min-height:26px; }
-            .offroute-warning{top:48px}
-            .status-badge{top:48px}
-            .rotation-indicator{top:48px}
-            .gps-notification{top:48px;font-size:10px;padding:4px 12px}
-            .record-notification{top:48px;font-size:10px;padding:4px 12px}
-            .leaflet-control-zoom{margin-top:48px!important}
-            #routeDropdown{top:48px}
+            
+            .offroute-warning{top:54px}
+            .status-badge{top:54px}
+            .rotation-indicator{top:54px}
+            .gps-notification{top:54px;font-size:10px;padding:4px 12px}
+            .record-notification{top:54px;font-size:10px;padding:4px 12px}
+            .leaflet-control-zoom{margin-top:54px!important}
+            #routeDropdown{top:54px}
+            
+            .rotate-btn-fixed { width:42px; height:42px; font-size:17px; bottom:100px; right:8px; }
+            
             #helpModal .help-content { padding:14px; }
             #helpModal .help-item { font-size:11px; padding:6px 8px; }
             #helpModal .help-icon { font-size:17px; width:28px; }
@@ -825,14 +843,20 @@
         }
         
         @media(max-width:400px){
+            .header { height:46px; padding:3px 4px; gap:2px; }
+            .header button, .header a { padding:3px 6px; font-size:10px; min-height:30px; height:30px; }
             .header button.gps-btn,.header button.nav-btn,
-            .header button.help-btn,.header button.record-btn { font-size:10px; padding:2px 4px; min-height:26px; height:26px; }
-            .header button.route-btn, .header button.dl-btn, .header button.offline-btn { font-size:8px; padding:2px 4px; min-height:26px; height:26px; }
-            .header .more-btn { font-size:10px; padding:2px 5px; min-height:26px; height:26px; }
-            .header select { font-size:7px; min-height:24px; height:24px; max-width:45px; }
-            .header .badge { font-size:5px; padding:1px 3px; min-height:14px; }
-            .header-dropdown { min-width:110px; }
-            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:9px; padding:4px 6px; min-height:24px; }
+            .header button.help-btn,.header button.record-btn { font-size:14px; padding:3px 8px; }
+            .header button.route-btn,.header button.load-btn,
+            .header button.clear-btn,.header button.resume-btn { font-size:10px; padding:3px 6px; }
+            .header button.dl-btn,.header button.offline-btn { font-size:11px; padding:3px 8px; }
+            .header select { font-size:9px; min-height:26px; height:26px; max-width:55px; padding:2px 5px; }
+            .header .badge { font-size:7px; padding:1px 5px; min-height:18px; }
+            .header .more-btn { font-size:14px; padding:3px 8px; min-height:30px; height:30px; }
+            .header-dropdown { top:46px; right:4px; min-width:130px; padding:5px; }
+            .header-dropdown button, .header-dropdown a, .header-dropdown select { font-size:11px; padding:5px 8px; min-height:28px; }
+            
+            .rotate-btn-fixed { width:36px; height:36px; font-size:15px; bottom:96px; right:6px; }
         }
     </style>
 </head>
@@ -859,6 +883,7 @@
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
+    <!-- ★★★ HEADER - ΜΕΓΑΛΥΤΕΡΑ ΕΙΚΟΝΙΔΙΑ ★★★ -->
     <div class="header" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Εμφάνιση θέσης">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
