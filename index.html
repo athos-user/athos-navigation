@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Athos Maps - Πλοήγηση</title>
+    <title>Athos Maps - Πλοήγηση (OpenFreeMap)</title>
     <meta name="theme-color" content="#2196F3">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- ★★★ MapLibre GL (αντί για Leaflet) ★★★ -->
+    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -92,9 +94,6 @@
         .header-wrapper button.route-btn{background:#8e44ad;font-size:10px}
         .header-wrapper button.load-btn{background:#4CAF50;font-size:10px}
         .header-wrapper button.clear-btn{background:#d35400;font-size:10px}
-        .header-wrapper button.dl-btn{background:#673AB7;font-size:11px}
-        .header-wrapper button.offline-btn{background:#2980b9;font-size:11px}
-        .header-wrapper button.offline-btn.active{background:#27ae60}
         .header-wrapper button.resume-btn{background:#e91e63;font-size:10px}
         .header-wrapper button.help-btn{background:#9C27B0;font-size:15px}
         .header-wrapper a.design-btn{background:#4CAF50;font-size:10px}
@@ -119,6 +118,13 @@
             min-height:20px;
         }
         .header-wrapper .badge.has-tiles { background:rgba(39,174,96,0.3); color:#4CAF50 }
+        
+        /* ★★★ Απόκρυψη offline/λήψης ★★★ */
+        .header-wrapper button.dl-btn,
+        .header-wrapper button.offline-btn,
+        .header-wrapper #cacheBadge {
+            display: none !important;
+        }
         
         .info-bar{
             position:fixed;
@@ -250,24 +256,6 @@
         }
         .blog-link:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.3)}
         .blog-link img{width:28px;height:28px;border-radius:50%;object-fit:cover}
-        
-        #downloadProgress{
-            position:fixed;
-            bottom:50px;
-            left:50%;
-            transform:translateX(-50%);
-            z-index:999;
-            background:rgba(0,0,0,0.92);
-            color:white;
-            padding:6px 14px;
-            border-radius:12px;
-            font-size:9px;
-            display:none;
-            min-width:150px;
-            text-align:center
-        }
-        #downloadProgress .bar{width:100%;height:3px;background:#333;border-radius:2px;margin-top:3px;overflow:hidden}
-        #downloadProgress .bar .fill{height:100%;background:#4CAF50;width:0%;transition:width 0.3s}
         
         #routeDropdown{
             position:fixed;
@@ -419,148 +407,6 @@
             font-size:11px
         }
         
-        #codeModal{
-            position:fixed;
-            top:0;
-            left:0;
-            right:0;
-            bottom:0;
-            z-index:9999;
-            background:rgba(0,0,0,0.85);
-            display:none;
-            align-items:center;
-            justify-content:center
-        }
-        #codeModal.active{display:flex}
-        #codeModal .modal-content{
-            background:#1a1a2e;
-            border-radius:16px;
-            padding:20px;
-            max-width:340px;
-            width:92%;
-            border:2px solid #2980b9;
-            color:#eee;
-            text-align:center
-        }
-        #codeModal .modal-content h3{color:#4CAF50;font-size:16px;margin-bottom:8px}
-        #codeModal .modal-content p{font-size:11px;color:#888;margin-bottom:12px}
-        #codeModal .modal-content input{
-            width:100%;
-            padding:8px 12px;
-            font-size:16px;
-            border-radius:8px;
-            border:2px solid #333;
-            background:rgba(255,255,255,0.05);
-            color:white;
-            text-align:center;
-            letter-spacing:3px;
-            font-family:monospace
-        }
-        #codeModal .modal-content input:focus{outline:none;border-color:#4CAF50}
-        #codeModal .modal-content .btn-group{display:flex;gap:8px;margin-top:12px}
-        #codeModal .modal-content .btn-group button{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer}
-        #codeModal .modal-content .btn-group .confirm{background:#4CAF50;color:white}
-        #codeModal .modal-content .btn-group .cancel{background:#555;color:white}
-        #codeModal .modal-content .error{color:#e74c3c;font-size:10px;margin-top:6px;display:none}
-        
-        .status-badge{
-            position:fixed;
-            top:52px;
-            right:4px;
-            z-index:999;
-            background:rgba(0,0,0,0.8);
-            color:white;
-            padding:2px 6px;
-            border-radius:6px;
-            font-size:7px;
-            font-weight:600;
-            pointer-events:none
-        }
-        
-        .leaflet-control-zoom{z-index:800!important;margin-top:52px!important}
-        .leaflet-control-zoom a{background:rgba(13,17,23,0.95)!important;color:#eee!important}
-        
-        .rotate-btn-fixed {
-            position:fixed;
-            bottom:110px;
-            right:10px;
-            z-index:800;
-            background:rgba(13,17,23,0.95);
-            color:#eee;
-            border:2px solid #2196F3;
-            border-radius:50%;
-            width:44px;
-            height:44px;
-            font-size:18px;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            box-shadow:0 2px 10px rgba(0,0,0,0.5);
-            touch-action:manipulation;
-            user-select:none;
-            transition:all 0.2s;
-        }
-        .rotate-btn-fixed:active {
-            transform:scale(0.85);
-            background:#2196F3;
-        }
-        
-        .rotation-indicator {
-            position:fixed;
-            top:52px;
-            left:50%;
-            transform:translateX(-50%);
-            z-index:1001;
-            background:rgba(0,0,0,0.7);
-            color:#4CAF50;
-            padding:2px 12px;
-            border-radius:12px;
-            font-size:11px;
-            font-weight:600;
-            display:none;
-            pointer-events:none;
-            border:1px solid rgba(76,175,80,0.3);
-        }
-        .rotation-indicator.active { display:block; }
-        
-        .gps-notification {
-            position:fixed;
-            top:52px;
-            left:50%;
-            transform:translateX(-50%);
-            z-index:1002;
-            background:rgba(255,152,0,0.95);
-            color:white;
-            padding:6px 16px;
-            border-radius:10px;
-            font-size:12px;
-            font-weight:600;
-            display:none;
-            box-shadow:0 4px 20px rgba(255,152,0,0.4);
-            text-align:center;
-            max-width:90%;
-            border:1px solid rgba(255,255,255,0.2);
-        }
-        .gps-notification.active { display:block; }
-        .gps-notification .close-notification {
-            background:rgba(255,255,255,0.2);
-            border:none;
-            color:white;
-            border-radius:50%;
-            width:20px;
-            height:20px;
-            font-size:12px;
-            cursor:pointer;
-            margin-left:8px;
-            padding:0;
-            line-height:20px;
-        }
-        .gps-notification .close-notification:hover {
-            background:rgba(255,255,255,0.4);
-        }
-        
-        /* ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★ */
         #resumeModal {
             position:fixed;
             top:0;
@@ -749,6 +595,105 @@
         }
         #helpModal .help-footer span { color:#888; }
         
+        .rotate-btn-fixed {
+            position:fixed;
+            bottom:110px;
+            right:10px;
+            z-index:800;
+            background:rgba(13,17,23,0.95);
+            color:#eee;
+            border:2px solid #2196F3;
+            border-radius:50%;
+            width:44px;
+            height:44px;
+            font-size:18px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 2px 10px rgba(0,0,0,0.5);
+            touch-action:manipulation;
+            user-select:none;
+            transition:all 0.2s;
+        }
+        .rotate-btn-fixed:active {
+            transform:scale(0.85);
+            background:#2196F3;
+        }
+        
+        .rotation-indicator {
+            position:fixed;
+            top:52px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:1001;
+            background:rgba(0,0,0,0.7);
+            color:#4CAF50;
+            padding:2px 12px;
+            border-radius:12px;
+            font-size:11px;
+            font-weight:600;
+            display:none;
+            pointer-events:none;
+            border:1px solid rgba(76,175,80,0.3);
+        }
+        .rotation-indicator.active { display:block; }
+        
+        .gps-notification {
+            position:fixed;
+            top:52px;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:1002;
+            background:rgba(255,152,0,0.95);
+            color:white;
+            padding:6px 16px;
+            border-radius:10px;
+            font-size:12px;
+            font-weight:600;
+            display:none;
+            box-shadow:0 4px 20px rgba(255,152,0,0.4);
+            text-align:center;
+            max-width:90%;
+            border:1px solid rgba(255,255,255,0.2);
+        }
+        .gps-notification.active { display:block; }
+        .gps-notification .close-notification {
+            background:rgba(255,255,255,0.2);
+            border:none;
+            color:white;
+            border-radius:50%;
+            width:20px;
+            height:20px;
+            font-size:12px;
+            cursor:pointer;
+            margin-left:8px;
+            padding:0;
+            line-height:20px;
+        }
+        .gps-notification .close-notification:hover {
+            background:rgba(255,255,255,0.4);
+        }
+        
+        .status-badge{
+            position:fixed;
+            top:52px;
+            right:4px;
+            z-index:999;
+            background:rgba(0,0,0,0.8);
+            color:white;
+            padding:2px 6px;
+            border-radius:6px;
+            font-size:7px;
+            font-weight:600;
+            pointer-events:none
+        }
+        
+        /* ★★★ MapLibre controls ★★★ */
+        .maplibregl-ctrl-group { background:rgba(13,17,23,0.95)!important; border-color:#333!important; }
+        .maplibregl-ctrl-group button { background:rgba(13,17,23,0.95)!important; color:#eee!important; }
+        .maplibregl-ctrl-group button:hover { background:#333!important; }
+        
         @media(max-width:600px){
             .header-wrapper { height:44px; padding:3px 4px; gap:2px; }
             .header-wrapper button, .header-wrapper a { padding:3px 6px; font-size:9px; min-height:28px; }
@@ -768,8 +713,6 @@
             .status-badge{ top:48px; }
             .rotation-indicator{ top:48px; font-size:9px; padding:2px 8px; }
             .gps-notification{ top:48px; font-size:10px; padding:4px 12px; }
-            .leaflet-control-zoom{ margin-top:48px!important; }
-            #routeDropdown{ top:48px; }
             
             .blog-link{ bottom:44px; right:6px; width:28px; height:28px; }
             .blog-link img{ width:22px; height:22px; }
@@ -834,16 +777,8 @@
         <button id="resumeBtn" class="resume-btn" title="Συνέχεια">🔄</button>
         <button id="helpBtn" class="help-btn" title="Βοήθεια">❓</button>
         <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση">✏️</a>
-        <select id="areaSelect" title="Περιοχή">
-            <option value="athos">🏔️ Άγιο Όρος</option>
-            <option value="patras">🏙️ Πάτρα</option>
-            <option value="athens">🏛️ Αθήνα</option>
-            <option value="thessaloniki">🌊 Θεσ/νίκη</option>
-            <option value="my_area">📍 Εδώ</option>
-        </select>
-        <button id="downloadBtn" class="dl-btn" title="Λήψη">📥</button>
-        <button id="offlineBtn" class="offline-btn" title="Offline">📴</button>
-        <span class="badge" id="cacheBadge" title="Tiles">0</span>
+        
+        <!-- ★★★ Τα κουμπιά λήψης και offline είναι κρυμμένα ★★★ -->
         <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
 
@@ -851,11 +786,6 @@
         <span id="offRouteMsg">⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ!</span>
         <button id="dismissAlertBtn">🔇 ΠΡΟΣΩΡΙΝΗ ΣΙΓΑΣΗ</button>
         <button id="disableAlertForeverBtn" class="disable-forever-btn">🚫 ΟΡΙΣΤΙΚΗ ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</button>
-    </div>
-
-    <div id="downloadProgress">
-        <span id="progressText">Λήψη...</span>
-        <div class="bar"><div class="fill" id="progressFill"></div></div>
     </div>
 
     <div class="info-bar" id="infoBar">
@@ -882,7 +812,7 @@
         <button id="screenBtn" class="screen-btn" title="Οθόνη ON">🔆 Οθόνη</button>
     </div>
 
-    <div class="status-badge" id="statusBadge">📡 Online</div>
+    <div class="status-badge" id="statusBadge">🌐 OpenFreeMap</div>
 
     <div id="routeDropdown">
         <div class="dd-content">
@@ -917,26 +847,13 @@
         <button id="sosCall112" style="background:#f44336;">📞 112</button>
     </div>
 
-    <div id="codeModal">
-        <div class="modal-content">
-            <h3>🔐 Κωδικός Λήψης</h3>
-            <p>Εισαγάγετε τον κωδικό για να κατεβάσετε χάρτες</p>
-            <input type="password" id="codeInput" placeholder="••••••••" maxlength="20" autocomplete="off">
-            <div class="error" id="codeError">❌ Λάθος κωδικός</div>
-            <div class="btn-group">
-                <button class="cancel" id="codeCancel">✕ Ακύρωση</button>
-                <button class="confirm" id="codeConfirm">✅ Σύνδεση</button>
-            </div>
-        </div>
-    </div>
-
     <div id="helpModal">
         <div class="help-content">
             <div class="help-title">
                 <h2>❓ Βοήθεια</h2>
                 <button id="closeHelpBtn">✕</button>
             </div>
-            <div class="help-intro">Όλες οι λειτουργίες του Athos Maps</div>
+            <div class="help-intro">🌐 Χάρτης με OpenFreeMap - Εντελώς ΔΩΡΕΑΝ!</div>
             <div class="help-section">
                 <div class="help-section-title">📍 Πλοήγηση</div>
                 <div class="help-item"><span class="help-icon">📍</span><div><strong>Θέση</strong><div class="help-desc">Εμφανίζει την τρέχουσα θέση σας</div></div></div>
@@ -952,8 +869,6 @@
             <div class="help-section">
                 <div class="help-section-title">🗺️ Χάρτης</div>
                 <div class="help-item"><span class="help-icon">🔄</span><div><strong>Περιστροφή</strong><div class="help-desc">90° περιστροφή</div></div></div>
-                <div class="help-item"><span class="help-icon">📥</span><div><strong>Λήψη</strong><div class="help-desc">Offline χάρτες</div></div></div>
-                <div class="help-item"><span class="help-icon">📴</span><div><strong>Offline</strong><div class="help-desc">Λειτουργία χωρίς internet</div></div></div>
                 <div class="help-item"><span class="help-icon">🔆</span><div><strong>Οθόνη ON</strong><div class="help-desc">Κρατά την οθόνη αναμμένη</div></div></div>
             </div>
             <div class="help-section">
@@ -962,37 +877,22 @@
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
                 <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
-            <div class="help-footer"><span>Athos Maps v2.1 · Άγιο Όρος</span></div>
+            <div class="help-footer"><span>Athos Maps v3.0 · OpenFreeMap 🆓</span></div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ MODAL ΣΥΝΕΧΕΙΑΣ
+        // ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ OpenFreeMap
         // ============================================================
         
-        const ACCESS_CODE = '10101010';
-        let isDownloadAccessGranted = false;
         let currentRotation = 0;
-        let pendingResumeAction = null; // για αποθήκευση της ενέργειας συνέχειας
+        let pendingResumeAction = null;
         
         const OFF_ROUTE_THRESHOLD = 100;
-        const NAV_UPDATE_INTERVAL = 300;
+        const NAV_UPDATE_INTERVAL = 2000; // ★★★ Μειώθηκε σε 2 δευτερόλεπτα ★★★
         const NAV_ZOOM = 18;
-        const DB_NAME = 'AthosNavTilesDB';
-        const DB_VERSION = 1;
-        const ZOOM_LEVELS = [8,9,10,11,12,13,14,15,16,17,18];
-        const BATCH_SIZE = 8;
         
-        const CITIES = {
-            'athos': { name: 'Άγιο Όρος', lat: 40.16, lng: 24.32, radius: 20 },
-            'patras': { name: 'Πάτρα', lat: 38.2466, lng: 21.7346, radius: 15 },
-            'athens': { name: 'Αθήνα', lat: 37.9838, lng: 23.7275, radius: 20 },
-            'thessaloniki': { name: 'Θεσσαλονίκη', lat: 40.6401, lng: 22.9444, radius: 15 },
-            'my_area': { name: 'Η περιοχή μου', lat: 0, lng: 0, radius: 15 }
-        };
-
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ ★★★
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1149,120 +1049,104 @@
         ];
         
         let state = {
-            map: null, tileLayer: null, offlineLayer: null,
-            isOffline: false, isDownloading: false, db: null,
-            userMarker: null, routeLine: null, routeGeometry: null, routeDistance: 0,
-            currentSpeed: 4, isGpsOn: false, isNavigating: false, isCompassOn: false, isScreenOn: false,
-            gpsWatchId: null, navIntervalId: null,
-            lastPosition: null, prevPosition: null, currentHeading: 0,
-            wakeLock: null, lastUserInteraction: 0,
-            currentRouteName: '', currentSpeedKmh: 0, originalTime: null,
-            alertDismissed: false, alertDisabledForever: false, audioCtx: null
+            map: null,
+            isOffline: false,  // ★★★ Πάντα online ★★★
+            isDownloading: false,
+            userMarker: null,
+            routeLine: null,
+            routeGeometry: null,
+            routeDistance: 0,
+            currentSpeed: 4,
+            isGpsOn: false,
+            isNavigating: false,
+            isScreenOn: false,
+            gpsWatchId: null,
+            navIntervalId: null,
+            lastPosition: null,
+            prevPosition: null,
+            currentHeading: 0,
+            wakeLock: null,
+            lastUserInteraction: 0,
+            currentRouteName: '',
+            currentSpeedKmh: 0,
+            originalTime: null,
+            alertDismissed: false,
+            alertDisabledForever: false
         };
 
         // ============================================================
-        // ACCESS CONTROL
+        // ★★★ ΑΡΧΙΚΟΠΟΙΗΣΗ MAP (OpenFreeMap) ★★★
         // ============================================================
         
-        function checkDownloadAccess() {
-            if (isDownloadAccessGranted) return true;
-            if (localStorage.getItem('athos_download_granted') === 'true') {
-                isDownloadAccessGranted = true;
-                return true;
-            }
-            return false;
-        }
-
-        function showCodeModal() {
-            document.getElementById('codeModal').classList.add('active');
-            document.getElementById('codeInput').value = '';
-            document.getElementById('codeError').style.display = 'none';
-            setTimeout(() => document.getElementById('codeInput').focus(), 200);
-        }
-        
-        function hideCodeModal() {
-            document.getElementById('codeModal').classList.remove('active');
-        }
-        
-        function confirmCode() {
-            const input = document.getElementById('codeInput');
-            if (input.value.trim() === ACCESS_CODE) {
-                isDownloadAccessGranted = true;
-                localStorage.setItem('athos_download_granted', 'true');
-                hideCodeModal();
-                showToast('✅ Πρόσβαση λήψης ενεργοποιήθηκε', '#4CAF50');
-            } else {
-                document.getElementById('codeError').style.display = 'block';
-                input.value = '';
-            }
-        }
-
-        // ============================================================
-        // ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★
-        // ============================================================
-        
-        function showResumeModal(routeData) {
-            const modal = document.getElementById('resumeModal');
-            document.getElementById('resumeRouteName').textContent = routeData.name;
-            document.getElementById('resumeDist').textContent = routeData.dist || '0.00';
-            document.getElementById('resumeTime').textContent = routeData.time || '--:--';
+        function initMap() {
+            state.map = new maplibregl.Map({
+                container: 'map',
+                style: 'https://tiles.openfreemap.org/styles/liberty',
+                center: [24.32, 40.16],  // [lng, lat]
+                zoom: 12
+            });
             
-            // Αποθήκευση των δεδομένων για χρήση στα κουμπιά
-            pendingResumeAction = routeData;
-            modal.classList.add('active');
-        }
-        
-        function hideResumeModal() {
-            document.getElementById('resumeModal').classList.remove('active');
-            pendingResumeAction = null;
-        }
-        
-        // ★★★ ΚΟΥΜΠΙΑ MODAL ★★★
-        document.getElementById('resumeYes').addEventListener('click', function() {
-            if (pendingResumeAction) {
-                const r = pendingResumeAction;
-                hideResumeModal();
-                
-                // Φόρτωση διαδρομής
-                if (r.url && r.url.startsWith('file:')) {
-                    const gpxData = localStorage.getItem('athos_last_gpx_data');
-                    if (gpxData) {
-                        loadGpxFromData(gpxData, r.name);
-                    }
-                } else if (r.url) {
-                    loadRouteFromUrl(r.url, r.name, r.dist, r.time);
+            // Προσθήκη ελέγχων
+            state.map.addControl(new maplibregl.NavigationControl());
+            
+            // Αποθήκευση περιστροφής
+            const savedRotation = localStorage.getItem('athos_rotation');
+            if (savedRotation) {
+                state.map.setBearing(parseFloat(savedRotation));
+                currentRotation = parseFloat(savedRotation);
+                updateRotationIndicator();
+            }
+            
+            // ★★★ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
+            document.getElementById('rotateBtn').addEventListener('click', function() {
+                const current = state.map.getBearing() || 0;
+                const newRotation = (current + 90) % 360;
+                state.map.setBearing(newRotation);
+                currentRotation = newRotation;
+                localStorage.setItem('athos_rotation', newRotation);
+                updateRotationIndicator();
+                showToast(`🔄 ${Math.round(newRotation)}°`, '#2196F3');
+            });
+            
+            document.getElementById('closeGpsNotification').addEventListener('click', function() {
+                document.getElementById('gpsNotification').classList.remove('active');
+            });
+            
+            // Παρακολούθηση αλληλεπίδρασης
+            state.map.on('movestart', () => {
+                state.lastUserInteraction = Date.now();
+            });
+            
+            // Ανανέωση οθόνης
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && state.isNavigating && state.lastPosition) {
+                    state.map.flyTo({
+                        center: [state.lastPosition.lng, state.lastPosition.lat],
+                        zoom: NAV_ZOOM,
+                        essential: true
+                    });
                 }
-                
-                // Ενεργοποίηση GPS και πλοήγησης
-                setTimeout(() => {
-                    startGps();
-                    setTimeout(() => { 
-                        startNavigation(); 
-                        toggleScreenOn(); 
-                    }, 1500);
-                }, 1000);
-                
-                showToast('🔄 Συνέχεια διαδρομής: ' + r.name, '#4CAF50');
-            }
-        });
-        
-        document.getElementById('resumeNo').addEventListener('click', function() {
-            hideResumeModal();
-            showToast('❌ Συνέχεια ακυρώθηκε', '#888');
-            // Διαγραφή της αποθηκευμένης διαδρομής για να μην ξαναεμφανιστεί
-            localStorage.removeItem('athos_last_route');
-            localStorage.removeItem('athos_last_gpx_data');
-        });
-
-        // ============================================================
-        // ΠΕΡΙΣΤΡΟΦΗ
-        // ============================================================
-        
-        function setRotation(angle) {
-            currentRotation = ((angle % 360) + 360) % 360;
-            const wrapper = document.getElementById('map-wrapper');
-            wrapper.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+            });
             
+            document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
+            
+            // ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★
+            setTimeout(() => {
+                const savedRoute = localStorage.getItem('athos_last_route');
+                if (savedRoute) {
+                    try {
+                        const r = JSON.parse(savedRoute);
+                        if (r.url && r.name) {
+                            showResumeModal(r);
+                        }
+                    } catch(e) {}
+                } else {
+                    showToast('🌐 OpenFreeMap - Εντελώς ΔΩΡΕΑΝ! 🆓', '#4CAF50');
+                }
+            }, 800);
+        }
+        
+        function updateRotationIndicator() {
             const indicator = document.getElementById('rotationIndicator');
             if (Math.abs(currentRotation) > 1) {
                 indicator.textContent = `🔄 ${Math.round(currentRotation)}°`;
@@ -1270,191 +1154,10 @@
             } else {
                 indicator.classList.remove('active');
             }
-            
-            localStorage.setItem('athos_rotation', currentRotation);
-        }
-
-        function rotateBy(degrees) {
-            setRotation(currentRotation + degrees);
-            showToast(`🔄 ${Math.round(currentRotation)}°`, '#2196F3');
         }
 
         // ============================================================
-        // ΑΡΧΙΚΟΠΟΙΗΣΗ ΧΑΡΤΗ
-        // ============================================================
-        
-        function showToast(msg, color) {
-            const t = document.createElement('div');
-            t.style.cssText = `position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:${color};color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600`;
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 2500);
-        }
-
-        function initMap() {
-            state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                crossOrigin: true
-            });
-            
-            state.map = L.map('map', {
-                center: [40.16, 24.32],
-                zoom: 12,
-                zoomControl: true,
-                layers: [state.tileLayer],
-                minZoom: 3,
-                maxZoom: 19
-            });
-            
-            const savedRotation = localStorage.getItem('athos_rotation');
-            if (savedRotation) {
-                setRotation(parseFloat(savedRotation));
-            }
-            
-            document.getElementById('rotateBtn').addEventListener('click', function() {
-                rotateBy(90);
-            });
-            
-            document.getElementById('closeGpsNotification').addEventListener('click', function() {
-                document.getElementById('gpsNotification').classList.remove('active');
-            });
-            
-            state.map.on('movestart zoomstart', () => {
-                state.lastUserInteraction = Date.now();
-            });
-            
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible' && state.isNavigating && state.lastPosition) {
-                    setTimeout(() => {
-                        state.map.setView([state.lastPosition.lat, state.lastPosition.lng], NAV_ZOOM, { animate: false });
-                    }, 200);
-                }
-            });
-            
-            updateCacheBadge();
-            document.getElementById('statusBadge').textContent = '📡 Online';
-            
-            // ★★★ ΕΛΕΓΧΟΣ ΓΙΑ ΑΠΟΘΗΚΕΥΜΕΝΗ ΔΙΑΔΡΟΜΗ ★★★
-            setTimeout(() => {
-                const savedRoute = localStorage.getItem('athos_last_route');
-                if (savedRoute) {
-                    try {
-                        const r = JSON.parse(savedRoute);
-                        if (r.url && r.name) {
-                            // Εμφάνιση modal
-                            showResumeModal(r);
-                        }
-                    } catch(e) {}
-                } else {
-                    showToast('🌐 Online - Σύρετε την μπάρα αριστερά-δεξιά', '#4CAF50');
-                }
-            }, 800);
-        }
-
-        function createOfflineLayer() {
-            const l = L.tileLayer('', {
-                maxZoom: 18,
-                minZoom: 3,
-                errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAACZJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAA4NcAQAAB//8AAQJZVGAAAAAASUVORK5CYII=',
-                keepBuffer: 8
-            });
-            
-            l.createTile = function(c, done) {
-                const t = document.createElement('img');
-                const u = `https://tile.openstreetmap.org/${c.z}/${c.x}/${c.y}.png`;
-                const k = `osm_${c.z}_${c.x}_${c.y}`;
-                
-                getTileFromDB(k).then(data => {
-                    if (data) {
-                        t.src = data;
-                        t.onerror = () => { t.src = this.options.errorTileUrl; };
-                        done(null, t);
-                    } else if (navigator.onLine) {
-                        t.src = u;
-                        t.onload = () => {
-                            fetch(u).then(r => r.blob()).then(b => {
-                                const rd = new FileReader();
-                                rd.onload = function(e) {
-                                    putTileInDB(k, e.target.result, c.z).catch(() => {});
-                                };
-                                rd.readAsDataURL(b);
-                            }).catch(() => {});
-                            done(null, t);
-                        };
-                        t.onerror = () => {
-                            t.src = this.options.errorTileUrl;
-                            done(null, t);
-                        };
-                    } else {
-                        t.src = this.options.errorTileUrl;
-                        done(null, t);
-                    }
-                }).catch(() => {
-                    t.src = this.options.errorTileUrl;
-                    done(null, t);
-                });
-                return t;
-            };
-            return l;
-        }
-
-        function openDB() {
-            return new Promise((r, j) => {
-                if (state.db) { r(state.db); return; }
-                const q = indexedDB.open(DB_NAME, DB_VERSION);
-                q.onupgradeneeded = (e) => {
-                    const d = e.target.result;
-                    if (!d.objectStoreNames.contains('tiles')) {
-                        const s = d.createObjectStore('tiles', { keyPath: 'key' });
-                        s.createIndex('zoom', 'zoom');
-                    }
-                };
-                q.onsuccess = (e) => {
-                    state.db = e.target.result;
-                    r(state.db);
-                };
-                q.onerror = (e) => j(e.target.error);
-            });
-        }
-
-        function getTileFromDB(k) {
-            return openDB().then(d => new Promise((r, j) => {
-                const t = d.transaction(['tiles'], 'readonly');
-                const q = t.objectStore('tiles').get(k);
-                q.onsuccess = () => r(q.result ? q.result.data : null);
-                q.onerror = () => j(q.error);
-            }));
-        }
-
-        function putTileInDB(k, d, z) {
-            return openDB().then(db => new Promise((r, j) => {
-                const t = db.transaction(['tiles'], 'readwrite');
-                const q = t.objectStore('tiles').put({ key: k, data: d, zoom: z, timestamp: Date.now() });
-                q.onsuccess = () => r();
-                q.onerror = () => j(q.error);
-            }));
-        }
-
-        async function getTileCount() {
-            try {
-                const d = await openDB();
-                const t = d.transaction(['tiles'], 'readonly');
-                return new Promise(r => {
-                    const q = t.objectStore('tiles').count();
-                    q.onsuccess = () => r(q.result);
-                });
-            } catch (e) { return 0; }
-        }
-
-        async function updateCacheBadge(count) {
-            if (!count) count = await getTileCount();
-            const b = document.getElementById('cacheBadge');
-            b.textContent = count;
-            b.className = count > 0 ? 'badge has-tiles' : 'badge';
-        }
-
-        // ============================================================
-        // GPS
+        // ★★★ GPS ★★★
         // ============================================================
         
         function toggleGps() {
@@ -1470,7 +1173,11 @@
             navigator.geolocation.getCurrentPosition(
                 p => {
                     updatePosition(p.coords.latitude, p.coords.longitude, p.coords.speed, p.coords.heading);
-                    state.map.setView([p.coords.latitude, p.coords.longitude], NAV_ZOOM, { animate: false });
+                    state.map.flyTo({
+                        center: [p.coords.longitude, p.coords.latitude],
+                        zoom: NAV_ZOOM,
+                        essential: true
+                    });
                 },
                 () => showToast('❌ GPS', '#f44336'),
                 { enableHighAccuracy: true, timeout: 10000 }
@@ -1520,27 +1227,39 @@
             return (Math.atan2(Math.sin(Δλ) * Math.cos(φ2), Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ)) * 180 / Math.PI + 360) % 360;
         }
 
+        // ★★★ updateUserMarker - MapLibre ★★★
         function updateUserMarker(lat, lng) {
             const h = state.currentHeading || 0;
-            const html = `<div class="arrow-dot" style="transform:rotate(${h}deg)"><div class="arrow"></div><div class="dot"></div><div class="glow"></div></div>`;
+            
+            // Δημιουργία HTML element για τον marker
+            const el = document.createElement('div');
+            el.className = 'arrow-dot';
+            el.style.transform = `rotate(${h}deg)`;
+            el.innerHTML = `
+                <div class="arrow"></div>
+                <div class="dot"></div>
+                <div class="glow"></div>
+            `;
             
             if (!state.userMarker) {
-                state.userMarker = L.marker([lat, lng], {
-                    icon: L.divIcon({ html, className: '', iconSize: [32, 32], iconAnchor: [16, 20] }),
-                    zIndexOffset: 1000
-                }).addTo(state.map);
+                state.userMarker = new maplibregl.Marker({ 
+                    element: el,
+                    anchor: 'bottom'
+                })
+                .setLngLat([lng, lat])
+                .addTo(state.map);
             } else {
-                state.userMarker.setLatLng([lat, lng]);
-                const el = state.userMarker.getElement();
-                if (el) {
-                    const ad = el.querySelector('.arrow-dot');
-                    if (ad) ad.style.transform = `rotate(${h}deg)`;
+                state.userMarker.setLngLat([lng, lat]);
+                const markerEl = state.userMarker.getElement();
+                if (markerEl) {
+                    const dot = markerEl.querySelector('.arrow-dot');
+                    if (dot) dot.style.transform = `rotate(${h}deg)`;
                 }
             }
         }
 
         // ============================================================
-        // ΠΛΟΗΓΗΣΗ (FOLLOW)
+        // ★★★ ΠΛΟΗΓΗΣΗ (FOLLOW) ★★★
         // ============================================================
         
         function toggleNavigation() {
@@ -1553,11 +1272,21 @@
             document.getElementById('navBtn').classList.add('active');
             state.isNavigating = true;
             
-            if (state.lastPosition) state.map.panTo([state.lastPosition.lat, state.lastPosition.lng], { animate: false });
+            if (state.lastPosition) {
+                state.map.flyTo({
+                    center: [state.lastPosition.lng, state.lastPosition.lat],
+                    zoom: NAV_ZOOM,
+                    essential: true
+                });
+            }
             
             state.navIntervalId = setInterval(() => {
                 if (state.isNavigating && state.lastPosition) {
-                    state.map.panTo([state.lastPosition.lat, state.lastPosition.lng], { animate: false });
+                    state.map.flyTo({
+                        center: [state.lastPosition.lng, state.lastPosition.lat],
+                        zoom: NAV_ZOOM,
+                        essential: true
+                    });
                 }
             }, NAV_UPDATE_INTERVAL);
             
@@ -1576,7 +1305,7 @@
         }
 
         // ============================================================
-        // ROUTES
+        // ★★★ ROUTES ★★★
         // ============================================================
         
         function showRoutes() {
@@ -1629,7 +1358,7 @@
                     const data = parseGpx(text);
                     if (data.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                     
-                    if (state.routeLine) state.map.removeLayer(state.routeLine);
+                    if (state.routeLine) state.map.removeLayer('route');
                     
                     const ac = [];
                     data.tracks.forEach(t => t.forEach(c => ac.push(c)));
@@ -1646,14 +1375,47 @@
                     localStorage.setItem('athos_last_route', JSON.stringify({ url, name, dist, time }));
                     localStorage.removeItem('athos_last_gpx_data');
                     
-                    state.routeLine = L.polyline(ac, {
-                        color: '#FF5722',
-                        weight: 5,
-                        opacity: 0.9,
-                        smoothFactor: 1
-                    }).addTo(state.map);
+                    // ★★★ MapLibre GeoJSON route ★★★
+                    if (!state.map.getSource('route')) {
+                        state.map.addSource('route', {
+                            type: 'geojson',
+                            data: {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'LineString',
+                                    coordinates: ac.map(c => [c[1], c[0]])  // [lng, lat]
+                                }
+                            }
+                        });
+                        state.map.addLayer({
+                            id: 'route',
+                            type: 'line',
+                            source: 'route',
+                            paint: {
+                                'line-color': '#FF5722',
+                                'line-width': 5,
+                                'line-opacity': 0.9
+                            }
+                        });
+                    } else {
+                        state.map.getSource('route').setData({
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: ac.map(c => [c[1], c[0]])
+                            }
+                        });
+                    }
                     
-                    state.map.fitBounds(state.routeLine.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                    state.routeLine = 'route';
+                    
+                    // Fit bounds
+                    const bounds = new maplibregl.LngLatBounds();
+                    ac.forEach(c => bounds.extend([c[1], c[0]]));
+                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    
                     updateRouteInfo();
                     showToast('✅ Φορτώθηκε: ' + name, '#4CAF50');
                 })
@@ -1669,7 +1431,7 @@
                     const d = parseGpx(t);
                     if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                     
-                    if (state.routeLine) state.map.removeLayer(state.routeLine);
+                    if (state.routeLine) state.map.removeLayer('route');
                     
                     const ac = [];
                     d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
@@ -1691,14 +1453,46 @@
                     }));
                     localStorage.setItem('athos_last_gpx_data', t);
                     
-                    state.routeLine = L.polyline(ac, {
-                        color: '#FF5722',
-                        weight: 5,
-                        opacity: 0.9,
-                        smoothFactor: 1
-                    }).addTo(state.map);
+                    // ★★★ MapLibre GeoJSON ★★★
+                    if (!state.map.getSource('route')) {
+                        state.map.addSource('route', {
+                            type: 'geojson',
+                            data: {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'LineString',
+                                    coordinates: ac.map(c => [c[1], c[0]])
+                                }
+                            }
+                        });
+                        state.map.addLayer({
+                            id: 'route',
+                            type: 'line',
+                            source: 'route',
+                            paint: {
+                                'line-color': '#FF5722',
+                                'line-width': 5,
+                                'line-opacity': 0.9
+                            }
+                        });
+                    } else {
+                        state.map.getSource('route').setData({
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: ac.map(c => [c[1], c[0]])
+                            }
+                        });
+                    }
                     
-                    state.map.fitBounds(state.routeLine.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                    state.routeLine = 'route';
+                    
+                    const bounds = new maplibregl.LngLatBounds();
+                    ac.forEach(c => bounds.extend([c[1], c[0]]));
+                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    
                     updateRouteInfo();
                     showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
                 } catch(err) {
@@ -1714,7 +1508,7 @@
                 const d = parseGpx(gpxData);
                 if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                 
-                if (state.routeLine) state.map.removeLayer(state.routeLine);
+                if (state.routeLine) state.map.removeLayer('route');
                 
                 const ac = [];
                 d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
@@ -1728,14 +1522,45 @@
                 document.getElementById('offRouteWarning').classList.remove('active');
                 document.getElementById('offRouteStatus').classList.remove('active');
                 
-                state.routeLine = L.polyline(ac, {
-                    color: '#FF5722',
-                    weight: 5,
-                    opacity: 0.9,
-                    smoothFactor: 1
-                }).addTo(state.map);
+                if (!state.map.getSource('route')) {
+                    state.map.addSource('route', {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: ac.map(c => [c[1], c[0]])
+                            }
+                        }
+                    });
+                    state.map.addLayer({
+                        id: 'route',
+                        type: 'line',
+                        source: 'route',
+                        paint: {
+                            'line-color': '#FF5722',
+                            'line-width': 5,
+                            'line-opacity': 0.9
+                        }
+                    });
+                } else {
+                    state.map.getSource('route').setData({
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: ac.map(c => [c[1], c[0]])
+                        }
+                    });
+                }
                 
-                state.map.fitBounds(state.routeLine.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                state.routeLine = 'route';
+                
+                const bounds = new maplibregl.LngLatBounds();
+                ac.forEach(c => bounds.extend([c[1], c[0]]));
+                state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                
                 updateRouteInfo();
                 showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
             } catch(err) {
@@ -1795,7 +1620,7 @@
 
         function clearRoute() {
             if (state.routeLine) {
-                state.map.removeLayer(state.routeLine);
+                state.map.removeLayer('route');
                 state.routeLine = null;
             }
             state.routeGeometry = null;
@@ -1870,7 +1695,7 @@
         }
 
         // ============================================================
-        // SOS, SCREEN, DOWNLOAD, OFFLINE
+        // ★★★ SOS, SCREEN ★★★
         // ============================================================
         
         function openSos() {
@@ -1956,185 +1781,75 @@
             document.getElementById('screenBtn').classList.remove('active');
         }
 
-        function getBoundsAround(la, ln, r) {
-            const d = r / 111;
-            const dl = r / (111 * Math.cos(la * Math.PI / 180));
-            return { southWest: [la - d, ln - dl], northEast: [la + d, ln + dl] };
+        // ============================================================
+        // ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★
+        // ============================================================
+        
+        function showResumeModal(routeData) {
+            const modal = document.getElementById('resumeModal');
+            document.getElementById('resumeRouteName').textContent = routeData.name;
+            document.getElementById('resumeDist').textContent = routeData.dist || '0.00';
+            document.getElementById('resumeTime').textContent = routeData.time || '--:--';
+            
+            pendingResumeAction = routeData;
+            modal.classList.add('active');
         }
-
-        function getTilesForBounds(b, z) {
-            const t = [], p = Math.pow(2, z);
-            for (let x = Math.floor((b.southWest[1] + 180) / 360 * p); x <= Math.floor((b.northEast[1] + 180) / 360 * p); x++) {
-                for (let y = Math.floor((1 - Math.log(Math.tan(b.southWest[0] * Math.PI / 180) + 1 / Math.cos(b.southWest[0] * Math.PI / 180)) / Math.PI) / 2 * p);
-                     y <= Math.floor((1 - Math.log(Math.tan(b.northEast[0] * Math.PI / 180) + 1 / Math.cos(b.northEast[0] * Math.PI / 180)) / Math.PI) / 2 * p); y++) {
-                    t.push({ x, y });
-                }
-            }
-            return t;
+        
+        function hideResumeModal() {
+            document.getElementById('resumeModal').classList.remove('active');
+            pendingResumeAction = null;
         }
-
-        async function downloadBatch(b) {
-            await Promise.allSettled(b.map(async ({ z, x, y, key }) => {
-                try {
-                    if (await getTileFromDB(key)) return;
-                    const r = await fetch(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`);
-                    if (!r.ok) return;
-                    const bl = await r.blob();
-                    const rd = new FileReader();
-                    return new Promise(rs => {
-                        rd.onload = async function(e) {
-                            await putTileInDB(key, e.target.result, z);
-                            rs();
-                        };
-                        rd.readAsDataURL(bl);
-                    });
-                } catch(e) {}
-            }));
-        }
-
-        async function startDownload() {
-            if (state.isDownloading) { showToast('⏳ Σε εξέλιξη...', '#FF9800'); return; }
-            
-            if (!checkDownloadAccess()) {
-                showCodeModal();
-                return;
-            }
-            
-            const area = document.getElementById('areaSelect').value;
-            
-            if (area === 'my_area') {
-                if (!state.lastPosition) {
-                    showToast('📍 GPS πρώτα', '#FF9800');
-                    return;
-                }
-                state.isDownloading = true;
-                await downloadArea(getBoundsAround(state.lastPosition.lat, state.lastPosition.lng, 15));
-                state.isDownloading = false;
-            } else {
-                const c = CITIES[area];
-                if (!c) return;
-                state.isDownloading = true;
-                await downloadArea(getBoundsAround(c.lat, c.lng, c.radius));
-                state.isDownloading = false;
-            }
-            
-            updateCacheBadge(await getTileCount());
-            showToast('✅ Ολοκληρώθηκε!', '#4CAF50');
-        }
-
-        async function downloadArea(bounds) {
-            const dv = document.getElementById('downloadProgress');
-            const f = document.getElementById('progressFill');
-            const tx = document.getElementById('progressText');
-            dv.style.display = 'block';
-            
-            let total = 0;
-            for (const z of ZOOM_LEVELS) total += getTilesForBounds(bounds, z).length;
-            
-            const exist = new Set();
-            let loaded = 0;
-            
-            for (const z of ZOOM_LEVELS) {
-                for (const tl of getTilesForBounds(bounds, z)) {
-                    const k = `osm_${z}_${tl.x}_${tl.y}`;
-                    if (await getTileFromDB(k)) { exist.add(k); loaded++; }
-                }
-            }
-            
-            const td = total - exist.size;
-            if (td === 0) {
-                tx.textContent = '✅ Όλα υπάρχουν!';
-                setTimeout(() => dv.style.display = 'none', 2000);
-                return;
-            }
-            
-            for (const z of ZOOM_LEVELS) {
-                const tiles = getTilesForBounds(bounds, z);
-                let b = [];
-                for (const tl of tiles) {
-                    const k = `osm_${z}_${tl.x}_${tl.y}`;
-                    if (exist.has(k)) continue;
-                    b.push({ z, x: tl.x, y: tl.y, key: k });
-                    if (b.length >= BATCH_SIZE) {
-                        await downloadBatch(b);
-                        loaded += b.length;
-                        f.style.width = Math.min(100, Math.round((loaded / total) * 100)) + '%';
-                        tx.textContent = `📥 ${Math.round((loaded / total) * 100)}%`;
-                        b = [];
+        
+        document.getElementById('resumeYes').addEventListener('click', function() {
+            if (pendingResumeAction) {
+                const r = pendingResumeAction;
+                hideResumeModal();
+                
+                if (r.url && r.url.startsWith('file:')) {
+                    const gpxData = localStorage.getItem('athos_last_gpx_data');
+                    if (gpxData) {
+                        loadGpxFromData(gpxData, r.name);
                     }
+                } else if (r.url) {
+                    loadRouteFromUrl(r.url, r.name, r.dist, r.time);
                 }
-                if (b.length > 0) {
-                    await downloadBatch(b);
-                    loaded += b.length;
-                    f.style.width = Math.min(100, Math.round((loaded / total) * 100)) + '%';
-                }
+                
+                setTimeout(() => {
+                    startGps();
+                    setTimeout(() => { 
+                        startNavigation(); 
+                        toggleScreenOn(); 
+                    }, 1500);
+                }, 1000);
+                
+                showToast('🔄 Συνέχεια διαδρομής: ' + r.name, '#4CAF50');
             }
-            
-            tx.textContent = `✅ ${await getTileCount()} tiles`;
-            setTimeout(() => dv.style.display = 'none', 3000);
-        }
+        });
+        
+        document.getElementById('resumeNo').addEventListener('click', function() {
+            hideResumeModal();
+            showToast('❌ Συνέχεια ακυρώθηκε', '#888');
+            localStorage.removeItem('athos_last_route');
+            localStorage.removeItem('athos_last_gpx_data');
+        });
 
-        async function toggleOffline() {
-            if (state.isOffline) {
-                disableOffline();
-                showToast('🌐 Online λειτουργία', '#4CAF50');
-            } else {
-                await enableOffline();
-            }
-        }
-
-        async function enableOffline() {
-            const c = await getTileCount();
-            if (c === 0) {
-                showToast('❌ Κάνε λήψη πρώτα (χρειάζεται κωδικός)', '#f44336');
-                return;
-            }
-            
-            if (state.tileLayer && state.map.hasLayer(state.tileLayer)) {
-                state.map.removeLayer(state.tileLayer);
-            }
-            if (state.offlineLayer && state.map.hasLayer(state.offlineLayer)) {
-                state.map.removeLayer(state.offlineLayer);
-            }
-            
-            state.offlineLayer = createOfflineLayer();
-            state.map.addLayer(state.offlineLayer);
-            state.isOffline = true;
-            
-            document.getElementById('offlineBtn').textContent = '📴✓';
-            document.getElementById('offlineBtn').classList.add('active');
-            document.getElementById('statusBadge').textContent = '📴 Offline';
-            updateCacheBadge(c);
-            showToast('📴 Offline λειτουργία', '#27ae60');
-        }
-
-        function disableOffline() {
-            if (state.offlineLayer) {
-                state.map.removeLayer(state.offlineLayer);
-                state.offlineLayer = null;
-            }
-            if (!state.tileLayer || !state.map.hasLayer(state.tileLayer)) {
-                state.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    crossOrigin: true
-                });
-                state.map.addLayer(state.tileLayer);
-            }
-            state.isOffline = false;
-            document.getElementById('offlineBtn').textContent = '📴';
-            document.getElementById('offlineBtn').classList.remove('active');
-            document.getElementById('statusBadge').textContent = '📡 Online';
+        // ============================================================
+        // ★★★ TOAST ★★★
+        // ============================================================
+        
+        function showToast(msg, color) {
+            const t = document.createElement('div');
+            t.style.cssText = `position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:${color};color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600`;
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
         }
 
         // ============================================================
-        // DOM READY
+        // ★★★ DOM READY ★★★
         // ============================================================
         
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('athos_download_granted') === 'true') {
-                isDownloadAccessGranted = true;
-            }
-            
             initMap();
             
             // ★★★ ΒΟΗΘΕΙΑ ★★★
@@ -2171,7 +1886,6 @@
                 const sr = localStorage.getItem('athos_last_route');
                 if (sr) {
                     const r = JSON.parse(sr);
-                    
                     if (r.url && r.url.startsWith('file:')) {
                         const gpxData = localStorage.getItem('athos_last_gpx_data');
                         if (gpxData) {
@@ -2190,8 +1904,6 @@
                     showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336');
                 }
             });
-            document.getElementById('downloadBtn').addEventListener('click', startDownload);
-            document.getElementById('offlineBtn').addEventListener('click', toggleOffline);
             document.getElementById('screenBtn').addEventListener('click', toggleScreenOn);
             document.getElementById('sosBottomBtn').addEventListener('click', openSos);
             document.getElementById('closeSosBtn').addEventListener('click', closeSos);
@@ -2200,14 +1912,6 @@
             document.getElementById('sosCall112').addEventListener('click', call112);
             document.getElementById('dismissAlertBtn').addEventListener('click', dismissAlert);
             document.getElementById('disableAlertForeverBtn').addEventListener('click', disableAlertForever);
-            document.getElementById('codeConfirm').addEventListener('click', confirmCode);
-            document.getElementById('codeCancel').addEventListener('click', hideCodeModal);
-            document.getElementById('codeInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') confirmCode();
-            });
-            document.getElementById('codeModal').addEventListener('click', function(e) {
-                if (e.target === this) hideCodeModal();
-            });
             
             document.querySelectorAll('.speed-btn').forEach(b => {
                 b.addEventListener('click', function() {
