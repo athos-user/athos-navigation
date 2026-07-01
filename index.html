@@ -890,7 +890,7 @@
         let pendingResumeAction = null;
         
         const OFF_ROUTE_THRESHOLD = 100;
-        const NAV_UPDATE_INTERVAL = 2000; // ★★★ Μειώθηκε σε 2 δευτερόλεπτα ★★★
+        const NAV_UPDATE_INTERVAL = 2000;
         const NAV_ZOOM = 18;
         
         const ROUTES = [
@@ -1050,7 +1050,7 @@
         
         let state = {
             map: null,
-            isOffline: false,  // ★★★ Πάντα online ★★★
+            isOffline: false,
             isDownloading: false,
             userMarker: null,
             routeLine: null,
@@ -1082,14 +1082,12 @@
             state.map = new maplibregl.Map({
                 container: 'map',
                 style: 'https://tiles.openfreemap.org/styles/liberty',
-                center: [24.32, 40.16],  // [lng, lat]
+                center: [24.32, 40.16],
                 zoom: 12
             });
             
-            // Προσθήκη ελέγχων
             state.map.addControl(new maplibregl.NavigationControl());
             
-            // Αποθήκευση περιστροφής
             const savedRotation = localStorage.getItem('athos_rotation');
             if (savedRotation) {
                 state.map.setBearing(parseFloat(savedRotation));
@@ -1097,7 +1095,6 @@
                 updateRotationIndicator();
             }
             
-            // ★★★ ΚΟΥΜΠΙ ΠΕΡΙΣΤΡΟΦΗΣ ★★★
             document.getElementById('rotateBtn').addEventListener('click', function() {
                 const current = state.map.getBearing() || 0;
                 const newRotation = (current + 90) % 360;
@@ -1112,12 +1109,10 @@
                 document.getElementById('gpsNotification').classList.remove('active');
             });
             
-            // Παρακολούθηση αλληλεπίδρασης
             state.map.on('movestart', () => {
                 state.lastUserInteraction = Date.now();
             });
             
-            // Ανανέωση οθόνης
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible' && state.isNavigating && state.lastPosition) {
                     state.map.flyTo({
@@ -1130,7 +1125,6 @@
             
             document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
             
-            // ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★
             setTimeout(() => {
                 const savedRoute = localStorage.getItem('athos_last_route');
                 if (savedRoute) {
@@ -1227,11 +1221,9 @@
             return (Math.atan2(Math.sin(Δλ) * Math.cos(φ2), Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ)) * 180 / Math.PI + 360) % 360;
         }
 
-        // ★★★ updateUserMarker - MapLibre ★★★
         function updateUserMarker(lat, lng) {
             const h = state.currentHeading || 0;
             
-            // Δημιουργία HTML element για τον marker
             const el = document.createElement('div');
             el.className = 'arrow-dot';
             el.style.transform = `rotate(${h}deg)`;
@@ -1347,6 +1339,7 @@
             });
         }
 
+        // ★★★ FIXED: loadRouteFromUrl ★★★
         function loadRouteFromUrl(url, name, dist, time) {
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
@@ -1358,7 +1351,13 @@
                     const data = parseGpx(text);
                     if (data.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                     
-                    if (state.routeLine) state.map.removeLayer('route');
+                    // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΠΑΛΙΟΥ LAYER ★★★
+                    if (state.map.getLayer('route')) {
+                        state.map.removeLayer('route');
+                    }
+                    if (state.map.getSource('route')) {
+                        state.map.removeSource('route');
+                    }
                     
                     const ac = [];
                     data.tracks.forEach(t => t.forEach(c => ac.push(c)));
@@ -1375,154 +1374,7 @@
                     localStorage.setItem('athos_last_route', JSON.stringify({ url, name, dist, time }));
                     localStorage.removeItem('athos_last_gpx_data');
                     
-                    // ★★★ MapLibre GeoJSON route ★★★
-                    if (!state.map.getSource('route')) {
-                        state.map.addSource('route', {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                properties: {},
-                                geometry: {
-                                    type: 'LineString',
-                                    coordinates: ac.map(c => [c[1], c[0]])  // [lng, lat]
-                                }
-                            }
-                        });
-                        state.map.addLayer({
-                            id: 'route',
-                            type: 'line',
-                            source: 'route',
-                            paint: {
-                                'line-color': '#FF5722',
-                                'line-width': 5,
-                                'line-opacity': 0.9
-                            }
-                        });
-                    } else {
-                        state.map.getSource('route').setData({
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'LineString',
-                                coordinates: ac.map(c => [c[1], c[0]])
-                            }
-                        });
-                    }
-                    
-                    state.routeLine = 'route';
-                    
-                    // Fit bounds
-                    const bounds = new maplibregl.LngLatBounds();
-                    ac.forEach(c => bounds.extend([c[1], c[0]]));
-                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
-                    
-                    updateRouteInfo();
-                    showToast('✅ Φορτώθηκε: ' + name, '#4CAF50');
-                })
-                .catch(err => showToast('❌ ' + err.message, '#f44336'));
-        }
-
-        function loadGpxFile(file) {
-            const r = new FileReader();
-            r.onload = function(e) {
-                try {
-                    const t = e.target.result;
-                    if (!t.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
-                    const d = parseGpx(t);
-                    if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
-                    
-                    if (state.routeLine) state.map.removeLayer('route');
-                    
-                    const ac = [];
-                    d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
-                    state.routeGeometry = ac.map(c => [c[1], c[0]]);
-                    state.routeDistance = computeDistance(state.routeGeometry);
-                    state.currentRouteName = file.name.replace('.gpx', '');
-                    state.originalTime = null;
-                    state.alertDismissed = false;
-                    state.alertDisabledForever = false;
-                    
-                    document.getElementById('offRouteWarning').classList.remove('active');
-                    document.getElementById('offRouteStatus').classList.remove('active');
-                    
-                    localStorage.setItem('athos_last_route', JSON.stringify({ 
-                        url: 'file:' + file.name, 
-                        name: file.name.replace('.gpx', ''), 
-                        dist: state.routeDistance, 
-                        time: null 
-                    }));
-                    localStorage.setItem('athos_last_gpx_data', t);
-                    
-                    // ★★★ MapLibre GeoJSON ★★★
-                    if (!state.map.getSource('route')) {
-                        state.map.addSource('route', {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                properties: {},
-                                geometry: {
-                                    type: 'LineString',
-                                    coordinates: ac.map(c => [c[1], c[0]])
-                                }
-                            }
-                        });
-                        state.map.addLayer({
-                            id: 'route',
-                            type: 'line',
-                            source: 'route',
-                            paint: {
-                                'line-color': '#FF5722',
-                                'line-width': 5,
-                                'line-opacity': 0.9
-                            }
-                        });
-                    } else {
-                        state.map.getSource('route').setData({
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'LineString',
-                                coordinates: ac.map(c => [c[1], c[0]])
-                            }
-                        });
-                    }
-                    
-                    state.routeLine = 'route';
-                    
-                    const bounds = new maplibregl.LngLatBounds();
-                    ac.forEach(c => bounds.extend([c[1], c[0]]));
-                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
-                    
-                    updateRouteInfo();
-                    showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
-                } catch(err) {
-                    showToast('❌ ' + err.message, '#f44336');
-                }
-            };
-            r.readAsText(file);
-        }
-
-        function loadGpxFromData(gpxData, name) {
-            try {
-                if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
-                const d = parseGpx(gpxData);
-                if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
-                
-                if (state.routeLine) state.map.removeLayer('route');
-                
-                const ac = [];
-                d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
-                state.routeGeometry = ac.map(c => [c[1], c[0]]);
-                state.routeDistance = computeDistance(state.routeGeometry);
-                state.currentRouteName = name || 'GPX διαδρομή';
-                state.originalTime = null;
-                state.alertDismissed = false;
-                state.alertDisabledForever = false;
-                
-                document.getElementById('offRouteWarning').classList.remove('active');
-                document.getElementById('offRouteStatus').classList.remove('active');
-                
-                if (!state.map.getSource('route')) {
+                    // ★★★ ΔΗΜΙΟΥΡΓΙΑ ΝΕΟΥ SOURCE ΚΑΙ LAYER ★★★
                     state.map.addSource('route', {
                         type: 'geojson',
                         data: {
@@ -1544,16 +1396,144 @@
                             'line-opacity': 0.9
                         }
                     });
-                } else {
-                    state.map.getSource('route').setData({
+                    
+                    state.routeLine = 'route';
+                    
+                    const bounds = new maplibregl.LngLatBounds();
+                    ac.forEach(c => bounds.extend([c[1], c[0]]));
+                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    
+                    updateRouteInfo();
+                    showToast('✅ Φορτώθηκε: ' + name, '#4CAF50');
+                })
+                .catch(err => showToast('❌ ' + err.message, '#f44336'));
+        }
+
+        // ★★★ FIXED: loadGpxFile ★★★
+        function loadGpxFile(file) {
+            const r = new FileReader();
+            r.onload = function(e) {
+                try {
+                    const t = e.target.result;
+                    if (!t.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                    const d = parseGpx(t);
+                    if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                    
+                    // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΠΑΛΙΟΥ LAYER ★★★
+                    if (state.map.getLayer('route')) {
+                        state.map.removeLayer('route');
+                    }
+                    if (state.map.getSource('route')) {
+                        state.map.removeSource('route');
+                    }
+                    
+                    const ac = [];
+                    d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
+                    state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                    state.routeDistance = computeDistance(state.routeGeometry);
+                    state.currentRouteName = file.name.replace('.gpx', '');
+                    state.originalTime = null;
+                    state.alertDismissed = false;
+                    state.alertDisabledForever = false;
+                    
+                    document.getElementById('offRouteWarning').classList.remove('active');
+                    document.getElementById('offRouteStatus').classList.remove('active');
+                    
+                    localStorage.setItem('athos_last_route', JSON.stringify({ 
+                        url: 'file:' + file.name, 
+                        name: file.name.replace('.gpx', ''), 
+                        dist: state.routeDistance, 
+                        time: null 
+                    }));
+                    localStorage.setItem('athos_last_gpx_data', t);
+                    
+                    // ★★★ ΔΗΜΙΟΥΡΓΙΑ ΝΕΟΥ SOURCE ΚΑΙ LAYER ★★★
+                    state.map.addSource('route', {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: ac.map(c => [c[1], c[0]])
+                            }
+                        }
+                    });
+                    state.map.addLayer({
+                        id: 'route',
+                        type: 'line',
+                        source: 'route',
+                        paint: {
+                            'line-color': '#FF5722',
+                            'line-width': 5,
+                            'line-opacity': 0.9
+                        }
+                    });
+                    
+                    state.routeLine = 'route';
+                    
+                    const bounds = new maplibregl.LngLatBounds();
+                    ac.forEach(c => bounds.extend([c[1], c[0]]));
+                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    
+                    updateRouteInfo();
+                    showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
+                } catch(err) {
+                    showToast('❌ ' + err.message, '#f44336');
+                }
+            };
+            r.readAsText(file);
+        }
+
+        // ★★★ FIXED: loadGpxFromData ★★★
+        function loadGpxFromData(gpxData, name) {
+            try {
+                if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                const d = parseGpx(gpxData);
+                if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                
+                // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΠΑΛΙΟΥ LAYER ★★★
+                if (state.map.getLayer('route')) {
+                    state.map.removeLayer('route');
+                }
+                if (state.map.getSource('route')) {
+                    state.map.removeSource('route');
+                }
+                
+                const ac = [];
+                d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
+                state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                state.routeDistance = computeDistance(state.routeGeometry);
+                state.currentRouteName = name || 'GPX διαδρομή';
+                state.originalTime = null;
+                state.alertDismissed = false;
+                state.alertDisabledForever = false;
+                
+                document.getElementById('offRouteWarning').classList.remove('active');
+                document.getElementById('offRouteStatus').classList.remove('active');
+                
+                // ★★★ ΔΗΜΙΟΥΡΓΙΑ ΝΕΟΥ SOURCE ΚΑΙ LAYER ★★★
+                state.map.addSource('route', {
+                    type: 'geojson',
+                    data: {
                         type: 'Feature',
                         properties: {},
                         geometry: {
                             type: 'LineString',
                             coordinates: ac.map(c => [c[1], c[0]])
                         }
-                    });
-                }
+                    }
+                });
+                state.map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: 'route',
+                    paint: {
+                        'line-color': '#FF5722',
+                        'line-width': 5,
+                        'line-opacity': 0.9
+                    }
+                });
                 
                 state.routeLine = 'route';
                 
@@ -1619,10 +1599,14 @@
         }
 
         function clearRoute() {
-            if (state.routeLine) {
+            // ★★★ ΚΑΘΑΡΙΣΜΟΣ LAYER ★★★
+            if (state.map.getLayer('route')) {
                 state.map.removeLayer('route');
-                state.routeLine = null;
             }
+            if (state.map.getSource('route')) {
+                state.map.removeSource('route');
+            }
+            state.routeLine = null;
             state.routeGeometry = null;
             state.routeDistance = 0;
             state.currentRouteName = '';
@@ -1852,7 +1836,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             
-            // ★★★ ΒΟΗΘΕΙΑ ★★★
             document.getElementById('helpBtn').addEventListener('click', function() {
                 document.getElementById('helpModal').classList.add('active');
             });
@@ -1867,7 +1850,6 @@
                 }
             });
             
-            // Event listeners
             document.getElementById('gpsBtn').addEventListener('click', toggleGps);
             document.getElementById('navBtn').addEventListener('click', toggleNavigation);
             document.getElementById('routesBtn').addEventListener('click', showRoutes);
