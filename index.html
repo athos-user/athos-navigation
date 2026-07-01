@@ -93,6 +93,7 @@
         .header-wrapper button.clear-btn{background:#d35400;font-size:10px}
         .header-wrapper button.resume-btn{background:#e91e63;font-size:10px}
         .header-wrapper button.help-btn{background:#9C27B0;font-size:15px}
+        .header-wrapper button.center-btn{background:#00BCD4;font-size:15px}
         .header-wrapper a.design-btn{background:#4CAF50;font-size:10px}
         
         .header-wrapper select {
@@ -683,11 +684,39 @@
         .maplibregl-ctrl-group button { background:rgba(13,17,23,0.95)!important; color:#eee!important; }
         .maplibregl-ctrl-group button:hover { background:#333!important; }
         
+        /* ★★★ Κουμπί κέντρου ★★★ */
+        .center-btn-fixed {
+            position:fixed;
+            bottom:160px;
+            right:10px;
+            z-index:800;
+            background:rgba(0,188,212,0.95);
+            color:white;
+            border:2px solid #00BCD4;
+            border-radius:50%;
+            width:44px;
+            height:44px;
+            font-size:18px;
+            cursor:pointer;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 2px 10px rgba(0,0,0,0.5);
+            touch-action:manipulation;
+            user-select:none;
+            transition:all 0.2s;
+        }
+        .center-btn-fixed.active { display:flex; }
+        .center-btn-fixed:active {
+            transform:scale(0.85);
+            background:#2196F3;
+        }
+        
         @media(max-width:600px){
             .header-wrapper { height:44px; padding:3px 4px; gap:2px; }
             .header-wrapper button, .header-wrapper a { padding:3px 6px; font-size:9px; min-height:28px; }
             .header-wrapper button.gps-btn, .header-wrapper button.nav-btn,
-            .header-wrapper button.help-btn { font-size:13px; }
+            .header-wrapper button.help-btn, .header-wrapper button.center-btn { font-size:13px; }
             .header-wrapper select { font-size:8px; min-height:26px; max-width:55px; }
             .header-wrapper .badge { font-size:6px; padding:1px 4px; min-height:16px; }
             
@@ -706,6 +735,7 @@
             .blog-link{ bottom:44px; right:6px; width:28px; height:28px; }
             .blog-link img{ width:22px; height:22px; }
             .rotate-btn-fixed{ bottom:100px; right:6px; width:38px; height:38px; font-size:15px; }
+            .center-btn-fixed{ bottom:150px; right:6px; width:38px; height:38px; font-size:15px; }
             
             #resumeModal .resume-content { padding:18px; }
             #resumeModal .resume-content .resume-icon { font-size:36px; }
@@ -734,6 +764,9 @@
     
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     
+    <!-- ★★★ ΝΕΟ ΚΟΥΜΠΙ ΚΕΝΤΡΟΥ ★★★ -->
+    <button class="center-btn-fixed" id="centerBtn" title="Κέντρο στη διαδρομή">🎯</button>
+    
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
@@ -758,6 +791,7 @@
     <div class="header-wrapper" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Θέση">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
+        <button id="centerBtnHeader" class="center-btn" title="Κέντρο στη διαδρομή">🎯</button>
         <button id="routesBtn" class="route-btn" title="Διαδρομές">🗺️</button>
         <button id="loadBtn" class="load-btn" title="GPX">📂</button>
         <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός">🗑️</button>
@@ -844,6 +878,7 @@
                 <div class="help-section-title">📍 Πλοήγηση</div>
                 <div class="help-item"><span class="help-icon">📍</span><div><strong>Θέση</strong><div class="help-desc">Εμφανίζει την τρέχουσα θέση σας</div></div></div>
                 <div class="help-item"><span class="help-icon">🧭</span><div><strong>Follow</strong><div class="help-desc">Ο χάρτης ακολουθεί την κίνησή σας</div></div></div>
+                <div class="help-item"><span class="help-icon">🎯</span><div><strong>Κέντρο</strong><div class="help-desc">Επαναφορά στη διαδρομή</div></div></div>
             </div>
             <div class="help-section">
                 <div class="help-section-title">🗺️ Διαδρομές</div>
@@ -1306,6 +1341,31 @@
         }
 
         // ============================================================
+        // ★★★ ΚΕΝΤΡΟ ΣΤΗ ΔΙΑΔΡΟΜΗ ★★★
+        // ============================================================
+        
+        function centerOnRoute() {
+            if (!state.routeGeometry || state.routeGeometry.length === 0) {
+                showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή', '#FF9800');
+                return;
+            }
+            
+            // Βρίσκουμε τα όρια της διαδρομής
+            const bounds = new maplibregl.LngLatBounds();
+            state.routeGeometry.forEach(c => bounds.extend([c[0], c[1]]));
+            
+            // Επαναφορά της οθόνης στα όρια της διαδρομής
+            state.map.fitBounds(bounds, { 
+                padding: 50, 
+                maxZoom: 15,
+                duration: 1000,
+                essential: true
+            });
+            
+            showToast('🎯 Επαναφορά στη διαδρομή', '#00BCD4');
+        }
+
+        // ============================================================
         // ★★★ ROUTES ★★★
         // ============================================================
         
@@ -1410,6 +1470,11 @@
                     state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
                     
                     updateRouteInfo();
+                    
+                    // ★★★ Εμφάνιση κουμπιού κέντρου ★★★
+                    document.getElementById('centerBtn').classList.add('active');
+                    document.getElementById('centerBtnHeader').style.display = 'inline-flex';
+                    
                     showToast('✅ Φορτώθηκε: ' + name, '#4CAF50');
                 })
                 .catch(err => showToast('❌ ' + err.message, '#f44336'));
@@ -1480,6 +1545,11 @@
                     state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
                     
                     updateRouteInfo();
+                    
+                    // ★★★ Εμφάνιση κουμπιού κέντρου ★★★
+                    document.getElementById('centerBtn').classList.add('active');
+                    document.getElementById('centerBtnHeader').style.display = 'inline-flex';
+                    
                     showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
                 } catch(err) {
                     showToast('❌ ' + err.message, '#f44336');
@@ -1542,6 +1612,11 @@
                 state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
                 
                 updateRouteInfo();
+                
+                // ★★★ Εμφάνιση κουμπιού κέντρου ★★★
+                document.getElementById('centerBtn').classList.add('active');
+                document.getElementById('centerBtnHeader').style.display = 'inline-flex';
+                
                 showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
             } catch(err) {
                 showToast('❌ ' + err.message, '#f44336');
@@ -1620,6 +1695,10 @@
             document.getElementById('distProgressInline').style.display = 'none';
             document.getElementById('offRouteWarning').classList.remove('active');
             document.getElementById('offRouteStatus').classList.remove('active');
+            
+            // ★★★ Απόκρυψη κουμπιού κέντρου ★★★
+            document.getElementById('centerBtn').classList.remove('active');
+            document.getElementById('centerBtnHeader').style.display = 'none';
             
             localStorage.removeItem('athos_last_route');
             localStorage.removeItem('athos_last_gpx_data');
@@ -1839,6 +1918,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             
+            // ★★★ Κουμπιά κέντρου ★★★
+            document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
+            document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
+            
+            // Κρύβουμε το κουμπί κέντρου στην header αρχικά
+            document.getElementById('centerBtnHeader').style.display = 'none';
+            
             document.getElementById('helpBtn').addEventListener('click', function() {
                 document.getElementById('helpModal').classList.add('active');
             });
@@ -1898,7 +1984,6 @@
             document.getElementById('dismissAlertBtn').addEventListener('click', dismissAlert);
             document.getElementById('disableAlertForeverBtn').addEventListener('click', disableAlertForever);
             
-            // ★★★ FIXED: Κουμπιά ταχύτητας ★★★
             document.querySelectorAll('.speed-btn').forEach(b => {
                 b.addEventListener('click', function() {
                     const speed = parseInt(this.dataset.speed);
