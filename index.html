@@ -34,9 +34,6 @@
             pointer-events: auto;
         }
         
-        /* ============================================================
-           HEADER - ΠΑΝΩ ΜΠΑΡΑ ΜΕ ΟΡΙΖΟΝΤΙΑ ΚΥΛΙΣΗ
-           ============================================================ */
         .header-wrapper {
             position:fixed;
             top:0;
@@ -119,7 +116,6 @@
         }
         .header-wrapper .badge.has-tiles { background:rgba(39,174,96,0.3); color:#4CAF50 }
         
-        /* ★★★ Απόκρυψη offline/λήψης ★★★ */
         .header-wrapper button.dl-btn,
         .header-wrapper button.offline-btn,
         .header-wrapper #cacheBadge {
@@ -487,15 +483,9 @@
             background:#4CAF50;
             color:white;
         }
-        #resumeModal .resume-content .resume-actions .btn-yes:hover {
-            background:#43A047;
-        }
         #resumeModal .resume-content .resume-actions .btn-no {
             background:#555;
             color:white;
-        }
-        #resumeModal .resume-content .resume-actions .btn-no:hover {
-            background:#666;
         }
         #resumeModal .resume-content .resume-extra {
             font-size:11px;
@@ -689,7 +679,6 @@
             pointer-events:none
         }
         
-        /* ★★★ MapLibre controls ★★★ */
         .maplibregl-ctrl-group { background:rgba(13,17,23,0.95)!important; border-color:#333!important; }
         .maplibregl-ctrl-group button { background:rgba(13,17,23,0.95)!important; color:#eee!important; }
         .maplibregl-ctrl-group button:hover { background:#333!important; }
@@ -749,7 +738,6 @@
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
     
-    <!-- ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★ -->
     <div id="resumeModal">
         <div class="resume-content">
             <div class="resume-icon">🗺️</div>
@@ -767,7 +755,6 @@
         </div>
     </div>
     
-    <!-- HEADER - ΠΑΝΩ ΜΠΑΡΑ -->
     <div class="header-wrapper" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Θέση">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
@@ -778,7 +765,6 @@
         <button id="helpBtn" class="help-btn" title="Βοήθεια">❓</button>
         <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση">✏️</a>
         
-        <!-- ★★★ Τα κουμπιά λήψης και offline είναι κρυμμένα ★★★ -->
         <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
 
@@ -1079,7 +1065,7 @@
         // ============================================================
         
         function haversineDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Ακτίνα γης σε km
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = 
@@ -1087,11 +1073,11 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c; // Επιστρέφει km
+            return R * c;
         }
 
         // ============================================================
-        // ★★★ ΑΡΧΙΚΟΠΟΙΗΣΗ MAP (OpenFreeMap) ★★★
+        // ★★★ ΑΡΧΙΚΟΠΟΙΗΣΗ MAP ★★★
         // ============================================================
         
         function initMap() {
@@ -1213,18 +1199,17 @@
             localStorage.setItem('athos_was_navigating', 'false');
         }
 
-        // ★★★ FIXED: updatePosition (χωρίς L.latLng) ★★★
+        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function updatePosition(lat, lng, speed, heading) {
             if (state.lastPosition) state.prevPosition = { ...state.lastPosition };
             state.lastPosition = { lat, lng };
             
-            // Υπολογισμός ταχύτητας με Haversine
             if (state.prevPosition) {
                 const distance = haversineDistance(
                     state.prevPosition.lat, state.prevPosition.lng,
                     lat, lng
                 );
-                state.currentSpeedKmh = distance * 1000 * 3.6 / 1000; // km/h
+                state.currentSpeedKmh = distance * 3.6;
                 if (state.currentSpeedKmh < 0.1) state.currentSpeedKmh = 0;
             } else {
                 state.currentSpeedKmh = speed !== null && speed !== undefined ? speed * 3.6 : 0;
@@ -1276,7 +1261,7 @@
         }
 
         // ============================================================
-        // ★★★ ΠΛΟΗΓΗΣΗ (FOLLOW) ★★★
+        // ★★★ ΠΛΟΗΓΗΣΗ ★★★
         // ============================================================
         
         function toggleNavigation() {
@@ -1364,7 +1349,6 @@
             });
         }
 
-        // ★★★ FIXED: loadRouteFromUrl ★★★
         function loadRouteFromUrl(url, name, dist, time) {
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
                 .then(r => {
@@ -1376,7 +1360,6 @@
                     const data = parseGpx(text);
                     if (data.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                     
-                    // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΠΑΛΙΟΥ LAYER ★★★
                     if (state.map.getLayer('route')) {
                         state.map.removeLayer('route');
                     }
@@ -1399,7 +1382,6 @@
                     localStorage.setItem('athos_last_route', JSON.stringify({ url, name, dist, time }));
                     localStorage.removeItem('athos_last_gpx_data');
                     
-                    // ★★★ ΔΗΜΙΟΥΡΓΙΑ ΝΕΟΥ SOURCE ΚΑΙ LAYER ★★★
                     state.map.addSource('route', {
                         type: 'geojson',
                         data: {
@@ -1434,7 +1416,6 @@
                 .catch(err => showToast('❌ ' + err.message, '#f44336'));
         }
 
-        // ★★★ FIXED: loadGpxFile ★★★
         function loadGpxFile(file) {
             const r = new FileReader();
             r.onload = function(e) {
@@ -1444,7 +1425,6 @@
                     const d = parseGpx(t);
                     if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                     
-                    // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΠΑΛΙΟΥ LAYER ★★★
                     if (state.map.getLayer('route')) {
                         state.map.removeLayer('route');
                     }
@@ -1472,7 +1452,6 @@
                     }));
                     localStorage.setItem('athos_last_gpx_data', t);
                     
-                    // ★★★ ΔΗΜΙΟΥΡΓΙΑ ΝΕΟΥ SOURCE ΚΑΙ LAYER ★★★
                     state.map.addSource('route', {
                         type: 'geojson',
                         data: {
@@ -1510,14 +1489,12 @@
             r.readAsText(file);
         }
 
-        // ★★★ FIXED: loadGpxFromData ★★★
         function loadGpxFromData(gpxData, name) {
             try {
                 if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
                 const d = parseGpx(gpxData);
                 if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                 
-                // ★★★ ΚΑΘΑΡΙΣΜΟΣ ΠΑΛΙΟΥ LAYER ★★★
                 if (state.map.getLayer('route')) {
                     state.map.removeLayer('route');
                 }
@@ -1537,7 +1514,6 @@
                 document.getElementById('offRouteWarning').classList.remove('active');
                 document.getElementById('offRouteStatus').classList.remove('active');
                 
-                // ★★★ ΔΗΜΙΟΥΡΓΙΑ ΝΕΟΥ SOURCE ΚΑΙ LAYER ★★★
                 state.map.addSource('route', {
                     type: 'geojson',
                     data: {
@@ -1591,17 +1567,16 @@
             return r;
         }
 
-        // ★★★ FIXED: computeDistance (χωρίς L.latLng) ★★★
+        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function computeDistance(coords) {
             let d = 0;
             for (let i = 1; i < coords.length; i++) {
-                // coords = [lng, lat] (από MapLibre)
                 d += haversineDistance(
-                    coords[i-1][1], coords[i-1][0],  // lat, lng
+                    coords[i-1][1], coords[i-1][0],
                     coords[i][1], coords[i][0]
                 );
             }
-            return d; // σε km
+            return d;
         }
 
         function updateRouteInfo() {
@@ -1629,7 +1604,6 @@
         }
 
         function clearRoute() {
-            // ★★★ ΚΑΘΑΡΙΣΜΟΣ LAYER ★★★
             if (state.map.getLayer('route')) {
                 state.map.removeLayer('route');
             }
@@ -1654,14 +1628,13 @@
             showToast('🗑️ Διαδρομή καθαρίστηκε', '#d35400');
         }
 
-        // ★★★ FIXED: checkOffRoute (χωρίς L.latLng) ★★★
+        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function checkOffRoute(lat, lng) {
             if (!state.routeGeometry || state.alertDisabledForever) return;
             
             let min = Infinity;
             for (const c of state.routeGeometry) {
-                // c = [lng, lat]
-                const d = haversineDistance(lat, lng, c[1], c[0]) * 1000; // σε μέτρα
+                const d = haversineDistance(lat, lng, c[1], c[0]) * 1000;
                 if (d < min) min = d;
             }
             
@@ -1680,7 +1653,7 @@
             }
         }
 
-        // ★★★ FIXED: updateDistProgress (χωρίς L.latLng) ★★★
+        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function updateDistProgress() {
             const el = document.getElementById('distProgressInline');
             if (!state.routeGeometry || !state.lastPosition || state.routeDistance === 0) {
@@ -1695,7 +1668,7 @@
                 const d = haversineDistance(
                     state.lastPosition.lat, state.lastPosition.lng,
                     state.routeGeometry[i][1], state.routeGeometry[i][0]
-                ) * 1000; // σε μέτρα
+                ) * 1000;
                 if (d < minDist) { minDist = d; closestIdx = i; }
             }
             
