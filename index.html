@@ -714,6 +714,156 @@
             background:#2196F3;
         }
         
+        /* ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ ★★★ */
+        #disclaimerModal {
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index:9999;
+            background:rgba(0,0,0,0.92);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            padding:16px;
+            backdrop-filter:blur(10px);
+        }
+        #disclaimerModal.active { display:flex; }
+        #disclaimerModal .disclaimer-content {
+            background:rgba(13,17,23,0.98);
+            border-radius:16px;
+            padding:24px 20px;
+            max-width:520px;
+            width:100%;
+            max-height:90vh;
+            overflow-y:auto;
+            border:3px solid #FF5722;
+            color:#eee;
+            position:relative;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-header {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:14px;
+            padding-bottom:10px;
+            border-bottom:2px solid rgba(255,87,34,0.3);
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-header .icon {
+            font-size:32px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-header h2 {
+            color:#FF5722;
+            font-size:20px;
+            font-weight:800;
+            letter-spacing:0.5px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body {
+            font-size:13px;
+            line-height:1.7;
+            color:#ccc;
+            max-height:55vh;
+            overflow-y:auto;
+            padding-right:4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body strong {
+            color:#FF5722;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body .highlight {
+            background:rgba(255,87,34,0.15);
+            padding:2px 8px;
+            border-radius:4px;
+            color:#FF9800;
+            font-weight:600;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body .warning-box {
+            background:rgba(244,67,54,0.12);
+            border-left:4px solid #f44336;
+            padding:10px 12px;
+            margin:10px 0;
+            border-radius:4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body .info-box {
+            background:rgba(33,150,243,0.1);
+            border-left:4px solid #2196F3;
+            padding:10px 12px;
+            margin:10px 0;
+            border-radius:4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body .app-box {
+            background:rgba(76,175,80,0.12);
+            border-left:4px solid #4CAF50;
+            padding:10px 12px;
+            margin:10px 0;
+            border-radius:4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body ul {
+            margin:6px 0 6px 18px;
+            padding:0;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body ul li {
+            margin-bottom:4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer {
+            margin-top:16px;
+            padding-top:14px;
+            border-top:2px solid rgba(255,87,34,0.2);
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn {
+            background:#FF5722;
+            color:white;
+            border:none;
+            padding:14px;
+            border-radius:10px;
+            font-size:16px;
+            font-weight:800;
+            cursor:pointer;
+            transition:all 0.2s;
+            width:100%;
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn:hover {
+            background:#E64A19;
+            transform:scale(1.02);
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn:active {
+            transform:scale(0.95);
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn {
+            background:transparent;
+            color:#888;
+            border:1px solid #555;
+            padding:10px;
+            border-radius:8px;
+            font-size:13px;
+            cursor:pointer;
+            transition:all 0.2s;
+            width:100%;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:hover {
+            background:rgba(255,255,255,0.05);
+            border-color:#888;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:active {
+            transform:scale(0.95);
+        }
+        #disclaimerModal .disclaimer-content::-webkit-scrollbar {
+            width:4px;
+        }
+        #disclaimerModal .disclaimer-content::-webkit-scrollbar-track {
+            background:transparent;
+        }
+        #disclaimerModal .disclaimer-content::-webkit-scrollbar-thumb {
+            background:#FF5722;
+            border-radius:4px;
+        }
+        
         @media(max-width:600px){
             .header-wrapper { height:44px; padding:3px 4px; gap:2px; }
             .header-wrapper button, .header-wrapper a { padding:3px 6px; font-size:9px; min-height:28px; }
@@ -749,10 +899,73 @@
             #helpModal .help-item { font-size:11px; padding:6px 8px; }
             #helpModal .help-icon { font-size:17px; width:28px; }
             #helpModal .help-title h2 { font-size:15px; }
+            
+            #disclaimerModal .disclaimer-content { padding:18px 14px; }
+            #disclaimerModal .disclaimer-content .disclaimer-header h2 { font-size:17px; }
+            #disclaimerModal .disclaimer-content .disclaimer-body { font-size:12px; }
+            #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn { font-size:14px; padding:12px; }
         }
     </style>
 </head>
 <body>
+    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ ★★★ -->
+    <div id="disclaimerModal" class="active">
+        <div class="disclaimer-content">
+            <div class="disclaimer-header">
+                <span class="icon">⚠️</span>
+                <h2>ΣΗΜΑΝΤΙΚΟ - Πριν συνεχίσετε</h2>
+            </div>
+            <div class="disclaimer-body">
+                <p style="color:#FF5722;font-weight:700;font-size:14px;margin-bottom:10px;">
+                    Το εργαλείο αυτό είναι <strong>επικουρικό</strong> και σε καμία περίπτωση δεν υποκαθιστά την προσωπική σας κρίση και προσοχή.
+                </p>
+                
+                <div class="warning-box">
+                    <strong>⏱️ Χρόνοι &amp; Φυσική Κατάσταση</strong><br>
+                    Οι χρόνοι που αναφέρονται για τις διαδρομές είναι <strong>ενδεικτικοί</strong>. Το πόσο θα κάνετε εξαρτάται από τη <strong>φυσική σας κατάσταση</strong> και τις <strong>καιρικές συνθήκες</strong> που θα επικρατούν την ημέρα που θα ξεκινήσετε.
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ ΠΡΟΣΟΧΗ</strong><br>
+                    Πολλές φορές, λόγω <strong>καιρικών συνθηκών</strong>, <strong>έργων οδοποιίας</strong> και <strong>εργασιών</strong>, οι χωματόδρομοι αλλά και κάποια μονοπάτια <strong>μπορεί να μην είναι βατά</strong> και να έχουν αλλάξει.
+                </div>
+
+                <div style="background:rgba(255,87,34,0.2);padding:10px 12px;margin:10px 0;border-radius:4px;border:1px solid rgba(255,87,34,0.3);">
+                    <strong style="color:#FF5722;">🔴 Για αυτό, πάντα θα πρέπει:</strong>
+                    <ul>
+                        <li>Να ρωτάτε για την κατάσταση των μονοπατιών <strong>πριν ξεκινήσετε</strong>.</li>
+                        <li>Η διάβασή τους γίνεται με <strong>αποκλειστικά δική σας ευθύνη</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <strong>🗺️ Εποπτικό Εργαλείο</strong><br>
+                    Το σύνολο των πληροφοριών που παρέχονται εδώ είναι <strong>απλά ένα εποπτικό εργαλείο</strong> για τον σχεδιασμό μιας διαδρομής. Σε καμία περίπτωση <strong>δεν αντικαθιστούν</strong> την αναγκαιότητα <strong>πυξίδας και χάρτη</strong> για πλοήγηση στο τοπίο.
+                </div>
+
+                <div style="background:rgba(255,152,0,0.15);padding:10px 12px;margin:10px 0;border-radius:4px;border-left:4px solid #FF9800;">
+                    <strong style="color:#FF9800;">📶 ΣΗΜΑΝΤΙΚΟ</strong><br>
+                    Στο <strong>Άγιον Όρος</strong>, η κάλυψη κινητής τηλεφωνίας είναι <strong>περιορισμένη ή ανύπαρκτη</strong> σε πολλές περιοχές. Για την ασφαλή πλοήγηση, συνιστάται η χρήση εφαρμογών πλοήγησης <strong>εκτός σύνδεσης (offline)</strong>, όπως το <strong>Maps.me</strong> (διαθέσιμο για δωρεάν λήψη) ή το <strong>OsmAnd</strong> ή το <strong>Athos Path Finder</strong>.
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Πρόσθετες Συμβουλές:</strong>
+                    <ul>
+                        <li>Πριν ξεκινήσετε, ελέγξτε ότι το <strong>GPS</strong> της συσκευής σας λειτουργεί σωστά.</li>
+                        <li>Φροντίστε να έχετε μαζί σας <strong>φορτιστή ή power bank</strong>.</li>
+                        <li>Ενημερώστε κάποιον για το <strong>δρομολόγιό</strong> σας και την εκτιμώμενη ώρα επιστροφής.</li>
+                        <li>Να έχετε πάντα μαζί σας <strong>χάρτη και πυξίδα</strong>, σε περίπτωση που η τεχνολογία δεν λειτουργήσει.</li>
+                        <li>Να είστε <strong>προσεκτικοί</strong> και να ακολουθείτε τα <strong>σηματοδοτημένα μονοπάτια</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="disclaimer-footer">
+                <button class="accept-btn" id="acceptDisclaimer">✅ ΑΠΟΔΕΧΟΜΑΙ &amp; ΣΥΝΕΧΙΖΩ</button>
+                <button class="reject-btn" id="rejectDisclaimer">✕ Δεν αποδέχομαι - Έξοδος</button>
+            </div>
+        </div>
+    </div>
+
     <div id="map-wrapper">
         <div id="map"></div>
     </div>
@@ -789,7 +1002,7 @@
         </div>
     </div>
     
-    <!-- ★★★ HEADER - ΑΦΑΙΡΕΘΗΚΕ ΤΟ ΚΟΥΜΠΙ ΣΧΕΔΙΑΣΗΣ ★★★ -->
+    <!-- ★★★ HEADER ★★★ -->
     <div class="header-wrapper" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Θέση">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
@@ -1092,7 +1305,8 @@
             currentSpeedKmh: 0,
             originalTime: null,
             alertDismissed: false,
-            alertDisabledForever: false
+            alertDisabledForever: false,
+            disclaimerAccepted: false
         };
 
         // ============================================================
@@ -1161,20 +1375,6 @@
             });
             
             document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
-            
-            setTimeout(() => {
-                const savedRoute = localStorage.getItem('athos_last_route');
-                if (savedRoute) {
-                    try {
-                        const r = JSON.parse(savedRoute);
-                        if (r.url && r.name) {
-                            showResumeModal(r);
-                        }
-                    } catch(e) {}
-                } else {
-                    showToast('🌐 OpenFreeMap - Εντελώς ΔΩΡΕΑΝ! 🆓', '#4CAF50');
-                }
-            }, 800);
         }
         
         function updateRotationIndicator() {
@@ -1910,11 +2110,78 @@
         // ============================================================
         
         document.addEventListener('DOMContentLoaded', () => {
-            initMap();
             
+            // ★★★ ΕΛΕΓΧΟΣ ΑΠΟΔΟΧΗΣ ΑΠΟΠΟΙΗΣΗΣ ★★★
+            function checkDisclaimer() {
+                const accepted = localStorage.getItem('athos_disclaimer_accepted');
+                if (accepted === 'true') {
+                    state.disclaimerAccepted = true;
+                    document.getElementById('disclaimerModal').classList.remove('active');
+                    initMap();
+                    // Ελέγχουμε αν υπάρχει αποθηκευμένη διαδρομή
+                    setTimeout(() => {
+                        const savedRoute = localStorage.getItem('athos_last_route');
+                        if (savedRoute) {
+                            try {
+                                const r = JSON.parse(savedRoute);
+                                if (r.url && r.name) {
+                                    showResumeModal(r);
+                                }
+                            } catch(e) {}
+                        } else {
+                            showToast('🌐 OpenFreeMap - Εντελώς ΔΩΡΕΑΝ! 🆓', '#4CAF50');
+                        }
+                    }, 800);
+                } else {
+                    document.getElementById('disclaimerModal').classList.add('active');
+                }
+            }
+
+            // ★★★ ΑΠΟΔΟΧΗ ★★★
+            document.getElementById('acceptDisclaimer').addEventListener('click', function() {
+                localStorage.setItem('athos_disclaimer_accepted', 'true');
+                state.disclaimerAccepted = true;
+                document.getElementById('disclaimerModal').classList.remove('active');
+                initMap();
+                setTimeout(() => {
+                    const savedRoute = localStorage.getItem('athos_last_route');
+                    if (savedRoute) {
+                        try {
+                            const r = JSON.parse(savedRoute);
+                            if (r.url && r.name) {
+                                showResumeModal(r);
+                            }
+                        } catch(e) {}
+                    } else {
+                        showToast('🌐 OpenFreeMap - Εντελώς ΔΩΡΕΑΝ! 🆓', '#4CAF50');
+                    }
+                }, 800);
+            });
+
+            // ★★★ ΑΠΟΡΡΙΨΗ - ΚΛΕΙΣΙΜΟ ★★★
+            document.getElementById('rejectDisclaimer').addEventListener('click', function() {
+                showToast('❌ Πρέπει να αποδεχτείτε τους όρους για να συνεχίσετε', '#f44336');
+                // Προσπάθεια κλεισίματος της σελίδας
+                setTimeout(() => {
+                    window.close();
+                    // Αν δεν κλείσει, εμφανίζουμε μήνυμα
+                    document.body.innerHTML = `
+                        <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;">
+                            <div style="font-size:64px;">⚠️</div>
+                            <h2 style="color:#FF5722;">Δεν αποδεχτήκατε τους όρους χρήσης</h2>
+                            <p style="color:#888;max-width:400px;">Για να χρησιμοποιήσετε την εφαρμογή, πρέπει να αποδεχτείτε την αποποίηση ευθύνης.</p>
+                            <button onclick="location.reload()" style="background:#FF5722;color:white;border:none;padding:12px 30px;border-radius:8px;font-size:16px;cursor:pointer;">🔄 Επανεκκίνηση</button>
+                        </div>
+                    `;
+                }, 500);
+            });
+
+            // ★★★ ΕΚΚΙΝΗΣΗ ★★★
+            checkDisclaimer();
+
+            // ★★★ ΥΠΟΛΟΙΠΑ EVENT LISTENERS ★★★
             document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
-            
             document.getElementById('centerBtnHeader').style.display = 'none';
             
             document.getElementById('helpBtn').addEventListener('click', function() {
