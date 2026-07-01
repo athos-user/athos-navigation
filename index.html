@@ -6,7 +6,7 @@
     <title>Athos Maps - Πλοήγηση (OpenFreeMap)</title>
     <meta name="theme-color" content="#2196F3">
     
-    <!-- ★★★ MapLibre GL (αντί για Leaflet) ★★★ -->
+    <!-- ★★★ MapLibre GL ★★★ -->
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
     
@@ -1075,6 +1075,22 @@
         };
 
         // ============================================================
+        // ★★★ ΣΥΝΑΡΤΗΣΗ ΥΠΟΛΟΓΙΣΜΟΥ ΑΠΟΣΤΑΣΗΣ (Haversine) ★★★
+        // ============================================================
+        
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Ακτίνα γης σε km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; // Επιστρέφει km
+        }
+
+        // ============================================================
         // ★★★ ΑΡΧΙΚΟΠΟΙΗΣΗ MAP (OpenFreeMap) ★★★
         // ============================================================
         
@@ -1197,13 +1213,22 @@
             localStorage.setItem('athos_was_navigating', 'false');
         }
 
+        // ★★★ FIXED: updatePosition (χωρίς L.latLng) ★★★
         function updatePosition(lat, lng, speed, heading) {
             if (state.lastPosition) state.prevPosition = { ...state.lastPosition };
             state.lastPosition = { lat, lng };
             
-            state.currentSpeedKmh = speed !== null && speed !== undefined ? 
-                speed * 3.6 : 
-                (state.prevPosition ? L.latLng(state.prevPosition.lat, state.prevPosition.lng).distanceTo(L.latLng(lat, lng)) * 3.6 : 0);
+            // Υπολογισμός ταχύτητας με Haversine
+            if (state.prevPosition) {
+                const distance = haversineDistance(
+                    state.prevPosition.lat, state.prevPosition.lng,
+                    lat, lng
+                );
+                state.currentSpeedKmh = distance * 1000 * 3.6 / 1000; // km/h
+                if (state.currentSpeedKmh < 0.1) state.currentSpeedKmh = 0;
+            } else {
+                state.currentSpeedKmh = speed !== null && speed !== undefined ? speed * 3.6 : 0;
+            }
             
             if (heading !== null && heading !== undefined && heading >= 0 && state.currentSpeedKmh > 0.5) {
                 state.currentHeading = heading;
@@ -1566,12 +1591,17 @@
             return r;
         }
 
-        function computeDistance(c) {
+        // ★★★ FIXED: computeDistance (χωρίς L.latLng) ★★★
+        function computeDistance(coords) {
             let d = 0;
-            for (let i = 1; i < c.length; i++) {
-                d += L.latLng(c[i-1][1], c[i-1][0]).distanceTo(L.latLng(c[i][1], c[i][0]));
+            for (let i = 1; i < coords.length; i++) {
+                // coords = [lng, lat] (από MapLibre)
+                d += haversineDistance(
+                    coords[i-1][1], coords[i-1][0],  // lat, lng
+                    coords[i][1], coords[i][0]
+                );
             }
-            return d / 1000;
+            return d; // σε km
         }
 
         function updateRouteInfo() {
@@ -1624,12 +1654,14 @@
             showToast('🗑️ Διαδρομή καθαρίστηκε', '#d35400');
         }
 
+        // ★★★ FIXED: checkOffRoute (χωρίς L.latLng) ★★★
         function checkOffRoute(lat, lng) {
             if (!state.routeGeometry || state.alertDisabledForever) return;
             
             let min = Infinity;
             for (const c of state.routeGeometry) {
-                const d = L.latLng(lat, lng).distanceTo(L.latLng(c[1], c[0]));
+                // c = [lng, lat]
+                const d = haversineDistance(lat, lng, c[1], c[0]) * 1000; // σε μέτρα
                 if (d < min) min = d;
             }
             
@@ -1648,6 +1680,7 @@
             }
         }
 
+        // ★★★ FIXED: updateDistProgress (χωρίς L.latLng) ★★★
         function updateDistProgress() {
             const el = document.getElementById('distProgressInline');
             if (!state.routeGeometry || !state.lastPosition || state.routeDistance === 0) {
@@ -1659,20 +1692,21 @@
             let minDist = Infinity, closestIdx = 0;
             
             for (let i = 0; i < state.routeGeometry.length; i++) {
-                const d = L.latLng(state.lastPosition.lat, state.lastPosition.lng).distanceTo(
-                    L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
-                );
+                const d = haversineDistance(
+                    state.lastPosition.lat, state.lastPosition.lng,
+                    state.routeGeometry[i][1], state.routeGeometry[i][0]
+                ) * 1000; // σε μέτρα
                 if (d < minDist) { minDist = d; closestIdx = i; }
             }
             
             let doneDist = 0;
             for (let i = 1; i <= closestIdx; i++) {
-                doneDist += L.latLng(state.routeGeometry[i-1][1], state.routeGeometry[i-1][0]).distanceTo(
-                    L.latLng(state.routeGeometry[i][1], state.routeGeometry[i][0])
+                doneDist += haversineDistance(
+                    state.routeGeometry[i-1][1], state.routeGeometry[i-1][0],
+                    state.routeGeometry[i][1], state.routeGeometry[i][0]
                 );
             }
             
-            doneDist /= 1000;
             const remaining = Math.max(0, state.routeDistance - doneDist);
             document.getElementById('distDone').textContent = doneDist.toFixed(2);
             document.getElementById('distRemaining').textContent = remaining.toFixed(2);
