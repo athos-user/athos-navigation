@@ -52,6 +52,7 @@
             height:48px;
             display:flex;
             align-items:center;
+            justify-content:center;
             gap:3px;
         }
         .header-wrapper::-webkit-scrollbar { display:none; }
@@ -94,7 +95,6 @@
         .header-wrapper button.resume-btn{background:#e91e63;font-size:10px}
         .header-wrapper button.help-btn{background:#9C27B0;font-size:15px}
         .header-wrapper button.center-btn{background:#00BCD4;font-size:15px}
-        .header-wrapper a.design-btn{background:#4CAF50;font-size:10px}
         
         .header-wrapper select {
             background:rgba(255,255,255,0.1);
@@ -684,7 +684,6 @@
         .maplibregl-ctrl-group button { background:rgba(13,17,23,0.95)!important; color:#eee!important; }
         .maplibregl-ctrl-group button:hover { background:#333!important; }
         
-        /* ★★★ Κουμπί κέντρου ★★★ */
         .center-btn-fixed {
             position:fixed;
             bottom:160px;
@@ -764,7 +763,6 @@
     
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     
-    <!-- ★★★ ΝΕΟ ΚΟΥΜΠΙ ΚΕΝΤΡΟΥ ★★★ -->
     <button class="center-btn-fixed" id="centerBtn" title="Κέντρο στη διαδρομή">🎯</button>
     
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
@@ -788,6 +786,7 @@
         </div>
     </div>
     
+    <!-- ★★★ HEADER - ΑΦΑΙΡΕΘΗΚΕ ΤΟ ΚΟΥΜΠΙ ΣΧΕΔΙΑΣΗΣ ★★★ -->
     <div class="header-wrapper" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Θέση">📍</button>
         <button id="navBtn" class="nav-btn" title="Follow">🧭</button>
@@ -797,7 +796,6 @@
         <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός">🗑️</button>
         <button id="resumeBtn" class="resume-btn" title="Συνέχεια">🔄</button>
         <button id="helpBtn" class="help-btn" title="Βοήθεια">❓</button>
-        <a href="https://athos-user.github.io/athos-path-finder/" target="_blank" class="design-btn" title="Σχεδίαση">✏️</a>
         
         <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
@@ -896,7 +894,6 @@
                 <div class="help-section-title">🆘 Άλλες</div>
                 <div class="help-item"><span class="help-icon">🆘</span><div><strong>SOS</strong><div class="help-desc">Μήνυμα έκτακτης ανάγκης</div></div></div>
                 <div class="help-item"><span class="help-icon">🐢🚶🏃</span><div><strong>Ταχύτητα</strong><div class="help-desc">Εκτίμηση χρόνου</div></div></div>
-                <div class="help-item"><span class="help-icon">✏️</span><div><strong>Σχεδίαση</strong><div class="help-desc">Σχεδίαση νέων διαδρομών</div></div></div>
             </div>
             <div class="help-footer"><span>Athos Maps v3.0 · OpenFreeMap 🆓</span></div>
         </div>
@@ -1350,11 +1347,9 @@
                 return;
             }
             
-            // Βρίσκουμε τα όρια της διαδρομής
             const bounds = new maplibregl.LngLatBounds();
             state.routeGeometry.forEach(c => bounds.extend([c[0], c[1]]));
             
-            // Επαναφορά της οθόνης στα όρια της διαδρομής
             state.map.fitBounds(bounds, { 
                 padding: 50, 
                 maxZoom: 15,
@@ -1471,7 +1466,6 @@
                     
                     updateRouteInfo();
                     
-                    // ★★★ Εμφάνιση κουμπιού κέντρου ★★★
                     document.getElementById('centerBtn').classList.add('active');
                     document.getElementById('centerBtnHeader').style.display = 'inline-flex';
                     
@@ -1546,7 +1540,6 @@
                     
                     updateRouteInfo();
                     
-                    // ★★★ Εμφάνιση κουμπιού κέντρου ★★★
                     document.getElementById('centerBtn').classList.add('active');
                     document.getElementById('centerBtnHeader').style.display = 'inline-flex';
                     
@@ -1613,7 +1606,6 @@
                 
                 updateRouteInfo();
                 
-                // ★★★ Εμφάνιση κουμπιού κέντρου ★★★
                 document.getElementById('centerBtn').classList.add('active');
                 document.getElementById('centerBtnHeader').style.display = 'inline-flex';
                 
@@ -1696,7 +1688,6 @@
             document.getElementById('offRouteWarning').classList.remove('active');
             document.getElementById('offRouteStatus').classList.remove('active');
             
-            // ★★★ Απόκρυψη κουμπιού κέντρου ★★★
             document.getElementById('centerBtn').classList.remove('active');
             document.getElementById('centerBtnHeader').style.display = 'none';
             
@@ -1918,11 +1909,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             
-            // ★★★ Κουμπιά κέντρου ★★★
             document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
             
-            // Κρύβουμε το κουμπί κέντρου στην header αρχικά
             document.getElementById('centerBtnHeader').style.display = 'none';
             
             document.getElementById('helpBtn').addEventListener('click', function() {
