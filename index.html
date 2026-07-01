@@ -778,26 +778,24 @@
             color:#FF9800;
             font-weight:600;
         }
-        #disclaimerModal .disclaimer-content .disclaimer-body .warning-box {
-            background:rgba(244,67,54,0.12);
-            border-left:4px solid #f44336;
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box {
+            background:rgba(255,255,255,0.04);
+            border-left:4px solid #FF5722;
             padding:10px 12px;
             margin:10px 0;
             border-radius:4px;
         }
-        #disclaimerModal .disclaimer-content .disclaimer-body .info-box {
-            background:rgba(33,150,243,0.1);
-            border-left:4px solid #2196F3;
-            padding:10px 12px;
-            margin:10px 0;
-            border-radius:4px;
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.blue {
+            border-left-color: #2196F3;
+            background:rgba(33,150,243,0.08);
         }
-        #disclaimerModal .disclaimer-content .disclaimer-body .app-box {
-            background:rgba(76,175,80,0.12);
-            border-left:4px solid #4CAF50;
-            padding:10px 12px;
-            margin:10px 0;
-            border-radius:4px;
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.green {
+            border-left-color: #4CAF50;
+            background:rgba(76,175,80,0.08);
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.orange {
+            border-left-color: #FF9800;
+            background:rgba(255,152,0,0.08);
         }
         #disclaimerModal .disclaimer-content .disclaimer-body ul {
             margin:6px 0 6px 18px;
@@ -912,52 +910,47 @@
     <div id="disclaimerModal" class="active">
         <div class="disclaimer-content">
             <div class="disclaimer-header">
-                <span class="icon">⚠️</span>
-                <h2>ΣΗΜΑΝΤΙΚΟ - Πριν συνεχίσετε</h2>
+                <span class="icon">⚖️</span>
+                <h2>Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
             </div>
             <div class="disclaimer-body">
-                <p style="color:#FF5722;font-weight:700;font-size:14px;margin-bottom:10px;">
-                    Το εργαλείο αυτό είναι <strong>επικουρικό</strong> και σε καμία περίπτωση δεν υποκαθιστά την προσωπική σας κρίση και προσοχή.
-                </p>
                 
-                <div class="warning-box">
-                    <strong>⏱️ Χρόνοι &amp; Φυσική Κατάσταση</strong><br>
-                    Οι χρόνοι που αναφέρονται για τις διαδρομές είναι <strong>ενδεικτικοί</strong>. Το πόσο θα κάνετε εξαρτάται από τη <strong>φυσική σας κατάσταση</strong> και τις <strong>καιρικές συνθήκες</strong> που θα επικρατούν την ημέρα που θα ξεκινήσετε.
+                <div class="section-box">
+                    <strong>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</strong><br>
+                    Το παρόν λογισμικό αποτελεί <strong>αποκλειστικά βοηθητικό εργαλείο</strong> προγραμματισμού διαδρομών. Σε καμία περίπτωση δεν υποκαθιστά την προσωπική κρίση, την απαιτούμενη προσοχή ή την ατομική ευθύνη του χρήστη. Ο δημιουργός της εφαρμογής <strong>δεν φέρει καμία αστική ή ποινική ευθύνη</strong> για τυχόν ατυχήματα, απώλειες ή ζημίες κατά τη διάρκεια των διαδρομών.
                 </div>
 
-                <div class="warning-box">
-                    <strong>⚠️ ΠΡΟΣΟΧΗ</strong><br>
-                    Πολλές φορές, λόγω <strong>καιρικών συνθηκών</strong>, <strong>έργων οδοποιίας</strong> και <strong>εργασιών</strong>, οι χωματόδρομοι αλλά και κάποια μονοπάτια <strong>μπορεί να μην είναι βατά</strong> και να έχουν αλλάξει.
+                <div class="section-box orange">
+                    <strong>⏱️ Εκτίμηση Χρόνου &amp; Φυσική Κατάσταση</strong><br>
+                    Οι αναγραφόμενοι χρόνοι πλοήγησης είναι <strong>ενδεικτικοί</strong> και βασίζονται σε μέσους όρους. Η πραγματική διάρκεια της διαδρομής εξαρτάται άμεσα από τη <strong>φυσική κατάσταση</strong> του χρήστη και τις <strong>επικρατούσες καιρικές συνθήκες</strong>.
                 </div>
 
-                <div style="background:rgba(255,87,34,0.2);padding:10px 12px;margin:10px 0;border-radius:4px;border:1px solid rgba(255,87,34,0.3);">
-                    <strong style="color:#FF5722;">🔴 Για αυτό, πάντα θα πρέπει:</strong>
+                <div class="section-box">
+                    <strong>🛣️ Μεταβολές Οδικού Δικτύου &amp; Μονοπατιών</strong><br>
+                    Λόγω έντονων καιρικών φαινομένων, κατολισθήσεων ή εργασιών οδοποιίας, οι χωματόδρομοι και τα μονοπάτια ενδέχεται να έχουν υποστεί αλλοιώσεις ή να είναι <strong>μη βατά</strong>.
                     <ul>
-                        <li>Να ρωτάτε για την κατάσταση των μονοπατιών <strong>πριν ξεκινήσετε</strong>.</li>
-                        <li>Η διάβασή τους γίνεται με <strong>αποκλειστικά δική σας ευθύνη</strong>.</li>
+                        <li><strong>Προκαταρκτικός έλεγχος:</strong> Απαιτείται η προηγούμενη ενημέρωση του χρήστη από τις τοπικές αρχές για την τρέχουσα κατάσταση των προσβάσεων.</li>
+                        <li><strong>Αποδοχή κινδύνου:</strong> Η διέλευση από οποιοδήποτε σημείο γίνεται με <strong>αποκλειστική και πλήρη ευθύνη</strong> του χρήστη.</li>
                     </ul>
                 </div>
 
-                <div class="info-box">
-                    <strong>🗺️ Εποπτικό Εργαλείο</strong><br>
-                    Το σύνολο των πληροφοριών που παρέχονται εδώ είναι <strong>απλά ένα εποπτικό εργαλείο</strong> για τον σχεδιασμό μιας διαδρομής. Σε καμία περίπτωση <strong>δεν αντικαθιστούν</strong> την αναγκαιότητα <strong>πυξίδας και χάρτη</strong> για πλοήγηση στο τοπίο.
+                <div class="section-box blue">
+                    <strong>🗺️ Εποπτικό Μέσο &amp; Πλοήγηση</strong><br>
+                    Οι παρεχόμενες πληροφορίες λειτουργούν <strong>συμπληρωματικά</strong> και δεν αντικαθιστούν τα παραδοσιακά μέσα προσανατολισμού. Κρίνεται απαραίτητη η κατοχή και η γνώση χρήσης <strong>φυσικού (έντυπου) χάρτη και πυξίδας</strong>.
                 </div>
 
-                <div style="background:rgba(255,152,0,0.15);padding:10px 12px;margin:10px 0;border-radius:4px;border-left:4px solid #FF9800;">
-                    <strong style="color:#FF9800;">📶 ΣΗΜΑΝΤΙΚΟ</strong><br>
-                    Στο <strong>Άγιον Όρος</strong>, η κάλυψη κινητής τηλεφωνίας είναι <strong>περιορισμένη ή ανύπαρκτη</strong> σε πολλές περιοχές. Για την ασφαλή πλοήγηση, συνιστάται η χρήση εφαρμογών πλοήγησης <strong>εκτός σύνδεσης (offline)</strong>, όπως το <strong>Maps.me</strong> (διαθέσιμο για δωρεάν λήψη) ή το <strong>OsmAnd</strong> ή το <strong>Athos Path Finder</strong>.
-                </div>
-
-                <div class="info-box">
-                    <strong>💡 Πρόσθετες Συμβουλές:</strong>
+                <div class="section-box orange">
+                    <strong>📶 Περιορισμός Δικτύου &amp; Λειτουργία Offline</strong><br>
+                    Στην περιοχή του <strong>Αγίου Όρους</strong>, η κάλυψη του δικτύου κινητής τηλεφωνίας είναι <strong>περιορισμένη έως εντελώς ανύπαρκτη</strong>. Για την ασφάλειά σας, απαιτείται η λήψη και χρήση χαρτών <strong>εκτός σύνδεσης (offline)</strong>.
+                    <br><br>
+                    <strong>Προτεινόμενες Εφαρμογές Πλοήγησης:</strong>
                     <ul>
-                        <li>Πριν ξεκινήσετε, ελέγξτε ότι το <strong>GPS</strong> της συσκευής σας λειτουργεί σωστά.</li>
-                        <li>Φροντίστε να έχετε μαζί σας <strong>φορτιστή ή power bank</strong>.</li>
-                        <li>Ενημερώστε κάποιον για το <strong>δρομολόγιό</strong> σας και την εκτιμώμενη ώρα επιστροφής.</li>
-                        <li>Να έχετε πάντα μαζί σας <strong>χάρτη και πυξίδα</strong>, σε περίπτωση που η τεχνολογία δεν λειτουργήσει.</li>
-                        <li>Να είστε <strong>προσεκτικοί</strong> και να ακολουθείτε τα <strong>σηματοδοτημένα μονοπάτια</strong>.</li>
+                        <li><strong>Maps.me</strong>: Λήψη για iOS | Λήψη για Android</li>
+                        <li><strong>OsmAnd</strong>: Λήψη για iOS | Λήψη για Android</li>
+                        <li><strong>Athos Path Finder</strong></li>
                     </ul>
                 </div>
+
             </div>
             <div class="disclaimer-footer">
                 <button class="accept-btn" id="acceptDisclaimer">✅ ΑΠΟΔΕΧΟΜΑΙ &amp; ΣΥΝΕΧΙΖΩ</button>
@@ -2118,7 +2111,6 @@
                     state.disclaimerAccepted = true;
                     document.getElementById('disclaimerModal').classList.remove('active');
                     initMap();
-                    // Ελέγχουμε αν υπάρχει αποθηκευμένη διαδρομή
                     setTimeout(() => {
                         const savedRoute = localStorage.getItem('athos_last_route');
                         if (savedRoute) {
@@ -2161,10 +2153,8 @@
             // ★★★ ΑΠΟΡΡΙΨΗ - ΚΛΕΙΣΙΜΟ ★★★
             document.getElementById('rejectDisclaimer').addEventListener('click', function() {
                 showToast('❌ Πρέπει να αποδεχτείτε τους όρους για να συνεχίσετε', '#f44336');
-                // Προσπάθεια κλεισίματος της σελίδας
                 setTimeout(() => {
                     window.close();
-                    // Αν δεν κλείσει, εμφανίζουμε μήνυμα
                     document.body.innerHTML = `
                         <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;">
                             <div style="font-size:64px;">⚠️</div>
