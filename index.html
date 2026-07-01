@@ -1199,7 +1199,6 @@
             localStorage.setItem('athos_was_navigating', 'false');
         }
 
-        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function updatePosition(lat, lng, speed, heading) {
             if (state.lastPosition) state.prevPosition = { ...state.lastPosition };
             state.lastPosition = { lat, lng };
@@ -1567,7 +1566,6 @@
             return r;
         }
 
-        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function computeDistance(coords) {
             let d = 0;
             for (let i = 1; i < coords.length; i++) {
@@ -1628,7 +1626,6 @@
             showToast('🗑️ Διαδρομή καθαρίστηκε', '#d35400');
         }
 
-        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function checkOffRoute(lat, lng) {
             if (!state.routeGeometry || state.alertDisabledForever) return;
             
@@ -1653,7 +1650,6 @@
             }
         }
 
-        // ★★★ FIXED - ΧΩΡΙΣ L ★★★
         function updateDistProgress() {
             const el = document.getElementById('distProgressInline');
             if (!state.routeGeometry || !state.lastPosition || state.routeDistance === 0) {
@@ -1902,13 +1898,16 @@
             document.getElementById('dismissAlertBtn').addEventListener('click', dismissAlert);
             document.getElementById('disableAlertForeverBtn').addEventListener('click', disableAlertForever);
             
+            // ★★★ FIXED: Κουμπιά ταχύτητας ★★★
             document.querySelectorAll('.speed-btn').forEach(b => {
                 b.addEventListener('click', function() {
-                    state.currentSpeed = parseInt(this.dataset.speed);
+                    const speed = parseInt(this.dataset.speed);
+                    state.currentSpeed = speed;
                     state.originalTime = null;
                     document.querySelectorAll('.speed-btn').forEach(x => x.classList.remove('active'));
                     this.classList.add('active');
                     updateTimeDisplay();
+                    showToast(`⚡ Ταχύτητα: ${speed} km/h`, '#4CAF50');
                 });
             });
             
