@@ -1,13 +1,14 @@
 // ★★★ SERVICE WORKER - ATHOS MAPS ★★★
+// Αυτό το αρχείο επιτρέπει στην εφαρμογή να λειτουργεί offline και να εγκαθίσταται
+
 const CACHE_NAME = 'athos-maps-v1';
 const STATIC_ASSETS = [
   '/athos-navigation/',
   '/athos-navigation/index.html',
-  '/athos-navigation/manifest.json',
-  '/athos-navigation/assets/logo.png'
+  '/athos-navigation/manifest.json'
 ];
 
-// Εγκατάσταση
+// Εγκατάσταση - Κατεβάζει και αποθηκεύει τα βασικά αρχεία
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -22,7 +23,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// Ενεργοποίηση
+// Ενεργοποίηση - Διαγράφει παλιά cache
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -38,19 +39,24 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch - Εξυπηρετεί αρχεία από το cache
+// Fetch - Εξυπηρετεί αρχεία από το cache (offline λειτουργία)
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+        // Αν το αρχείο υπάρχει στο cache, το σερβίρει
         if (response) {
           return response;
         }
+        
+        // Αλλιώς, το κατεβάζει από το διαδίκτυο
         return fetch(event.request)
           .then(response => {
+            // Αποθηκεύει το αρχείο στο cache για μελλοντική offline χρήση
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
+            
             const responseToCache = response.clone();
             caches.open(CACHE_NAME)
               .then(cache => {
@@ -59,6 +65,7 @@ self.addEventListener('fetch', event => {
             return response;
           })
           .catch(() => {
+            // Offline fallback
             return new Response('🌐 Δεν υπάρχει σύνδεση στο διαδίκτυο', {
               status: 503,
               statusText: 'Service Unavailable'
