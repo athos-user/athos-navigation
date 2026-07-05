@@ -502,7 +502,7 @@
             ]
         };
 
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ (140+) ★★★
+        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ (140+) ★★★ (παραμένουν ίδιες)
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -1515,12 +1515,15 @@
                 }
             });
 
+            // ★★★ ΒΕΛΤΙΩΜΕΝΟΣ ERROR HANDLER ★★★
             state.map.on('error', function(e) {
                 console.warn('Map error:', e);
+                // Αν το στυλ έχει ήδη φορτωθεί, αγνοούμε το σφάλμα (ακόμα και αν αποτυγχάνουν πλακίδια)
                 if (state.styleLoaded) {
                     console.log('Style already loaded, ignoring error');
                     return;
                 }
+                // Αν το στυλ ΔΕΝ έχει φορτωθεί ακόμα, προσπαθούμε να το επαναφέρουμε
                 if (e.error && (e.error.status === 404 || e.error.status === 0 || (e.error.message && e.error.message.includes('style')))) {
                     if (state.mapLoadRetries < 3) {
                         state.mapLoadRetries++;
