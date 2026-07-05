@@ -1,1 +1,8 @@
 
+# Δημιούργησε το αρχείο
+touch .nojekyll
+
+# Πρόσθεσέ το
+git add .nojekyll
+git commit -m "Προσθήκη .nojekyll για GitHub Pages"
+git push origin main
