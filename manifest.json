@@ -1,12 +1,13 @@
 {
   "name": "Athos Maps - Offline Πλοήγηση",
   "short_name": "Athos Maps",
-  "description": "Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές",
-  "start_url": "/",
+  "description": "Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές, GPS και offline αποθήκευση",
+  "start_url": "/athos-navigation/",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#2196F3",
   "orientation": "portrait",
+  "scope": "/athos-navigation/",
   "icons": [
     {
       "src": "assets/logo.png",
@@ -14,5 +15,15 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshot-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["travel", "navigation", "outdoors"],
+  "lang": "el",
+  "dir": "ltr"
 }
