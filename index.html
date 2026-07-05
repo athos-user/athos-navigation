@@ -2900,19 +2900,6 @@
             
             updateOfflineFavCount();
         });
-  <script>
-// ★★★ ΕΓΓΡΑΦΗ SERVICE WORKER ★★★
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/athos-navigation/sw.js')
-            .then(function(registration) {
-                console.log('✅ Service Worker εγγράφηκε επιτυχώς!', registration);
-            })
-            .catch(function(error) {
-                console.log('❌ Σφάλμα εγγραφής Service Worker:', error);
-            });
-    });
-}
-</script>
+  
 </body>
 </html>
