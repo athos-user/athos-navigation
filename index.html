@@ -692,7 +692,7 @@
             styleCached: false,
             libraryLoaded: libraryLoaded,
             mapInitialized: false,
-            styleLoaded: false   // ★★★ Νέα σημαία ★★★
+            styleLoaded: false
         };
 
         // ============================================================
@@ -1515,10 +1515,8 @@
                 }
             });
 
-            // ★★★ ΒΕΛΤΙΩΜΕΝΟΣ ERROR HANDLER ★★★
             state.map.on('error', function(e) {
                 console.warn('Map error:', e);
-                // Αν το στυλ έχει ήδη φορτωθεί, δεν ξανακαλούμε τη loadMapStyleWithCache
                 if (state.styleLoaded) {
                     console.log('Style already loaded, ignoring error');
                     return;
@@ -1585,7 +1583,7 @@
                             state.map.setStyle(BLANK_STYLE);
                             errorModal.classList.remove('active');
                             showToast('ℹ️ Χάρτης σε σκούρο φόντο (offline)', '#888');
-                            state.styleLoaded = true; // mark as loaded (even if blank)
+                            state.styleLoaded = true;
                             return;
                         }
                     }
@@ -1598,7 +1596,7 @@
                         console.log('✅ Style loaded from cache/network');
                         errorModal.classList.remove('active');
                         state.mapLoadAttempted = true;
-                        state.styleLoaded = true; // ★★★ επιτυχής φόρτωση ★★★
+                        state.styleLoaded = true;
                     } catch (e) {
                         console.error('Error parsing style JSON:', e);
                         state.map.setStyle(BLANK_STYLE);
@@ -1977,6 +1975,7 @@
             });
         }
 
+        // ★★★ ΒΕΛΤΙΩΜΕΝΗ ΦΟΡΤΩΣΗ ΔΙΑΔΡΟΜΗΣ - ΧΡΗΣΗ updateData ΑΝΤΙ ΓΙΑ ΑΦΑΙΡΕΣΗ ★★★
         function loadRouteFromUrl(url, name, dist, time) {
             showToast('⏳ Φόρτωση...', '#FF9800');
             fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
@@ -1985,11 +1984,6 @@
                     if (!text.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
                     const data = parseGpx(text);
                     if (data.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
-                    
-                    if (state.map && libraryLoaded) {
-                        if (state.map.getLayer('route')) state.map.removeLayer('route');
-                        if (state.map.getSource('route')) state.map.removeSource('route');
-                    }
                     
                     const ac = [];
                     data.tracks.forEach(t => t.forEach(c => ac.push(c)));
@@ -2007,20 +2001,55 @@
                     localStorage.removeItem('athos_last_gpx_data');
                     
                     if (state.map && libraryLoaded) {
-                        state.map.addSource('route', {
-                            type: 'geojson',
-                            data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
-                        });
-                        state.map.addLayer({
-                            id: 'route',
-                            type: 'line',
-                            source: 'route',
-                            paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
-                        });
-                        state.routeLine = 'route';
-                        const bounds = new maplibregl.LngLatBounds();
-                        ac.forEach(c => bounds.extend([c[1], c[0]]));
-                        state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                        // ★★★ Αντί να αφαιρούμε και να προσθέτουμε, ενημερώνουμε την υπάρχουσα πηγή ★★★
+                        try {
+                            if (state.map.getSource('route')) {
+                                state.map.getSource('route').setData({
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) }
+                                });
+                            } else {
+                                state.map.addSource('route', {
+                                    type: 'geojson',
+                                    data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                                });
+                                state.map.addLayer({
+                                    id: 'route',
+                                    type: 'line',
+                                    source: 'route',
+                                    paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                                });
+                            }
+                            state.routeLine = 'route';
+                            const bounds = new maplibregl.LngLatBounds();
+                            ac.forEach(c => bounds.extend([c[1], c[0]]));
+                            state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                        } catch(e) {
+                            console.warn('Route addition error:', e);
+                            // Αν αποτύχει, προσπαθούμε με αφαίρεση και επαναπροσθήκη
+                            try {
+                                if (state.map.getLayer('route')) state.map.removeLayer('route');
+                                if (state.map.getSource('route')) state.map.removeSource('route');
+                                state.map.addSource('route', {
+                                    type: 'geojson',
+                                    data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                                });
+                                state.map.addLayer({
+                                    id: 'route',
+                                    type: 'line',
+                                    source: 'route',
+                                    paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                                });
+                                state.routeLine = 'route';
+                                const bounds2 = new maplibregl.LngLatBounds();
+                                ac.forEach(c => bounds2.extend([c[1], c[0]]));
+                                state.map.fitBounds(bounds2, { padding: 50, maxZoom: 15 });
+                            } catch(e2) {
+                                console.error('Fallback route addition failed:', e2);
+                                showToast('⚠️ Σφάλμα εμφάνισης διαδρομής', '#f44336');
+                            }
+                        }
                     }
                     
                     updateRouteInfo();
@@ -2040,11 +2069,6 @@
                     const d = parseGpx(t);
                     if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                     
-                    if (state.map && libraryLoaded) {
-                        if (state.map.getLayer('route')) state.map.removeLayer('route');
-                        if (state.map.getSource('route')) state.map.removeSource('route');
-                    }
-                    
                     const ac = [];
                     d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
                     state.routeGeometry = ac.map(c => [c[1], c[0]]);
@@ -2061,20 +2085,54 @@
                     localStorage.setItem('athos_last_gpx_data', t);
                     
                     if (state.map && libraryLoaded) {
-                        state.map.addSource('route', {
-                            type: 'geojson',
-                            data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
-                        });
-                        state.map.addLayer({
-                            id: 'route',
-                            type: 'line',
-                            source: 'route',
-                            paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
-                        });
-                        state.routeLine = 'route';
-                        const bounds = new maplibregl.LngLatBounds();
-                        ac.forEach(c => bounds.extend([c[1], c[0]]));
-                        state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                        try {
+                            if (state.map.getSource('route')) {
+                                state.map.getSource('route').setData({
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) }
+                                });
+                            } else {
+                                state.map.addSource('route', {
+                                    type: 'geojson',
+                                    data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                                });
+                                state.map.addLayer({
+                                    id: 'route',
+                                    type: 'line',
+                                    source: 'route',
+                                    paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                                });
+                            }
+                            state.routeLine = 'route';
+                            const bounds = new maplibregl.LngLatBounds();
+                            ac.forEach(c => bounds.extend([c[1], c[0]]));
+                            state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                        } catch(e) {
+                            console.warn('Route addition error:', e);
+                            // Fallback
+                            try {
+                                if (state.map.getLayer('route')) state.map.removeLayer('route');
+                                if (state.map.getSource('route')) state.map.removeSource('route');
+                                state.map.addSource('route', {
+                                    type: 'geojson',
+                                    data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                                });
+                                state.map.addLayer({
+                                    id: 'route',
+                                    type: 'line',
+                                    source: 'route',
+                                    paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                                });
+                                state.routeLine = 'route';
+                                const bounds2 = new maplibregl.LngLatBounds();
+                                ac.forEach(c => bounds2.extend([c[1], c[0]]));
+                                state.map.fitBounds(bounds2, { padding: 50, maxZoom: 15 });
+                            } catch(e2) {
+                                console.error('Fallback route addition failed:', e2);
+                                showToast('⚠️ Σφάλμα εμφάνισης διαδρομής', '#f44336');
+                            }
+                        }
                     }
                     
                     updateRouteInfo();
@@ -2092,11 +2150,6 @@
                 const d = parseGpx(gpxData);
                 if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
                 
-                if (state.map && libraryLoaded) {
-                    if (state.map.getLayer('route')) state.map.removeLayer('route');
-                    if (state.map.getSource('route')) state.map.removeSource('route');
-                }
-                
                 const ac = [];
                 d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
                 state.routeGeometry = ac.map(c => [c[1], c[0]]);
@@ -2110,20 +2163,53 @@
                 document.getElementById('offRouteStatus').classList.remove('active');
                 
                 if (state.map && libraryLoaded) {
-                    state.map.addSource('route', {
-                        type: 'geojson',
-                        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
-                    });
-                    state.map.addLayer({
-                        id: 'route',
-                        type: 'line',
-                        source: 'route',
-                        paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
-                    });
-                    state.routeLine = 'route';
-                    const bounds = new maplibregl.LngLatBounds();
-                    ac.forEach(c => bounds.extend([c[1], c[0]]));
-                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    try {
+                        if (state.map.getSource('route')) {
+                            state.map.getSource('route').setData({
+                                type: 'Feature',
+                                properties: {},
+                                geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) }
+                            });
+                        } else {
+                            state.map.addSource('route', {
+                                type: 'geojson',
+                                data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                            });
+                            state.map.addLayer({
+                                id: 'route',
+                                type: 'line',
+                                source: 'route',
+                                paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                            });
+                        }
+                        state.routeLine = 'route';
+                        const bounds = new maplibregl.LngLatBounds();
+                        ac.forEach(c => bounds.extend([c[1], c[0]]));
+                        state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    } catch(e) {
+                        console.warn('Route addition error:', e);
+                        try {
+                            if (state.map.getLayer('route')) state.map.removeLayer('route');
+                            if (state.map.getSource('route')) state.map.removeSource('route');
+                            state.map.addSource('route', {
+                                type: 'geojson',
+                                data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                            });
+                            state.map.addLayer({
+                                id: 'route',
+                                type: 'line',
+                                source: 'route',
+                                paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                            });
+                            state.routeLine = 'route';
+                            const bounds2 = new maplibregl.LngLatBounds();
+                            ac.forEach(c => bounds2.extend([c[1], c[0]]));
+                            state.map.fitBounds(bounds2, { padding: 50, maxZoom: 15 });
+                        } catch(e2) {
+                            console.error('Fallback route addition failed:', e2);
+                            showToast('⚠️ Σφάλμα εμφάνισης διαδρομής', '#f44336');
+                        }
+                    }
                 }
                 
                 updateRouteInfo();
