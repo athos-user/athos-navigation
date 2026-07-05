@@ -7,9 +7,10 @@
   "background_color": "#0d1117",
   "theme_color": "#2196F3",
   "orientation": "portrait",
+  {
   "icons": [
     {
-      "src": "https://i.postimg.cc/qRK612ht/Athos-Tetragono.png",
+      "src": "assets/icons/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
