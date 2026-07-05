@@ -483,11 +483,8 @@
         
         // ★★★ ΕΛΕΓΧΟΣ: αν η βιβλιοθήκη φορτώθηκε ★★★
         let libraryLoaded = (typeof maplibregl !== 'undefined');
-        // ★★★ Έλεγχος αν ο χρήστης έχει απορρίψει το μήνυμα για πάντα ★★★
-        const libraryDismissed = localStorage.getItem('athos_library_dismissed') === 'true';
+        let libraryDismissed = localStorage.getItem('athos_library_dismissed') === 'true';
 
-        // Αν η βιβλιοθήκη δεν φορτώθηκε ΚΑΙ ο χρήστης δεν το έχει απορρίψει, εμφανίζουμε το modal (θα γίνει στο DOMContentLoaded)
-        // Αλλιώς, αν την έχει απορρίψει, συνεχίζουμε χωρίς χάρτη
         let currentRotation = 0;
         let pendingResumeAction = null;
         
@@ -694,7 +691,8 @@
             mapLoadRetries: 0,
             styleCached: false,
             libraryLoaded: libraryLoaded,
-            mapInitialized: false
+            mapInitialized: false,
+            styleLoaded: false   // ★★★ Νέα σημαία ★★★
         };
 
         // ============================================================
@@ -1454,7 +1452,6 @@
         // ★★★ initMap ★★★
         function initMap() {
             if (!libraryLoaded) {
-                // Δεν υπάρχει βιβλιοθήκη – δεν δημιουργούμε χάρτη
                 state.map = null;
                 state.mapInitialized = false;
                 return;
@@ -1518,8 +1515,14 @@
                 }
             });
 
+            // ★★★ ΒΕΛΤΙΩΜΕΝΟΣ ERROR HANDLER ★★★
             state.map.on('error', function(e) {
                 console.warn('Map error:', e);
+                // Αν το στυλ έχει ήδη φορτωθεί, δεν ξανακαλούμε τη loadMapStyleWithCache
+                if (state.styleLoaded) {
+                    console.log('Style already loaded, ignoring error');
+                    return;
+                }
                 if (e.error && (e.error.status === 404 || e.error.status === 0 || (e.error.message && e.error.message.includes('style')))) {
                     if (state.mapLoadRetries < 3) {
                         state.mapLoadRetries++;
@@ -1582,6 +1585,7 @@
                             state.map.setStyle(BLANK_STYLE);
                             errorModal.classList.remove('active');
                             showToast('ℹ️ Χάρτης σε σκούρο φόντο (offline)', '#888');
+                            state.styleLoaded = true; // mark as loaded (even if blank)
                             return;
                         }
                     }
@@ -1594,11 +1598,13 @@
                         console.log('✅ Style loaded from cache/network');
                         errorModal.classList.remove('active');
                         state.mapLoadAttempted = true;
+                        state.styleLoaded = true; // ★★★ επιτυχής φόρτωση ★★★
                     } catch (e) {
                         console.error('Error parsing style JSON:', e);
                         state.map.setStyle(BLANK_STYLE);
                         errorModal.classList.remove('active');
                         showToast('ℹ️ Χάρτης σε σκούρο φόντο (σφάλμα στυλ)', '#888');
+                        state.styleLoaded = true;
                     }
                 } else {
                     throw new Error('No style data available');
@@ -1613,6 +1619,7 @@
                     state.map.setStyle(BLANK_STYLE);
                     errorModal.classList.remove('active');
                     showToast('ℹ️ Χάρτης σε σκούρο φόντο (offline)', '#888');
+                    state.styleLoaded = true;
                 }
             }
         }
@@ -1629,7 +1636,6 @@
         // ★★★ initMapWithOfflineSupport ★★★
         function initMapWithOfflineSupport() {
             if (!libraryLoaded) {
-                // Ο χρήστης έχει απορρίψει τη βιβλιοθήκη – δεν δημιουργούμε χάρτη
                 state.map = null;
                 state.mapInitialized = false;
                 document.getElementById('statusDisplay').textContent = 'ℹ️ Χωρίς χάρτη – μόνο GPS και διαδρομές';
@@ -2321,15 +2327,8 @@
                 if (accepted === 'true') {
                     state.disclaimerAccepted = true;
                     document.getElementById('disclaimerModal').classList.remove('active');
-                    // Αν η βιβλιοθήκη λείπει και ο χρήστης το έχει απορρίψει, συνεχίζουμε χωρίς χάρτη
-                    if (!libraryLoaded && libraryDismissed) {
-                        initMapWithOfflineSupport();
-                        document.getElementById('statusDisplay').textContent = 'ℹ️ Χωρίς χάρτη – μόνο GPS και διαδρομές';
-                        // Δεν εμφανίζουμε το modal
-                    } else if (!libraryLoaded && !libraryDismissed) {
-                        // Εμφανίζουμε το modal
+                    if (!libraryLoaded && !libraryDismissed) {
                         document.getElementById('libraryError').classList.add('active');
-                        // Δεν καλούμε initMapWithOfflineSupport ακόμα – θα γίνει μετά την επιλογή του χρήστη
                     } else {
                         initMapWithOfflineSupport();
                     }
@@ -2376,7 +2375,7 @@
             });
             document.getElementById('continueWithoutMapBtnLib').addEventListener('click', function() {
                 document.getElementById('libraryError').classList.remove('active');
-                localStorage.setItem('athos_library_dismissed', 'true'); // αποθήκευση προτίμησης
+                localStorage.setItem('athos_library_dismissed', 'true');
                 libraryDismissed = true;
                 state.libraryLoaded = false;
                 initMapWithOfflineSupport();
