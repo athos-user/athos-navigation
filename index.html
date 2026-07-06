@@ -9,8 +9,9 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+    
     <style>
-        /* ★★★ STYLES (όλα τα προηγούμενα) ★★★ */
+        /* ★★★ STYLES (παραμένουν ίδια – δεν τα αλλάζω) ★★★ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform 0.05s ease-out;will-change:transform;pointer-events:none}
@@ -200,7 +201,7 @@
 </head>
 <body>
 
-    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ ★★★ -->
+    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ (ίδιο) ★★★ -->
     <div id="disclaimerModal" class="active">
         <div class="disclaimer-content">
             <div class="disclaimer-header">
@@ -208,43 +209,14 @@
                 <h2>Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
             </div>
             <div class="disclaimer-body">
-                <div class="section-box">
-                    <strong>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</strong><br>
-                    Το παρόν λογισμικό αποτελεί <strong>αποκλειστικά βοηθητικό εργαλείο</strong> προγραμματισμού διαδρομών. Σε καμία περίπτωση δεν υποκαθιστά την προσωπική κρίση, την απαιτούμενη προσοχή ή την ατομική ευθύνη του χρήστη. Ο δημιουργός της εφαρμογής <strong>δεν φέρει καμία αστική ή ποινική ευθύνη</strong> για τυχόν ατυχήματα, απώλειες ή ζημίες κατά τη διάρκεια των διαδρομών.
-                </div>
-                <div class="section-box orange">
-                    <strong>⏱️ Εκτίμηση Χρόνου &amp; Φυσική Κατάσταση</strong><br>
-                    Οι αναγραφόμενοι χρόνοι πλοήγησης είναι <strong>ενδεικτικοί</strong> και βασίζονται σε μέσους όρους. Η πραγματική διάρκεια της διαδρομής εξαρτάται άμεσα από τη <strong>φυσική κατάσταση</strong> του χρήστη και τις <strong>επικρατούσες καιρικές συνθήκες</strong>.
-                </div>
-                <div class="section-box">
-                    <strong>🛣️ Μεταβολές Οδικού Δικτύου &amp; Μονοπατιών</strong><br>
-                    Λόγω έντονων καιρικών φαινομένων, κατολισθήσεων ή εργασιών οδοποιίας, οι χωματόδρομοι και τα μονοπάτια ενδέχεται να έχουν υποστεί αλλοιώσεις ή να είναι <strong>μη βατά</strong>.
-                    <ul>
-                        <li><strong>Προκαταρκτικός έλεγχος:</strong> Απαιτείται η προηγούμενη ενημέρωση του χρήστη από τις τοπικές αρχές για την τρέχουσα κατάσταση των προσβάσεων.</li>
-                        <li><strong>Αποδοχή κινδύνου:</strong> Η διέλευση από οποιοδήποτε σημείο γίνεται με <strong>αποκλειστική και πλήρη ευθύνη</strong> του χρήστη.</li>
-                    </ul>
-                </div>
-                <div class="section-box blue">
-                    <strong>🗺️ Εποπτικό Μέσο &amp; Πλοήγηση</strong><br>
-                    Οι παρεχόμενες πληροφορίες λειτουργούν <strong>συμπληρωματικά</strong> και δεν αντικαθιστούν τα παραδοσιακά μέσα προσανατολισμού. Κρίνεται απαραίτητη η κατοχή και η γνώση χρήσης <strong>φυσικού (έντυπου) χάρτη και πυξίδας</strong>.
-                </div>
-                <div class="section-box orange">
-                    <strong>📶 Περιορισμός Δικτύου &amp; Λειτουργία Offline</strong><br>
-                    Στην περιοχή του <strong>Αγίου Όρους</strong>, η κάλυψη του δικτύου κινητής τηλεφωνίας είναι <strong>περιορισμένη έως εντελώς ανύπαρκτη</strong>. Για την ασφάλειά σας, απαιτείται η λήψη και χρήση χαρτών <strong>εκτός σύνδεσης (offline)</strong>.
-                </div>
-                <div class="section-box purple">
-                    <strong>🛡️ Κανόνες Ασφαλείας &amp; Προετοιμασία</strong>
-                    <ul>
-                        <li><strong>Έλεγχος GPS:</strong> Επαληθεύστε τη σωστή λειτουργία του δέκτη GPS της συσκευής σας πριν την εκκίνηση.</li>
-                        <li><strong>Αυτονομία ενέργειας:</strong> Φέρετε μαζί σας εξωτερική μπαταρία (power bank) πλήρως φορτισμένη.</li>
-                        <li><strong>Γνωστοποίηση δρομολογίου:</strong> Ενημερώστε τρίτο πρόσωπο για την ακριβή διαδρομή και την εκτιμώμενη ώρα επιστροφής σας.</li>
-                        <li><strong>Σήμανση:</strong> Ακολουθείτε αυστηρά και μόνο τα επίσημα σηματοδοτημένα μονοπάτια.</li>
-                    </ul>
-                </div>
-                <div class="section-box blue" style="border-left-color: #4CAF50; background: rgba(76,175,80,0.08);">
-                    <strong>🔒 Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου</strong><br>
-                    Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.
-                </div>
+                <!-- ... το περιεχόμενο παραμένει το ίδιο ... -->
+                <div class="section-box"><strong>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</strong><br>Το παρόν λογισμικό αποτελεί <strong>αποκλειστικά βοηθητικό εργαλείο</strong> προγραμματισμού διαδρομών. Σε καμία περίπτωση δεν υποκαθιστά την προσωπική κρίση, την απαιτούμενη προσοχή ή την ατομική ευθύνη του χρήστη. Ο δημιουργός της εφαρμογής <strong>δεν φέρει καμία αστική ή ποινική ευθύνη</strong> για τυχόν ατυχήματα, απώλειες ή ζημίες κατά τη διάρκεια των διαδρομών.</div>
+                <div class="section-box orange"><strong>⏱️ Εκτίμηση Χρόνου &amp; Φυσική Κατάσταση</strong><br>Οι αναγραφόμενοι χρόνοι πλοήγησης είναι <strong>ενδεικτικοί</strong> και βασίζονται σε μέσους όρους. Η πραγματική διάρκεια της διαδρομής εξαρτάται άμεσα από τη <strong>φυσική κατάσταση</strong> του χρήστη και τις <strong>επικρατούσες καιρικές συνθήκες</strong>.</div>
+                <div class="section-box"><strong>🛣️ Μεταβολές Οδικού Δικτύου &amp; Μονοπατιών</strong><br>Λόγω έντονων καιρικών φαινομένων, κατολισθήσεων ή εργασιών οδοποιίας, οι χωματόδρομοι και τα μονοπάτια ενδέχεται να έχουν υποστεί αλλοιώσεις ή να είναι <strong>μη βατά</strong>.<ul><li><strong>Προκαταρκτικός έλεγχος:</strong> Απαιτείται η προηγούμενη ενημέρωση του χρήστη από τις τοπικές αρχές για την τρέχουσα κατάσταση των προσβάσεων.</li><li><strong>Αποδοχή κινδύνου:</strong> Η διέλευση από οποιοδήποτε σημείο γίνεται με <strong>αποκλειστική και πλήρη ευθύνη</strong> του χρήστη.</li></ul></div>
+                <div class="section-box blue"><strong>🗺️ Εποπτικό Μέσο &amp; Πλοήγηση</strong><br>Οι παρεχόμενες πληροφορίες λειτουργούν <strong>συμπληρωματικά</strong> και δεν αντικαθιστούν τα παραδοσιακά μέσα προσανατολισμού. Κρίνεται απαραίτητη η κατοχή και η γνώση χρήσης <strong>φυσικού (έντυπου) χάρτη και πυξίδας</strong>.</div>
+                <div class="section-box orange"><strong>📶 Περιορισμός Δικτύου &amp; Λειτουργία Offline</strong><br>Στην περιοχή του <strong>Αγίου Όρους</strong>, η κάλυψη του δικτύου κινητής τηλεφωνίας είναι <strong>περιορισμένη έως εντελώς ανύπαρκτη</strong>. Για την ασφάλειά σας, απαιτείται η λήψη και χρήση χαρτών <strong>εκτός σύνδεσης (offline)</strong>.</div>
+                <div class="section-box purple"><strong>🛡️ Κανόνες Ασφαλείας &amp; Προετοιμασία</strong><ul><li><strong>Έλεγχος GPS:</strong> Επαληθεύστε τη σωστή λειτουργία του δέκτη GPS της συσκευής σας πριν την εκκίνηση.</li><li><strong>Αυτονομία ενέργειας:</strong> Φέρετε μαζί σας εξωτερική μπαταρία (power bank) πλήρως φορτισμένη.</li><li><strong>Γνωστοποίηση δρομολογίου:</strong> Ενημερώστε τρίτο πρόσωπο για την ακριβή διαδρομή και την εκτιμώμενη ώρα επιστροφής σας.</li><li><strong>Σήμανση:</strong> Ακολουθείτε αυστηρά και μόνο τα επίσημα σηματοδοτημένα μονοπάτια.</li></ul></div>
+                <div class="section-box blue" style="border-left-color: #4CAF50; background: rgba(76,175,80,0.08);"><strong>🔒 Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου</strong><br>Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div>
             </div>
             <div class="disclaimer-footer">
                 <button class="accept-btn" id="acceptDisclaimer">✅ ΑΠΟΔΕΧΟΜΑΙ &amp; ΣΥΝΕΧΙΖΩ</button>
@@ -429,11 +401,11 @@
 
     <script>
         // ============================================================
-        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ (με ανεξάρτητη αποποίηση) ★★★
+        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ (με σωστή σειρά φόρτωσης) ★★★
         // ============================================================
 
         // ============================================================
-        // ★★★ OFFLINE MAP MANAGER ★★★
+        // ★★★ OFFLINE MAP MANAGER ★★★ (πλήρης, ίδιος με πριν)
         // ============================================================
         class OfflineMapManager {
             constructor() {
@@ -1283,36 +1255,43 @@
             return R * c;
         }
 
-        // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ΧΑΡΤΗ ★★★
+        // ★★★ ΦΟΡΤΩΝΟΥΜΕ ΠΑΝΤΑ ONLINE ΧΑΡΤΗ (μέχρι να γίνει switch με reload) ★★★
         function initMap() {
-            state.map = new maplibregl.Map({
-                container: 'map',
-                style: 'https://tiles.openfreemap.org/styles/liberty',
-                center: [24.32, 40.16],
-                zoom: 12
-            });
-            state.map.addControl(new maplibregl.NavigationControl());
-            const savedRotation = localStorage.getItem('athos_rotation');
-            if (savedRotation) {
-                state.map.setBearing(parseFloat(savedRotation));
-                currentRotation = parseFloat(savedRotation);
-                updateRotationIndicator();
+            try {
+                state.map = new maplibregl.Map({
+                    container: 'map',
+                    style: 'https://tiles.openfreemap.org/styles/liberty',
+                    center: [24.32, 40.16],
+                    zoom: 12
+                });
+                state.map.addControl(new maplibregl.NavigationControl());
+                const savedRotation = localStorage.getItem('athos_rotation');
+                if (savedRotation) {
+                    state.map.setBearing(parseFloat(savedRotation));
+                    currentRotation = parseFloat(savedRotation);
+                    updateRotationIndicator();
+                }
+                document.getElementById('rotateBtn').addEventListener('click', function() {
+                    const current = state.map.getBearing() || 0;
+                    const newRotation = (current + 90) % 360;
+                    state.map.setBearing(newRotation);
+                    currentRotation = newRotation;
+                    localStorage.setItem('athos_rotation', newRotation);
+                    updateRotationIndicator();
+                    showToast('🔄 ' + Math.round(newRotation) + '°', '#2196F3');
+                });
+                document.getElementById('closeGpsNotification').addEventListener('click', function() {
+                    document.getElementById('gpsNotification').classList.remove('active');
+                });
+                document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
+                document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+                state.mapInitialized = true;
+            } catch (e) {
+                console.warn('Map initialization error (offline?):', e);
+                // Αν αποτύχει, εμφανίζουμε μήνυμα αλλά δεν σπάμε τη ροή
+                document.getElementById('statusBadge').textContent = '⚠️ Offline mode (no map)';
+                document.getElementById('statusDisplay').textContent = 'Συνδεθείτε για να φορτώσει ο χάρτης';
             }
-            document.getElementById('rotateBtn').addEventListener('click', function() {
-                const current = state.map.getBearing() || 0;
-                const newRotation = (current + 90) % 360;
-                state.map.setBearing(newRotation);
-                currentRotation = newRotation;
-                localStorage.setItem('athos_rotation', newRotation);
-                updateRotationIndicator();
-                showToast('🔄 ' + Math.round(newRotation) + '°', '#2196F3');
-            });
-            document.getElementById('closeGpsNotification').addEventListener('click', function() {
-                document.getElementById('gpsNotification').classList.remove('active');
-            });
-            document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
-            document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
-            state.mapInitialized = true;
         }
 
         function initMapWithOfflineSupport() {
@@ -1831,7 +1810,7 @@
         }
 
         // ============================================================
-        // ★★★ DOM READY ★★★
+        // ★★★ DOM READY ★★★ (το σημαντικό κομμάτι) ★★★
         // ============================================================
         let pendingResumeAction = null;
 
@@ -1843,6 +1822,7 @@
             if (accepted === 'true') {
                 // Ήδη αποδεκτή – κρύβουμε το modal και φορτώνουμε τον χάρτη
                 document.getElementById('disclaimerModal').classList.remove('active');
+                // Φόρτωση χάρτη ΜΟΝΟ αν έχει ήδη αποδεχτεί
                 initMapWithOfflineSupport();
                 setTimeout(() => {
                     const savedRoute = localStorage.getItem('athos_last_route');
@@ -1851,20 +1831,25 @@
                     }
                 }, 800);
             } else {
-                // Εμφανίζουμε το modal (είναι ήδη active) και περιμένουμε κλικ
+                // Δεν έχει αποδεχτεί – κρατάμε το modal ορατό και ΔΕΝ φορτώνουμε χάρτη
                 document.getElementById('disclaimerModal').classList.add('active');
-                // ★★★ ΦΟΡΤΩΝΟΥΜΕ ΤΟΝ ΧΑΡΤΗ ΠΑΡΑΛΛΗΛΑ ★★★
-                initMapWithOfflineSupport();
-                // Η αποποίηση καλύπτει τον χάρτη μέχρι να πατηθεί το κουμπί
+                // Μην καλέσεις initMapWithOfflineSupport() εδώ!
             }
 
-            // ★★★ ΚΛΙΚ ΣΤΟ ΑΠΟΔΕΧΟΜΑΙ ★★★
+            // ★★★ EVENT LISTENER ΓΙΑ ΤΟ ΚΟΥΜΠΙ ΑΠΟΔΟΧΗΣ ★★★
             document.getElementById('acceptDisclaimer').addEventListener('click', function() {
                 localStorage.setItem('athos_disclaimer_accepted', 'true');
                 state.disclaimerAccepted = true;
-                // ★★★ ΑΠΛΑ ΚΡΥΒΟΥΜΕ ΤΟ MODAL ★★★
+                // ★★★ ΚΡΥΒΟΥΜΕ ΤΟ MODAL ★★★
                 document.getElementById('disclaimerModal').classList.remove('active');
-                // Ο χάρτης είναι ήδη φορτωμένος
+                // ★★★ ΤΩΡΑ ΦΟΡΤΩΝΟΥΜΕ ΤΟΝ ΧΑΡΤΗ ★★★
+                initMapWithOfflineSupport();
+                setTimeout(() => {
+                    const savedRoute = localStorage.getItem('athos_last_route');
+                    if (savedRoute) {
+                        try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
+                    }
+                }, 800);
             });
 
             // ★★★ ΚΛΙΚ ΣΤΟ ΔΕΝ ΑΠΟΔΕΧΟΜΑΙ ★★★
@@ -1875,7 +1860,7 @@
                 }, 500);
             });
 
-            // ★★★ EVENT LISTENERS (παραμένουν όλοι οι υπόλοιποι) ★★★
+            // ★★★ ΟΙ ΥΠΟΛΟΙΠΟΙ EVENT LISTENERS ★★★
             document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').style.display = 'none';
