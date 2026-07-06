@@ -5,24 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Athos Maps - Offline Πλοήγηση</title>
     <meta name="theme-color" content="#2196F3">
+    
     <link rel="manifest" href="/athos-navigation/manifest.json">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+    
     <style>
+        /* ★★★ ΠΛΗΡΕΣ CSS ★★★ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
-        #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform .05s ease-out;will-change:transform;pointer-events:none}
-        #map{width:100%;height:100%;background:#0d1b2a;pointer-events:auto}
-        .header-wrapper{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,.95);border-bottom:2px solid #2196F3;backdrop-filter:blur(8px);overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;padding:4px 6px;height:48px;display:flex;align-items:center;justify-content:center;gap:3px}
+        
+        #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform 0.05s ease-out;will-change:transform;pointer-events:none}
+        #map{width:100%;height:100%;background:#0d1117;pointer-events:auto}
+        
+        .header-wrapper{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.95);border-bottom:2px solid #2196F3;backdrop-filter:blur(8px);overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;padding:4px 6px;height:48px;display:flex;align-items:center;justify-content:center;gap:3px}
         .header-wrapper::-webkit-scrollbar{display:none}
         .header-wrapper button,.header-wrapper a,.header-wrapper select,.header-wrapper .badge{flex-shrink:0;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
-        .header-wrapper button,.header-wrapper a{padding:4px 8px;font-size:10px;border-radius:6px;border:none;color:#fff;cursor:pointer;min-height:32px;font-weight:600;transition:all .2s;touch-action:manipulation;text-decoration:none}
-        .header-wrapper button:active,.header-wrapper a:active{transform:scale(.94)}
+        .header-wrapper button,.header-wrapper a{padding:4px 8px;font-size:10px;border-radius:6px;border:none;color:white;cursor:pointer;min-height:32px;font-weight:600;transition:all 0.2s;touch-action:manipulation;text-decoration:none}
+        .header-wrapper button:active,.header-wrapper a:active{transform:scale(0.94)}
         .header-wrapper button.gps-btn{background:#2196F3;font-size:15px}
-        .header-wrapper button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,.5)}
+        .header-wrapper button.gps-btn.active{background:#00BCD4;box-shadow:0 0 12px rgba(0,188,212,0.5)}
         .header-wrapper button.nav-btn{background:#FF9800;font-size:15px}
-        .header-wrapper button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,.5)}
+        .header-wrapper button.nav-btn.active{background:#FF5722;box-shadow:0 0 12px rgba(255,87,34,0.5)}
         .header-wrapper button.route-btn{background:#8e44ad;font-size:10px}
         .header-wrapper button.load-btn{background:#4CAF50;font-size:10px}
         .header-wrapper button.clear-btn{background:#d35400;font-size:10px}
@@ -30,12 +35,13 @@
         .header-wrapper button.help-btn{background:#9C27B0;font-size:15px}
         .header-wrapper button.center-btn{background:#00BCD4;font-size:15px}
         .header-wrapper button.fav-btn{background:#f39c12;font-size:10px}
-        .header-wrapper button.fav-btn.active{background:#e67e22;box-shadow:0 0 12px rgba(243,156,18,.5)}
+        .header-wrapper button.fav-btn.active{background:#e67e22;box-shadow:0 0 12px rgba(243,156,18,0.5)}
         .header-wrapper button.wifi-btn{background:#2196F3;font-size:15px}
-        .header-wrapper button.wifi-btn.active{background:#4CAF50;box-shadow:0 0 12px rgba(76,175,80,.5)}
+        .header-wrapper button.wifi-btn.active{background:#4CAF50;box-shadow:0 0 12px rgba(76,175,80,0.5)}
         .header-wrapper button.offline-fav-btn{background:#27ae60;font-size:10px}
-        .header-wrapper button.offline-fav-btn.active{background:#2ecc71;box-shadow:0 0 12px rgba(46,204,113,.5)}
-        .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,.95);padding:10px 18px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:center;min-width:180px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px);cursor:grab;user-select:none}
+        .header-wrapper button.offline-fav-btn.active{background:#2ecc71;box-shadow:0 0 12px rgba(46,204,113,0.5)}
+        
+        .info-bar{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(13,17,23,0.95);padding:10px 18px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);text-align:center;min-width:180px;max-width:95%;border:2px solid #2196F3;color:#eee;backdrop-filter:blur(8px);cursor:grab;user-select:none}
         .info-bar:active{cursor:grabbing}
         .info-bar .distance{font-size:28px;font-weight:800;color:#4CAF50}
         .info-bar .distance-label{font-size:14px;color:#888;font-weight:400}
@@ -50,175 +56,215 @@
         .info-bar .status{font-size:11px;color:#aaa;margin-top:4px}
         .info-bar .offroute{color:#f44336;font-weight:700;display:none;font-size:13px}
         .info-bar .offroute.active{display:block}
-        .bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:950;background:rgba(13,17,23,.95);padding:6px 8px;display:flex;gap:6px;justify-content:center;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding-bottom:calc(6px + env(safe-area-inset-bottom));flex-wrap:wrap}
-        .bottom-bar button{padding:5px 10px;font-size:9px;border-radius:5px;border:none;cursor:pointer;font-weight:600;color:#fff;min-height:28px;touch-action:manipulation}
-        .bottom-bar button.speed-btn{background:rgba(255,255,255,.08);color:#888}
-        .bottom-bar button.speed-btn.active{background:rgba(76,175,80,.3);color:#4CAF50}
-        .bottom-bar button.screen-btn{background:rgba(255,255,255,.08);color:#888}
-        .bottom-bar button.screen-btn.active{background:rgba(26,188,156,.3);color:#1abc9c}
+        
+        .bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:950;background:rgba(13,17,23,0.95);padding:6px 8px;display:flex;gap:6px;justify-content:center;align-items:center;border-top:1px solid rgba(255,255,255,0.08);padding-bottom:calc(6px + env(safe-area-inset-bottom));flex-wrap:wrap}
+        .bottom-bar button{padding:5px 10px;font-size:9px;border-radius:5px;border:none;cursor:pointer;font-weight:600;color:white;min-height:28px;touch-action:manipulation}
+        .bottom-bar button.speed-btn{background:rgba(255,255,255,0.08);color:#888}
+        .bottom-bar button.speed-btn.active{background:rgba(76,175,80,0.3);color:#4CAF50}
+        .bottom-bar button.screen-btn{background:rgba(255,255,255,0.08);color:#888}
+        .bottom-bar button.screen-btn.active{background:rgba(26,188,156,0.3);color:#1abc9c}
         .bottom-bar button.sos-bottom-btn{background:#f44336;font-size:12px;min-width:36px;min-height:28px;padding:4px 8px}
-        .offroute-warning{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:1001;background:#f44336;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;box-shadow:0 4px 20px rgba(244,67,54,.6);flex-direction:column;align-items:center;gap:8px}
+        
+        .offroute-warning{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:1001;background:#f44336;color:white;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;box-shadow:0 4px 20px rgba(244,67,54,0.6);flex-direction:column;align-items:center;gap:8px}
         .offroute-warning.active{display:flex}
-        .offroute-warning button{background:#fff;color:#f44336;border:none;padding:8px 18px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
-        .offroute-warning .disable-forever-btn{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);padding:6px 14px;border-radius:6px;font-size:10px;cursor:pointer;margin-top:2px}
-        .blog-link{position:fixed;bottom:48px;right:8px;z-index:850;background:rgba(13,17,23,.85);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);transition:all .2s;text-decoration:none;backdrop-filter:blur(4px);overflow:hidden}
-        .blog-link:hover{transform:scale(1.1);border-color:rgba(255,255,255,.3)}
+        .offroute-warning button{background:white;color:#f44336;border:none;padding:8px 18px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px}
+        .offroute-warning .disable-forever-btn{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);padding:6px 14px;border-radius:6px;font-size:10px;cursor:pointer;margin-top:2px}
+        
+        .blog-link{position:fixed;bottom:48px;right:8px;z-index:850;background:rgba(13,17,23,0.85);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;text-decoration:none;backdrop-filter:blur(4px);overflow:hidden}
+        .blog-link:hover{transform:scale(1.1);border-color:rgba(255,255,255,0.3)}
         .blog-link img{width:28px;height:28px;border-radius:50%;object-fit:cover}
-        #routeDropdown{position:fixed;top:52px;left:0;right:0;bottom:0;z-index:1200;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:8px}
+        
+        #routeDropdown{position:fixed;top:52px;left:0;right:0;bottom:0;z-index:1200;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;padding:8px}
         #routeDropdown.active{display:flex}
-        #routeDropdown .dd-content{background:rgba(13,17,23,.98);border-radius:12px;padding:12px 14px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;border:2px solid #8e44ad;color:#eee}
+        #routeDropdown .dd-content{background:rgba(13,17,23,0.98);border-radius:12px;padding:12px 14px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;border:2px solid #8e44ad;color:#eee}
         #routeDropdown .dd-content h3{color:#bb86fc;font-size:16px;margin-bottom:8px}
-        #routeDropdown .route-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;border-radius:5px;gap:5px;font-size:13px;min-height:40px}
-        #routeDropdown .route-item:hover{background:rgba(255,255,255,.1)}
+        #routeDropdown .route-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;border-radius:5px;gap:5px;font-size:13px;min-height:40px}
+        #routeDropdown .route-item:hover{background:rgba(255,255,255,0.1)}
         #routeDropdown .route-item .rname{flex:1;min-width:0;color:#eee;font-size:13px;font-weight:500;line-height:1.3}
         #routeDropdown .route-item .rinfo{font-size:10px;color:#aaa;white-space:nowrap;margin-left:4px}
-        #routeDropdown .route-search{width:100%;padding:8px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:12px;margin-bottom:8px}
-        #routeDropdown .letter-header{font-size:15px;font-weight:700;color:#bb86fc;padding:10px 4px 4px;border-bottom:1px solid rgba(255,255,255,.1);margin-top:8px}
-        #routeDropdown .close-routes{background:#555;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-top:6px;width:100%}
-        .fav-star{cursor:pointer;font-size:18px;padding:0 4px;transition:all .2s;user-select:none;flex-shrink:0;display:inline-block;min-width:24px;text-align:center;background:0 0;border:none;line-height:1}
+        #routeDropdown .route-search{width:100%;padding:8px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:white;font-size:12px;margin-bottom:8px}
+        #routeDropdown .letter-header{font-size:15px;font-weight:700;color:#bb86fc;padding:10px 4px 4px 4px;border-bottom:1px solid rgba(255,255,255,0.1);margin-top:8px}
+        #routeDropdown .close-routes{background:#555;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-top:6px;width:100%}
+        
+        .fav-star{cursor:pointer;font-size:18px;padding:0 4px;transition:all 0.2s;user-select:none;flex-shrink:0;display:inline-block;min-width:24px;text-align:center;background:transparent;border:none;line-height:1}
         .fav-star:hover{transform:scale(1.3)}
         .fav-star.active{color:#f1c40f}
         .fav-star.inactive{color:#555}
         .fav-star.inactive:hover{color:#f1c40f}
         .fav-star.offline{color:#27ae60}
         .fav-star.offline:hover{color:#2ecc71}
-        #favDropdown{position:fixed;top:52px;left:0;right:0;bottom:0;z-index:1201;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:8px}
+        
+        #favDropdown{position:fixed;top:52px;left:0;right:0;bottom:0;z-index:1201;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;padding:8px}
         #favDropdown.active{display:flex}
-        #favDropdown .fav-content{background:rgba(13,17,23,.98);border-radius:12px;padding:12px 14px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;border:2px solid #f39c12;color:#eee}
+        #favDropdown .fav-content{background:rgba(13,17,23,0.98);border-radius:12px;padding:12px 14px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;border:2px solid #f39c12;color:#eee}
         #favDropdown .fav-content h3{color:#f1c40f;font-size:16px;margin-bottom:8px}
-        #favDropdown .fav-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.06);border-radius:5px;gap:5px;font-size:13px;min-height:40px}
+        #favDropdown .fav-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.06);border-radius:5px;gap:5px;font-size:13px;min-height:40px}
         #favDropdown .fav-item .fname{flex:1;min-width:0;color:#eee;font-size:13px;font-weight:500;line-height:1.3}
         #favDropdown .fav-item .finfo{font-size:10px;color:#aaa;white-space:nowrap;margin-left:4px}
         #favDropdown .fav-item .factions{display:flex;gap:4px;flex-shrink:0}
-        #favDropdown .fav-item .factions button{padding:3px 8px;border:none;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;color:#fff;transition:all .2s}
-        #favDropdown .fav-item .factions button:active{transform:scale(.9)}
+        #favDropdown .fav-item .factions button{padding:3px 8px;border:none;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;color:white;transition:all 0.2s}
+        #favDropdown .fav-item .factions button:active{transform:scale(0.9)}
         #favDropdown .fav-item .factions .load-fav{background:#4CAF50}
         #favDropdown .fav-item .factions .load-offline-fav{background:#27ae60}
         #favDropdown .fav-item .factions .remove-fav{background:#e74c3c}
-        #favDropdown .fav-item .offline-badge{background:#27ae60;color:#fff;padding:2px 6px;border-radius:3px;font-size:8px}
+        #favDropdown .fav-item .offline-badge{background:#27ae60;color:white;padding:2px 6px;border-radius:3px;font-size:8px}
         #favDropdown .fav-empty{color:#888;text-align:center;padding:20px 0;font-size:13px}
         #favDropdown .fav-actions{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
-        #favDropdown .fav-actions button{flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:#fff;transition:all .2s}
-        #favDropdown .fav-actions button:active{transform:scale(.95)}
+        #favDropdown .fav-actions button{flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:white;transition:all 0.2s}
+        #favDropdown .fav-actions button:active{transform:scale(0.95)}
         #favDropdown .fav-actions .clear-favs{background:#e74c3c}
         #favDropdown .fav-actions .close-favs{background:#555}
         #favDropdown .fav-actions .download-offline-favs{background:#27ae60}
         #favDropdown .fav-stats{font-size:11px;color:#888;margin:6px 0;text-align:center}
+        
         .arrow-dot{width:26px;height:30px;position:relative;display:flex;align-items:center;justify-content:center}
-        .arrow-dot .arrow{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:18px solid #2196F3;position:absolute;top:-4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
-        .arrow-dot .dot{width:14px;height:14px;background:#fff;border-radius:50%;border:2px solid #2196F3;position:absolute;top:8px;box-shadow:0 0 0 4px rgba(33,150,243,.35)}
-        .arrow-dot .glow{width:36px;height:36px;background:rgba(33,150,243,.12);border-radius:50%;position:absolute;animation:pulse 2s infinite}
-        @keyframes pulse{0%{transform:scale(1);opacity:.5}50%{transform:scale(1.6);opacity:.1}100%{transform:scale(1);opacity:.5}}
-        #sosContainer{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3000;background:rgba(13,17,23,.98);padding:14px 18px;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,.5);display:none;max-width:320px;width:92%;max-height:85vh;overflow-y:auto;border:2px solid #f44336;color:#eee}
+        .arrow-dot .arrow{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:18px solid #2196F3;position:absolute;top:-4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6))}
+        .arrow-dot .dot{width:14px;height:14px;background:white;border-radius:50%;border:2px solid #2196F3;position:absolute;top:8px;box-shadow:0 0 0 4px rgba(33,150,243,0.35)}
+        .arrow-dot .glow{width:36px;height:36px;background:rgba(33,150,243,0.12);border-radius:50%;position:absolute;animation:pulse 2s infinite}
+        @keyframes pulse{0%{transform:scale(1);opacity:0.5}50%{transform:scale(1.6);opacity:0.1}100%{transform:scale(1);opacity:0.5}}
+        
+        #sosContainer{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3000;background:rgba(13,17,23,0.98);padding:14px 18px;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.5);display:none;max-width:320px;width:92%;max-height:85vh;overflow-y:auto;border:2px solid #f44336;color:#eee}
         #sosContainer.active{display:block}
-        #sosContainer input,#sosContainer select,#sosContainer textarea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;padding:6px 8px;border-radius:5px;width:100%;font-size:11px;margin:3px 0}
-        #sosContainer button{width:100%;padding:6px;border-radius:5px;border:none;font-weight:700;cursor:pointer;color:#fff;margin:2px 0;font-size:11px}
-        #resumeModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:20px}
+        #sosContainer input,#sosContainer select,#sosContainer textarea{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px 8px;border-radius:5px;width:100%;font-size:11px;margin:3px 0}
+        #sosContainer button{width:100%;padding:6px;border-radius:5px;border:none;font-weight:700;cursor:pointer;color:white;margin:2px 0;font-size:11px}
+        
+        #resumeModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;padding:20px}
         #resumeModal.active{display:flex}
-        #resumeModal .resume-content{background:rgba(13,17,23,.98);border-radius:16px;padding:24px;max-width:360px;width:100%;border:2px solid #8e44ad;color:#eee;text-align:center;animation:fadeInUp .4s ease-out}
-        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+        #resumeModal .resume-content{background:rgba(13,17,23,0.98);border-radius:16px;padding:24px;max-width:360px;width:100%;border:2px solid #8e44ad;color:#eee;text-align:center;animation:fadeInUp 0.4s ease-out}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
         #resumeModal .resume-content .resume-icon{font-size:48px;margin-bottom:8px}
         #resumeModal .resume-content h2{color:#bb86fc;font-size:18px;margin-bottom:4px}
-        #resumeModal .resume-content .route-name{color:#eee;font-size:16px;font-weight:600;margin:6px 0;padding:8px 12px;background:rgba(255,255,255,.06);border-radius:8px}
+        #resumeModal .resume-content .route-name{color:#eee;font-size:16px;font-weight:600;margin:6px 0;padding:8px 12px;background:rgba(255,255,255,0.06);border-radius:8px}
         #resumeModal .resume-content .route-info{font-size:13px;color:#aaa;margin:6px 0}
         #resumeModal .resume-content .route-info span{color:#4CAF50;font-weight:700}
         #resumeModal .resume-content .resume-actions{display:flex;gap:10px;margin-top:16px}
-        #resumeModal .resume-content .resume-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
-        #resumeModal .resume-content .resume-actions button:active{transform:scale(.95)}
-        #resumeModal .resume-content .resume-actions .btn-yes{background:#4CAF50;color:#fff}
-        #resumeModal .resume-content .resume-actions .btn-no{background:#555;color:#fff}
-        #resumeModal .resume-content .resume-extra{font-size:11px;color:#666;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)}
-        #helpModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:5000;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px}
+        #resumeModal .resume-content .resume-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
+        #resumeModal .resume-content .resume-actions button:active{transform:scale(0.95)}
+        #resumeModal .resume-content .resume-actions .btn-yes{background:#4CAF50;color:white}
+        #resumeModal .resume-content .resume-actions .btn-no{background:#555;color:white}
+        #resumeModal .resume-content .resume-extra{font-size:11px;color:#666;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)}
+        
+        #helpModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:5000;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;padding:16px}
         #helpModal.active{display:flex}
-        #helpModal .help-content{background:rgba(13,17,23,.98);border-radius:16px;padding:20px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto;border:2px solid #9C27B0;color:#eee}
-        #helpModal .help-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid rgba(156,39,176,.3)}
+        #helpModal .help-content{background:rgba(13,17,23,0.98);border-radius:16px;padding:20px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto;border:2px solid #9C27B0;color:#eee}
+        #helpModal .help-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid rgba(156,39,176,0.3)}
         #helpModal .help-title h2{color:#bb86fc;font-size:18px;font-weight:700}
-        #helpModal .help-title button{background:#555;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;transition:all .2s}
+        #helpModal .help-title button{background:#555;color:white;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;transition:all 0.2s}
         #helpModal .help-title button:hover{background:#777;transform:scale(1.1)}
-        #helpModal .help-intro{font-size:12px;color:#aaa;margin-bottom:12px;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:8px 12px;border-radius:8px}
-        #helpModal .help-section{margin-bottom:12px;background:rgba(255,255,255,.03);border-radius:10px;padding:8px 10px;border-left:3px solid rgba(156,39,176,.3)}
+        #helpModal .help-intro{font-size:12px;color:#aaa;margin-bottom:12px;text-align:center;line-height:1.5;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px}
+        #helpModal .help-section{margin-bottom:12px;background:rgba(255,255,255,0.03);border-radius:10px;padding:8px 10px;border-left:3px solid rgba(156,39,176,0.3)}
         #helpModal .help-section-title{font-size:13px;font-weight:700;color:#bb86fc;margin-bottom:6px;padding-left:4px;display:flex;align-items:center;gap:6px}
-        #helpModal .help-item{display:flex;align-items:flex-start;gap:10px;padding:6px 8px;background:rgba(255,255,255,.04);border-radius:6px;font-size:12px;line-height:1.4;margin-bottom:4px;transition:background .2s}
-        #helpModal .help-item:hover{background:rgba(255,255,255,.08)}
+        #helpModal .help-item{display:flex;align-items:flex-start;gap:10px;padding:6px 8px;background:rgba(255,255,255,0.04);border-radius:6px;font-size:12px;line-height:1.4;margin-bottom:4px;transition:background 0.2s}
+        #helpModal .help-item:hover{background:rgba(255,255,255,0.08)}
         #helpModal .help-icon{font-size:18px;width:28px;text-align:center;flex-shrink:0;margin-top:1px}
         #helpModal .help-item .help-label{color:#eee;font-weight:600;font-size:12px}
         #helpModal .help-item .help-desc{color:#aaa;font-size:11px;margin-top:1px;line-height:1.4}
         #helpModal .help-item .help-desc strong{color:#bb86fc;font-weight:600}
-        #helpModal .help-security{background:rgba(244,67,54,.12);border-left:3px solid #f44336;padding:8px 10px;border-radius:6px;margin-top:8px;font-size:11px;color:#ff8a80;line-height:1.5}
+        #helpModal .help-security{background:rgba(244,67,54,0.12);border-left:3px solid #f44336;padding:8px 10px;border-radius:6px;margin-top:8px;font-size:11px;color:#ff8a80;line-height:1.5}
         #helpModal .help-security strong{color:#f44336}
-        #helpModal .help-footer{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:10px;color:#666}
+        #helpModal .help-footer{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;font-size:10px;color:#666}
         #helpModal .help-footer span{color:#888}
-        .rotate-btn-fixed{position:fixed;bottom:110px;right:10px;z-index:800;background:rgba(13,17,23,.95);color:#eee;border:2px solid #2196F3;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.5);touch-action:manipulation;user-select:none;transition:all .2s}
-        .rotate-btn-fixed:active{transform:scale(.85);background:#2196F3}
-        .rotation-indicator{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:1001;background:rgba(0,0,0,.7);color:#4CAF50;padding:2px 12px;border-radius:12px;font-size:11px;font-weight:600;display:none;pointer-events:none;border:1px solid rgba(76,175,80,.3)}
+        
+        .rotate-btn-fixed{position:fixed;bottom:110px;right:10px;z-index:800;background:rgba(13,17,23,0.95);color:#eee;border:2px solid #2196F3;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:manipulation;user-select:none;transition:all 0.2s}
+        .rotate-btn-fixed:active{transform:scale(0.85);background:#2196F3}
+        
+        .rotation-indicator{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:1001;background:rgba(0,0,0,0.7);color:#4CAF50;padding:2px 12px;border-radius:12px;font-size:11px;font-weight:600;display:none;pointer-events:none;border:1px solid rgba(76,175,80,0.3)}
         .rotation-indicator.active{display:block}
-        .gps-notification{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:1002;background:rgba(255,152,0,.95);color:#fff;padding:6px 16px;border-radius:10px;font-size:12px;font-weight:600;display:none;box-shadow:0 4px 20px rgba(255,152,0,.4);text-align:center;max-width:90%;border:1px solid rgba(255,255,255,.2)}
+        
+        .gps-notification{position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:1002;background:rgba(255,152,0,0.95);color:white;padding:6px 16px;border-radius:10px;font-size:12px;font-weight:600;display:none;box-shadow:0 4px 20px rgba(255,152,0,0.4);text-align:center;max-width:90%;border:1px solid rgba(255,255,255,0.2)}
         .gps-notification.active{display:block}
-        .gps-notification .close-notification{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;margin-left:8px;padding:0;line-height:20px}
-        .gps-notification .close-notification:hover{background:rgba(255,255,255,.4)}
-        .status-badge{position:fixed;top:52px;right:4px;z-index:999;background:rgba(0,0,0,.8);color:#fff;padding:2px 6px;border-radius:6px;font-size:7px;font-weight:600;pointer-events:none}
-        .maplibregl-ctrl-group{background:rgba(13,17,23,.95)!important;border-color:#333!important}
-        .maplibregl-ctrl-group button{background:rgba(13,17,23,.95)!important;color:#eee!important}
+        .gps-notification .close-notification{background:rgba(255,255,255,0.2);border:none;color:white;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;margin-left:8px;padding:0;line-height:20px}
+        .gps-notification .close-notification:hover{background:rgba(255,255,255,0.4)}
+        
+        .status-badge{position:fixed;top:52px;right:4px;z-index:999;background:rgba(0,0,0,0.8);color:white;padding:2px 6px;border-radius:6px;font-size:7px;font-weight:600;pointer-events:none}
+        .maplibregl-ctrl-group{background:rgba(13,17,23,0.95)!important;border-color:#333!important}
+        .maplibregl-ctrl-group button{background:rgba(13,17,23,0.95)!important;color:#eee!important}
         .maplibregl-ctrl-group button:hover{background:#333!important}
-        .center-btn-fixed{position:fixed;bottom:160px;right:10px;z-index:800;background:rgba(0,188,212,.95);color:#fff;border:2px solid #00BCD4;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.5);touch-action:manipulation;user-select:none;transition:all .2s}
+        
+        .center-btn-fixed{position:fixed;bottom:160px;right:10px;z-index:800;background:rgba(0,188,212,0.95);color:white;border:2px solid #00BCD4;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:manipulation;user-select:none;transition:all 0.2s}
         .center-btn-fixed.active{display:flex}
-        .center-btn-fixed:active{transform:scale(.85);background:#2196F3}
-        #disclaimerModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(10px)}
+        .center-btn-fixed:active{transform:scale(0.85);background:#2196F3}
+        
+        #disclaimerModal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(10px)}
         #disclaimerModal.active{display:flex}
-        #disclaimerModal .disclaimer-content{background:rgba(13,17,23,.98);border-radius:16px;padding:24px 20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;border:3px solid #FF5722;color:#eee;position:relative;animation:fadeInUp .5s ease-out}
-        #disclaimerModal .disclaimer-content .disclaimer-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid rgba(255,87,34,.3)}
+        #disclaimerModal .disclaimer-content{background:rgba(13,17,23,0.98);border-radius:16px;padding:24px 20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;border:3px solid #FF5722;color:#eee;position:relative;animation:fadeInUp 0.5s ease-out}
+        #disclaimerModal .disclaimer-content .disclaimer-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid rgba(255,87,34,0.3)}
         #disclaimerModal .disclaimer-content .disclaimer-header .icon{font-size:32px}
-        #disclaimerModal .disclaimer-content .disclaimer-header h2{color:#FF5722;font-size:20px;font-weight:800;letter-spacing:.5px}
+        #disclaimerModal .disclaimer-content .disclaimer-header h2{color:#FF5722;font-size:20px;font-weight:800;letter-spacing:0.5px}
         #disclaimerModal .disclaimer-content .disclaimer-body{font-size:13px;line-height:1.7;color:#ccc;max-height:55vh;overflow-y:auto;padding-right:4px}
         #disclaimerModal .disclaimer-content .disclaimer-body strong{color:#FF5722}
-        #disclaimerModal .disclaimer-content .disclaimer-body .highlight{background:rgba(255,87,34,.15);padding:2px 8px;border-radius:4px;color:#FF9800;font-weight:600}
-        #disclaimerModal .disclaimer-content .disclaimer-body .section-box{background:rgba(255,255,255,.04);border-left:4px solid #FF5722;padding:10px 12px;margin:10px 0;border-radius:4px}
-        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.blue{border-left-color:#2196F3;background:rgba(33,150,243,.08)}
-        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.green{border-left-color:#4CAF50;background:rgba(76,175,80,.08)}
-        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.orange{border-left-color:#FF9800;background:rgba(255,152,0,.08)}
-        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.purple{border-left-color:#9C27B0;background:rgba(156,39,176,.08)}
+        #disclaimerModal .disclaimer-content .disclaimer-body .highlight{background:rgba(255,87,34,0.15);padding:2px 8px;border-radius:4px;color:#FF9800;font-weight:600}
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box{background:rgba(255,255,255,0.04);border-left:4px solid #FF5722;padding:10px 12px;margin:10px 0;border-radius:4px}
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.blue{border-left-color:#2196F3;background:rgba(33,150,243,0.08)}
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.green{border-left-color:#4CAF50;background:rgba(76,175,80,0.08)}
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.orange{border-left-color:#FF9800;background:rgba(255,152,0,0.08)}
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.purple{border-left-color:#9C27B0;background:rgba(156,39,176,0.08)}
         #disclaimerModal .disclaimer-content .disclaimer-body ul{margin:6px 0 6px 18px;padding:0}
         #disclaimerModal .disclaimer-content .disclaimer-body ul li{margin-bottom:4px}
-        #disclaimerModal .disclaimer-content .disclaimer-footer{margin-top:16px;padding-top:14px;border-top:2px solid rgba(255,87,34,.2);display:flex;flex-direction:column;gap:10px}
-        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn{background:#FF5722;color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;width:100%;text-transform:uppercase;letter-spacing:1px}
+        #disclaimerModal .disclaimer-content .disclaimer-footer{margin-top:16px;padding-top:14px;border-top:2px solid rgba(255,87,34,0.2);display:flex;flex-direction:column;gap:10px}
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn{background:#FF5722;color:white;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer;transition:all 0.2s;width:100%;text-transform:uppercase;letter-spacing:1px}
         #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn:hover{background:#E64A19;transform:scale(1.02)}
-        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn:active{transform:scale(.95)}
-        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn{background:0 0;color:#888;border:1px solid #555;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s;width:100%}
-        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:hover{background:rgba(255,255,255,.05);border-color:#888}
-        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:active{transform:scale(.95)}
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn:active{transform:scale(0.95)}
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn{background:transparent;color:#888;border:1px solid #555;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;transition:all 0.2s;width:100%}
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:hover{background:rgba(255,255,255,0.05);border-color:#888}
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:active{transform:scale(0.95)}
         #disclaimerModal .disclaimer-content::-webkit-scrollbar{width:4px}
-        #disclaimerModal .disclaimer-content::-webkit-scrollbar-track{background:0 0}
+        #disclaimerModal .disclaimer-content::-webkit-scrollbar-track{background:transparent}
         #disclaimerModal .disclaimer-content::-webkit-scrollbar-thumb{background:#FF5722;border-radius:4px}
-        .offline-status{position:fixed;top:52px;left:8px;z-index:999;background:rgba(0,0,0,.8);color:#4CAF50;padding:4px 10px;border-radius:6px;font-size:9px;font-weight:600;border:1px solid rgba(76,175,80,.3);pointer-events:none;display:none}
+        
+        .offline-status{position:fixed;top:52px;left:8px;z-index:999;background:rgba(0,0,0,0.8);color:#4CAF50;padding:4px 10px;border-radius:6px;font-size:9px;font-weight:600;border:1px solid rgba(76,175,80,0.3);pointer-events:none;display:none}
         .offline-status.active{display:block}
         .offline-status.offline{border-color:#4CAF50;color:#4CAF50}
         .offline-status.online{border-color:#2196F3;color:#2196F3}
         .offline-status .offline-count{color:#f1c40f}
-        #mapLoadError{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(13,17,23,.98);border-radius:16px;padding:24px 20px;max-width:400px;width:90%;border:2px solid #FF5722;color:#eee;text-align:center;display:none;box-shadow:0 8px 40px rgba(0,0,0,.6)}
-        #mapLoadError.active{display:block}
-        #mapLoadError .error-icon{font-size:48px;margin-bottom:10px}
-        #mapLoadError h3{color:#FF5722;font-size:18px;margin-bottom:8px}
-        #mapLoadError p{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:12px}
-        #mapLoadError button{background:#FF5722;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin:4px}
-        #mapLoadError button:hover{background:#E64A19;transform:scale(1.02)}
-        #mapLoadError button.secondary{background:#555}
-        #mapLoadError button.secondary:hover{background:#777}
-        #libraryError{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000;background:rgba(13,17,23,.98);border-radius:16px;padding:24px 20px;max-width:420px;width:90%;border:2px solid #f44336;color:#eee;text-align:center;display:none;box-shadow:0 8px 40px rgba(0,0,0,.6)}
-        #libraryError.active{display:block}
-        #libraryError .error-icon{font-size:48px;margin-bottom:10px}
-        #libraryError h3{color:#f44336;font-size:18px;margin-bottom:8px}
-        #libraryError p{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:12px}
-        #libraryError button{background:#f44336;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin:4px}
-        #libraryError button:hover{background:#c62828;transform:scale(1.02)}
-        #libraryError button.secondary{background:#555}
-        #libraryError button.secondary:hover{background:#777}
-        #libraryError .btn-dismiss-forever{background:rgba(255,255,255,.1);color:#eee;border:1px solid #888}
-        #libraryError .btn-dismiss-forever:hover{background:rgba(255,255,255,.2)}
-        @media(max-width:600px){.header-wrapper{height:44px;padding:3px 4px;gap:2px}.header-wrapper button,.header-wrapper a{padding:3px 6px;font-size:9px;min-height:28px}.header-wrapper button.gps-btn,.header-wrapper button.nav-btn,.header-wrapper button.help-btn,.header-wrapper button.center-btn,.header-wrapper button.fav-btn,.header-wrapper button.wifi-btn,.header-wrapper button.offline-fav-btn{font-size:13px}.info-bar{padding:8px 12px;bottom:48px;min-width:150px}.info-bar .distance{font-size:22px}.info-bar .time{font-size:18px}.info-bar .distance-label,.info-bar .time-label{font-size:11px}.info-bar .speed-kmh{font-size:12px}.info-bar .status{font-size:10px}.offroute-warning{top:48px}.status-badge{top:48px}.rotation-indicator{top:48px;font-size:9px;padding:2px 8px}.gps-notification{top:48px;font-size:10px;padding:4px 12px}.blog-link{bottom:44px;right:6px;width:28px;height:28px}.blog-link img{width:22px;height:22px}.rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}.center-btn-fixed{bottom:150px;right:6px;width:38px;height:38px;font-size:15px}#resumeModal .resume-content{padding:18px}#resumeModal .resume-content .resume-icon{font-size:36px}#resumeModal .resume-content h2{font-size:16px}#resumeModal .resume-content .route-name{font-size:14px}#resumeModal .resume-content .route-info{font-size:12px}#helpModal .help-content{padding:14px}#helpModal .help-item{font-size:11px;padding:5px 6px}#helpModal .help-icon{font-size:16px;width:24px}#helpModal .help-title h2{font-size:15px}#helpModal .help-section{padding:6px 8px}#helpModal .help-item .help-desc{font-size:10px}#disclaimerModal .disclaimer-content{padding:18px 14px}#disclaimerModal .disclaimer-content .disclaimer-header h2{font-size:17px}#disclaimerModal .disclaimer-content .disclaimer-body{font-size:12px}#disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn{font-size:14px;padding:12px}.fav-star{font-size:16px;min-width:20px}#favDropdown .fav-content{padding:8px 10px}#favDropdown .fav-item{font-size:12px;padding:5px 6px;min-height:34px}#favDropdown .fav-item .factions button{font-size:9px;padding:2px 6px}#routeDropdown .route-item{font-size:12px;padding:5px 6px;min-height:34px}#routeDropdown .route-item .rname{font-size:12px}.offline-status{top:48px;font-size:8px;padding:2px 8px}#mapLoadError{padding:18px 14px}#mapLoadError h3{font-size:16px}#mapLoadError p{font-size:12px}#mapLoadError button{padding:10px 18px;font-size:12px}#libraryError{padding:18px 14px}#libraryError h3{font-size:16px}#libraryError p{font-size:12px}#libraryError button{padding:8px 14px;font-size:12px}}
+        
+        @media(max-width:600px){
+            .header-wrapper{height:44px;padding:3px 4px;gap:2px}
+            .header-wrapper button,.header-wrapper a{padding:3px 6px;font-size:9px;min-height:28px}
+            .header-wrapper button.gps-btn,.header-wrapper button.nav-btn,
+            .header-wrapper button.help-btn,.header-wrapper button.center-btn,
+            .header-wrapper button.fav-btn,.header-wrapper button.wifi-btn,
+            .header-wrapper button.offline-fav-btn{font-size:13px}
+            .info-bar{padding:8px 12px;bottom:48px;min-width:150px}
+            .info-bar .distance{font-size:22px}
+            .info-bar .time{font-size:18px}
+            .info-bar .distance-label,.info-bar .time-label{font-size:11px}
+            .info-bar .speed-kmh{font-size:12px}
+            .info-bar .status{font-size:10px}
+            .offroute-warning{top:48px}
+            .status-badge{top:48px}
+            .rotation-indicator{top:48px;font-size:9px;padding:2px 8px}
+            .gps-notification{top:48px;font-size:10px;padding:4px 12px}
+            .blog-link{bottom:44px;right:6px;width:28px;height:28px}
+            .blog-link img{width:22px;height:22px}
+            .rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}
+            .center-btn-fixed{bottom:150px;right:6px;width:38px;height:38px;font-size:15px}
+            #resumeModal .resume-content{padding:18px}
+            #resumeModal .resume-content .resume-icon{font-size:36px}
+            #resumeModal .resume-content h2{font-size:16px}
+            #resumeModal .resume-content .route-name{font-size:14px}
+            #resumeModal .resume-content .route-info{font-size:12px}
+            #helpModal .help-content{padding:14px}
+            #helpModal .help-item{font-size:11px;padding:5px 6px}
+            #helpModal .help-icon{font-size:16px;width:24px}
+            #helpModal .help-title h2{font-size:15px}
+            #helpModal .help-section{padding:6px 8px}
+            #helpModal .help-item .help-desc{font-size:10px}
+            #disclaimerModal .disclaimer-content{padding:18px 14px}
+            #disclaimerModal .disclaimer-content .disclaimer-header h2{font-size:17px}
+            #disclaimerModal .disclaimer-content .disclaimer-body{font-size:12px}
+            #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn{font-size:14px;padding:12px}
+            .fav-star{font-size:16px;min-width:20px}
+            #favDropdown .fav-content{padding:8px 10px}
+            #favDropdown .fav-item{font-size:12px;padding:5px 6px;min-height:34px}
+            #favDropdown .fav-item .factions button{font-size:9px;padding:2px 6px}
+            #routeDropdown .route-item{font-size:12px;padding:5px 6px;min-height:34px}
+            #routeDropdown .route-item .rname{font-size:12px}
+            .offline-status{top:48px;font-size:8px;padding:2px 8px}
+        }
     </style>
 </head>
 <body>
-
     <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ ★★★ -->
     <div id="disclaimerModal" class="active">
         <div class="disclaimer-content">
@@ -260,7 +306,7 @@
                         <li><strong>Σήμανση:</strong> Ακολουθείτε αυστηρά και μόνο τα επίσημα σηματοδοτημένα μονοπάτια.</li>
                     </ul>
                 </div>
-                <div class="section-box blue" style="border-left-color:#4CAF50;background:rgba(76,175,80,.08);">
+                <div class="section-box blue" style="border-left-color: #4CAF50; background: rgba(76,175,80,0.08);">
                     <strong>🔒 Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου</strong><br>
                     Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. 
                     Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) 
@@ -276,48 +322,24 @@
         </div>
     </div>
 
-    <!-- ★★★ ΣΦΑΛΜΑ ΦΟΡΤΩΣΗΣ ΒΙΒΛΙΟΘΗΚΗΣ ★★★ -->
-    <div id="libraryError">
-        <div class="error-icon">📦</div>
-        <h3>⚠️ Η βιβλιοθήκη χάρτη δεν φορτώθηκε</h3>
-        <p id="libraryErrorMsg">Η maplibre-gl δεν είναι διαθέσιμη. Πιθανόν να μην υπάρχει σύνδεση στο internet ή η cache να έχει αδειάσει. Μπορείτε να συνεχίσετε χωρίς χάρτη – το GPS και οι διαδρομές θα λειτουργούν.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:6px;">
-            <button id="retryLibraryBtn">🔄 Δοκιμή ξανά</button>
-            <button id="continueWithoutMapBtnLib" class="secondary">⏭️ Συνέχεια χωρίς χάρτη</button>
-            <button id="dismissLibraryForeverBtn" class="btn-dismiss-forever">🚫 Μην ξαναεμφανιστεί</button>
-        </div>
-    </div>
-
-    <!-- ★★★ ΣΦΑΛΜΑ ΦΟΡΤΩΣΗΣ ΧΑΡΤΗ ★★★ -->
-    <div id="mapLoadError">
-        <div class="error-icon">🗺️</div>
-        <h3>⚠️ Δεν ήταν δυνατή η φόρτωση του χάρτη</h3>
-        <p id="mapErrorMsg">Δεν υπάρχει σύνδεση στο internet και ο χάρτης δεν έχει αποθηκευτεί τοπικά.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
-            <button id="retryMapBtn">🔄 Επανάληψη</button>
-            <button id="downloadMapBtn" class="secondary">📥 Λήψη Offline Χάρτη</button>
-            <button id="continueWithoutMapBtn" class="secondary" style="background:#555;">⏭️ Συνέχεια χωρίς χάρτη</button>
-        </div>
-    </div>
-
     <div id="map-wrapper">
         <div id="map"></div>
     </div>
-
+    
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
-
+    
     <div class="gps-notification" id="gpsNotification">
         <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span>
         <button class="close-notification" id="closeGpsNotification">✕</button>
     </div>
-
+    
     <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     <button class="center-btn-fixed" id="centerBtn" title="Κέντρο στη διαδρομή">🎯</button>
-
+    
     <a href="https://agionorosroutes.blogspot.com/" target="_blank" class="blog-link" title="Athos Maps Blog">
         <img src="https://lh3.googleusercontent.com/pw/AP1GczMG4Fr3JFPmmtwGKfBLt53uxZgGjQ2ObqELVwjSlh8MnkExGbRtoZyrRK3bN1yDnfoeODhdxCXr5ojpmnDTEsMcefjMqBirD-gwS49TH5p2eLsIcSoExtHdMnbdyeiXxY8DUWej4AXxkxjOlytV0IM0lg=w120-h120-s-no-gm?authuser=2" alt="Blog" loading="lazy">
     </a>
-
+    
     <div id="resumeModal">
         <div class="resume-content">
             <div class="resume-icon">🗺️</div>
@@ -331,7 +353,7 @@
             <div class="resume-extra">Θα ενεργοποιηθεί αυτόματα το GPS και η πλοήγηση</div>
         </div>
     </div>
-
+    
     <!-- ★★★ HEADER ★★★ -->
     <div class="header-wrapper" id="mainHeader">
         <button id="gpsBtn" class="gps-btn" title="Θέση">📍</button>
@@ -401,6 +423,7 @@
                 <h3>⭐ Αγαπημένες Διαδρομές (<span id="favCount">0</span>)</h3>
                 <button id="closeFavBtn" style="background:#555;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:11px;">✕</button>
             </div>
+            
             <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:6px;margin-bottom:8px;font-size:11px;color:#aaa;line-height:1.5;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
                     <span style="color:#f1c40f;font-size:16px;">⭐</span> 
@@ -414,6 +437,7 @@
                     📥 Πατήστε <strong style="color:#27ae60;">"Λήψη Offline"</strong> για να αποθηκεύσετε διαδρομές για offline χρήση (μέγιστο 10)
                 </div>
             </div>
+            
             <div class="fav-stats" id="favStats">💾 Offline: <span id="offlineFavCount">0</span>/10 διαδρομές</div>
             <div id="favList"></div>
             <div class="fav-actions">
@@ -477,49 +501,539 @@
 
     <script>
         // ============================================================
-        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ★★★
+        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ (140+ ROUTES) ★★★
         // ============================================================
         
-        let libraryLoaded = (typeof maplibregl !== 'undefined');
-        let libraryDismissed = localStorage.getItem('athos_library_dismissed') === 'true';
+        // ============================================================
+        // ★★★ OFFLINE MAP MANAGER ★★★
+        // ============================================================
+        class OfflineMapManager {
+            constructor() {
+                this.dbName = 'AthosOfflineMap';
+                this.dbVersion = 5;
+                this.storeName = 'mapTiles';
+                this.db = null;
+                this.isDownloading = false;
+            }
 
-        let currentRotation = 0;
-        let pendingResumeAction = null;
-        
-        const OFF_ROUTE_THRESHOLD = 100;
-        const NAV_ZOOM = 18;
-        const MAX_OFFLINE_FAVS = 10;
-        const MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
-        
-        // ★★★ ΒΕΛΤΙΩΜΕΝΟ FALLBACK STYLE – σκούρο μπλε με πλέγμα ★★★
-        const FALLBACK_STYLE = {
-            version: 8,
-            name: 'Offline Fallback',
-            sources: {
-                'grid': {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: []
+            async initDB() {
+                if (this.db) return this.db;
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.dbVersion);
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(this.storeName)) {
+                            db.createObjectStore(this.storeName, { keyPath: 'id' });
+                        }
+                        if (!db.objectStoreNames.contains('metadata')) {
+                            db.createObjectStore('metadata', { keyPath: 'key' });
+                        }
+                        if (!db.objectStoreNames.contains('offlineFavorites')) {
+                            const store = db.createObjectStore('offlineFavorites', { keyPath: 'id' });
+                            store.createIndex('name', 'name', { unique: false });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    };
+                    request.onsuccess = (event) => {
+                        this.db = event.target.result;
+                        resolve(this.db);
+                    };
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            }
+
+            async saveTile(key, data) {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.storeName], 'readwrite');
+                    const store = tx.objectStore(this.storeName);
+                    const request = store.put({ id: key, data: data });
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getTile(key) {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.storeName], 'readonly');
+                    const store = tx.objectStore(this.storeName);
+                    const request = store.get(key);
+                    request.onsuccess = () => resolve(request.result ? request.result.data : null);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async deleteTile(key) {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.storeName], 'readwrite');
+                    const store = tx.objectStore(this.storeName);
+                    const request = store.delete(key);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async clearTiles() {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.storeName], 'readwrite');
+                    const store = tx.objectStore(this.storeName);
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getTileCount() {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.storeName], 'readonly');
+                    const store = tx.objectStore(this.storeName);
+                    const request = store.count();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async saveMetadata(metadata) {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(['metadata'], 'readwrite');
+                    const store = tx.objectStore('metadata');
+                    const request = store.put(metadata);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getMetadata(key) {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(['metadata'], 'readonly');
+                    const store = tx.objectStore('metadata');
+                    const request = store.get(key);
+                    request.onsuccess = () => resolve(request.result ? request.result.value : null);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async isMapDownloaded() {
+                const info = await this.getMetadata('mapInfo');
+                if (!info || info.downloaded !== true) return false;
+                const count = await this.getTileCount();
+                return count > 0;
+            }
+
+            async downloadArea(bbox, minZoom, maxZoom, onProgress) {
+                if (this.isDownloading) return;
+                this.isDownloading = true;
+
+                try {
+                    const tiles = this.getTilesForBbox(bbox, minZoom, maxZoom);
+                    const total = tiles.length;
+                    let done = 0, downloaded = 0, failed = 0;
+
+                    for (const { z, x, y } of tiles) {
+                        const key = `${z}/${x}/${y}`;
+                        const existing = await this.getTile(key);
+                        if (existing) {
+                            done++;
+                            if (onProgress) onProgress({ done, total, percent: Math.round((done/total)*100), downloaded, failed });
+                            continue;
+                        }
+
+                        try {
+                            const url = `https://tiles.openfreemap.org/tiles/${z}/${x}/${y}.png`;
+                            const response = await fetch(url);
+                            if (response.ok) {
+                                const blob = await response.blob();
+                                const arrayBuffer = await blob.arrayBuffer();
+                                await this.saveTile(key, arrayBuffer);
+                                downloaded++;
+                            } else {
+                                failed++;
+                            }
+                        } catch (e) {
+                            failed++;
+                        }
+
+                        done++;
+                        if (onProgress) onProgress({ done, total, percent: Math.round((done/total)*100), downloaded, failed });
+                    }
+
+                    let success = false;
+                    if (downloaded > 0) {
+                        await this.saveMetadata({
+                            key: 'mapInfo',
+                            value: {
+                                downloaded: true,
+                                bbox, minZoom, maxZoom,
+                                tileCount: downloaded,
+                                downloadDate: new Date().toISOString(),
+                                version: '1.0.0'
+                            }
+                        });
+                        success = true;
+                    } else {
+                        const existingCount = await this.getTileCount();
+                        if (existingCount > 0) {
+                            success = true;
+                            const info = await this.getMetadata('mapInfo');
+                            if (!info || info.downloaded !== true) {
+                                await this.saveMetadata({
+                                    key: 'mapInfo',
+                                    value: {
+                                        downloaded: true,
+                                        bbox, minZoom, maxZoom,
+                                        tileCount: existingCount,
+                                        downloadDate: new Date().toISOString(),
+                                        version: '1.0.0'
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    this.isDownloading = false;
+                    return { success, downloaded, total, failed };
+                } catch (error) {
+                    this.isDownloading = false;
+                    throw error;
+                }
+            }
+
+            getTilesForBbox(bbox, minZoom, maxZoom) {
+                const [west, south, east, north] = bbox;
+                const tiles = [];
+                for (let z = minZoom; z <= maxZoom; z++) {
+                    const xMin = this.lonToTileX(west, z);
+                    const xMax = this.lonToTileX(east, z);
+                    const yMin = this.latToTileY(north, z);
+                    const yMax = this.latToTileY(south, z);
+                    const xStart = Math.min(xMin, xMax);
+                    const xEnd = Math.max(xMin, xMax);
+                    const yStart = Math.min(yMin, yMax);
+                    const yEnd = Math.max(yMin, yMax);
+                    for (let x = xStart; x <= xEnd; x++) {
+                        for (let y = yStart; y <= yEnd; y++) {
+                            tiles.push({ z, x, y });
+                        }
                     }
                 }
-            },
-            layers: [
-                { id: 'background', type: 'background', paint: { 'background-color': '#0d1b2a' } },
-                {
-                    id: 'grid',
-                    type: 'line',
-                    source: 'grid',
-                    paint: {
-                        'line-color': 'rgba(255,255,255,0.08)',
-                        'line-width': 1,
-                        'line-dasharray': [2, 4]
-                    }
-                }
-            ]
-        };
+                return tiles;
+            }
 
-        // ★★★ ΟΛΕΣ ΟΙ ΔΙΑΔΡΟΜΕΣ (140+) ★★★
+            lonToTileX(lon, z) { return Math.floor((lon + 180) / 360 * Math.pow(2, z)); }
+            latToTileY(lat, z) {
+                const rad = lat * Math.PI / 180;
+                return Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * Math.pow(2, z));
+            }
+
+            async saveOfflineFavorite(routeData, gpxData) {
+                const db = await this.initDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(['offlineFavorites'], 'readwrite');
+                    const store = tx.objectStore('offlineFavorites');
+                    const entry = {
+                        id: 'fav_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                        name: routeData.name,
+                        dist: routeData.dist,
+                        time: routeData.time,
+                        url: routeData.url,
+                        gpxData: gpxData,
+                        timestamp: Date.now()
+                    };
+                    const request = store.put(entry);
+                    request.onsuccess = () => resolve(entry);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getOfflineFavorites() {
+                const db = await this.initDB();
+                if (!db.objectStoreNames.contains('offlineFavorites')) return [];
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(['offlineFavorites'], 'readonly');
+                    const store = tx.objectStore('offlineFavorites');
+                    const request = store.getAll();
+                    request.onsuccess = () => {
+                        const items = request.result || [];
+                        items.sort((a, b) => b.timestamp - a.timestamp);
+                        resolve(items);
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async deleteOfflineFavorite(id) {
+                const db = await this.initDB();
+                if (!db.objectStoreNames.contains('offlineFavorites')) return;
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(['offlineFavorites'], 'readwrite');
+                    const store = tx.objectStore('offlineFavorites');
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async clearOfflineFavorites() {
+                const db = await this.initDB();
+                if (!db.objectStoreNames.contains('offlineFavorites')) return;
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(['offlineFavorites'], 'readwrite');
+                    const store = tx.objectStore('offlineFavorites');
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getOfflineFavoriteCount() {
+                const favs = await this.getOfflineFavorites();
+                return favs.length;
+            }
+        }
+
+        // ============================================================
+        // ★★★ OFFLINE MAP UI ★★★
+        // ============================================================
+        class OfflineMapUI {
+            constructor(manager) {
+                this.manager = manager;
+            }
+
+            createModal(title) {
+                const overlay = document.createElement('div');
+                overlay.className = 'modal-overlay';
+                overlay.style.cssText = `
+                    position: fixed; top:0; left:0; right:0; bottom:0; z-index:9999;
+                    background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;
+                    padding: 16px; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease-out;
+                `;
+                const content = document.createElement('div');
+                content.style.cssText = `
+                    background: rgba(13,17,23,0.98); border-radius: 16px; padding: 20px;
+                    max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto;
+                    border: 2px solid #4CAF50; color: #eee; box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+                    animation: slideUp 0.3s ease-out;
+                `;
+                const closeBtn = document.createElement('button');
+                closeBtn.style.cssText = `float:right; background:transparent; color:#888; border:none; font-size:20px; cursor:pointer; padding:0 4px;`;
+                closeBtn.textContent = '✕';
+                closeBtn.onclick = () => overlay.remove();
+                content.appendChild(closeBtn);
+                overlay.appendChild(content);
+                if (!document.getElementById('modalStyles')) {
+                    const styles = document.createElement('style');
+                    styles.id = 'modalStyles';
+                    styles.textContent = `
+                        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+                        @keyframes slideUp { from { opacity:0; transform: translateY(30px) scale(0.95); } to { opacity:1; transform: translateY(0) scale(1); } }
+                    `;
+                    document.head.appendChild(styles);
+                }
+                overlay._content = content;
+                return overlay;
+            }
+
+            showToast(message, color = '#4CAF50') {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed; bottom: 170px; left: 50%; transform: translateX(-50%);
+                    background: ${color}; color: white; padding: 10px 20px; border-radius: 10px;
+                    z-index: 9999; font-size: 13px; text-align: center; max-width: 90%;
+                    font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    animation: slideUp 0.3s ease-out;
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 4000);
+            }
+
+            async checkAndPromptDownload() {
+                try {
+                    const hasMap = await this.manager.isMapDownloaded();
+                    if (hasMap) {
+                        this.showToast('✅ Ο χάρτης είναι ήδη αποθηκευμένος τοπικά!', '#4CAF50');
+                        state.mapDownloaded = true;
+                        return;
+                    }
+                    this.showDownloadPrompt();
+                } catch (e) {
+                    this.showDownloadPrompt();
+                }
+            }
+
+            showDownloadPrompt(force = false) {
+                const modal = this.createModal('📥 Λήψη Offline Χάρτη');
+                const content = modal._content;
+                const extraText = force ? '<div style="color:#FF9800;font-weight:700;margin:6px 0;">⚠️ Αναγκαστική λήψη – τα παλιά δεδομένα θα αντικατασταθούν</div>' : '';
+                content.innerHTML += `
+                    <div style="text-align:center;padding:10px 0;">
+                        <div style="font-size:48px;margin-bottom:10px;">🗺️</div>
+                        <div style="font-size:18px;font-weight:700;color:#4CAF50;margin-bottom:6px;">Λήψη Offline Χάρτη</div>
+                        <div style="font-size:14px;color:#aaa;margin-bottom:8px;">Πλοηγηθείτε χωρίς σύνδεση!</div>
+                        ${extraText}
+                        <div style="background:rgba(255,255,255,0.05);padding:8px;border-radius:6px;margin:8px 0;">
+                            <div style="font-size:12px;color:#888;">Περιοχή: Άγιο Όρος · Zoom: 8-14</div>
+                            <div style="font-size:12px;color:#888;">Μέγεθος: ~50-100 MB</div>
+                        </div>
+                        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                            <button id="startDownloadBtn" style="background:#4CAF50;color:white;border:none;padding:12px 30px;border-radius:8px;font-weight:700;cursor:pointer;font-size:15px;">📥 Λήψη</button>
+                            <button id="downloadLaterBtn" style="background:#555;color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;font-size:14px;">⏰ Αργότερα</button>
+                        </div>
+                        <div id="downloadProgressArea" style="display:none;margin-top:12px;">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:4px;">
+                                <span id="progressPercent">0%</span>
+                                <span id="progressCount">0 tiles</span>
+                            </div>
+                            <div style="height:6px;background:#333;border-radius:3px;overflow:hidden;">
+                                <div id="progressBar" style="height:100%;background:#4CAF50;width:0%;"></div>
+                            </div>
+                            <div style="font-size:11px;color:#666;margin-top:4px;">
+                                <span id="progressDone">0</span> / <span id="progressTotal">0</span> tiles
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                let isDownloading = false;
+                const self = this;
+                const bbox = [24.05, 39.95, 24.65, 40.40];
+                const minZoom = 8, maxZoom = 14;
+
+                document.getElementById('startDownloadBtn').addEventListener('click', async function() {
+                    if (isDownloading) return;
+                    isDownloading = true;
+                    this.disabled = true;
+                    this.textContent = '⏳ Λήψη...';
+                    const progressArea = document.getElementById('downloadProgressArea');
+                    const progressBar = document.getElementById('progressBar');
+                    const progressPercent = document.getElementById('progressPercent');
+                    const progressCount = document.getElementById('progressCount');
+                    const progressDone = document.getElementById('progressDone');
+                    const progressTotal = document.getElementById('progressTotal');
+                    progressArea.style.display = 'block';
+
+                    try {
+                        if (force) {
+                            await self.manager.clearTiles();
+                            await self.manager.saveMetadata({ key: 'mapInfo', value: { downloaded: false } });
+                        }
+                        const result = await self.manager.downloadArea(bbox, minZoom, maxZoom, (info) => {
+                            progressBar.style.width = info.percent + '%';
+                            progressPercent.textContent = info.percent + '%';
+                            progressCount.textContent = info.done + ' tiles';
+                            progressDone.textContent = info.done;
+                            progressTotal.textContent = info.total;
+                        });
+
+                        if (result.success) {
+                            state.mapDownloaded = true;
+                            document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+                            document.getElementById('offlineStatus').classList.add('active', 'offline');
+                            document.getElementById('wifiBtn').classList.add('active');
+                            modal._content.innerHTML = `
+                                <div style="text-align:center;padding:20px;">
+                                    <div style="font-size:48px;margin-bottom:10px;">✅</div>
+                                    <div style="font-size:20px;font-weight:700;color:#4CAF50;margin-bottom:6px;">Ο χάρτης κατέβηκε επιτυχώς!</div>
+                                    <div style="font-size:14px;color:#aaa;margin-bottom:8px;">Λήφθηκαν ${result.downloaded} νέα tiles</div>
+                                    <div style="font-size:13px;color:#4CAF50;margin-bottom:12px;">Η σελίδα θα ανανεωθεί αυτόματα.</div>
+                                </div>
+                            `;
+                            self.showToast('✅ Λήψη επιτυχής! Ανανέωση...', '#4CAF50');
+                            setTimeout(() => location.reload(), 2000);
+                        } else {
+                            const hasTiles = await self.manager.getTileCount();
+                            if (hasTiles > 0) {
+                                state.mapDownloaded = true;
+                                document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+                                document.getElementById('offlineStatus').classList.add('active', 'offline');
+                                document.getElementById('wifiBtn').classList.add('active');
+                                modal._content.innerHTML = `
+                                    <div style="text-align:center;padding:20px;">
+                                        <div style="font-size:48px;margin-bottom:10px;">ℹ️</div>
+                                        <div style="font-size:18px;font-weight:700;color:#4CAF50;margin-bottom:6px;">Ο χάρτης είναι ήδη διαθέσιμος!</div>
+                                        <div style="font-size:14px;color:#aaa;margin-bottom:8px;">Δεν χρειάστηκε νέα λήψη.</div>
+                                        <div style="font-size:13px;color:#4CAF50;margin-bottom:12px;">Ανανέωση σε λίγο...</div>
+                                    </div>
+                                `;
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                modal._content.innerHTML = `
+                                    <div style="text-align:center;padding:20px;">
+                                        <div style="font-size:48px;margin-bottom:10px;">⚠️</div>
+                                        <div style="font-size:18px;font-weight:700;color:#FF9800;margin-bottom:6px;">Δεν κατέβηκαν tiles</div>
+                                        <div style="font-size:13px;color:#aaa;margin-bottom:12px;">Ελέγξτε τη σύνδεση και δοκιμάστε ξανά.</div>
+                                        <button onclick="location.reload()" style="background:#4CAF50;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;">🔄 Επανάληψη</button>
+                                    </div>
+                                `;
+                                self.showToast('⚠️ Δεν κατέβηκαν tiles', '#FF9800');
+                            }
+                        }
+                    } catch (error) {
+                        modal._content.innerHTML = `
+                            <div style="text-align:center;padding:20px;">
+                                <div style="font-size:48px;margin-bottom:10px;">❌</div>
+                                <div style="font-size:18px;font-weight:700;color:#f44336;margin-bottom:6px;">Σφάλμα λήψης</div>
+                                <div style="font-size:13px;color:#aaa;margin-bottom:12px;">${error.message || 'Δοκιμάστε ξανά'}</div>
+                                <button onclick="location.reload()" style="background:#4CAF50;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;">🔄 Επανάληψη</button>
+                            </div>
+                        `;
+                        self.showToast('❌ Σφάλμα λήψης', '#f44336');
+                    }
+                    isDownloading = false;
+                });
+
+                document.getElementById('downloadLaterBtn').addEventListener('click', () => {
+                    modal.remove();
+                    self.showToast('ℹ️ Μπορείτε να κατεβάσετε αργότερα', '#888');
+                });
+            }
+        }
+
+        // ============================================================
+        // ★★★ ΠΡΩΤΟΚΟΛΛΟ OFFLINE ★★★
+        // ============================================================
+        const GRAY_PIXEL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QzwAIQgMHAVSOGAAAAABJRU5ErkJggg==';
+        let offlineManager = new OfflineMapManager();
+        let offlineUI = new OfflineMapUI(offlineManager);
+
+        maplibregl.addProtocol('offline', async (params, abortController) => {
+            const { z, x, y } = params;
+            const key = `${z}/${x}/${y}`;
+            try {
+                const cached = await offlineManager.getTile(key);
+                if (cached) return { data: cached };
+            } catch (e) {}
+            if (navigator.onLine) {
+                try {
+                    const url = `https://tiles.openfreemap.org/tiles/${z}/${x}/${y}.png`;
+                    const response = await fetch(url, { signal: abortController.signal });
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const arrayBuffer = await blob.arrayBuffer();
+                        offlineManager.saveTile(key, arrayBuffer).catch(() => {});
+                        return { data: arrayBuffer };
+                    }
+                } catch (e) {}
+            }
+            try {
+                const resp = await fetch(GRAY_PIXEL);
+                const blob = await resp.blob();
+                const arrayBuffer = await blob.arrayBuffer();
+                return { data: arrayBuffer };
+            } catch (e) {
+                return { data: null };
+            }
+        });
+
+        // ============================================================
+        // ★★★ ROUTES (140+) – ΠΛΗΡΗΣ ΛΙΣΤΑ ★★★
+        // ============================================================
         const ROUTES = [
             {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx"},
             {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Agia%20%20Anna.gpx"},
@@ -674,7 +1188,10 @@
             {"name":"Χιλανδαρίου → Εσφιγμένου","dist":3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandar%2BEsfigmenou%20(1).gpx"},
             {"name":"Χιλανδαρίου → Ζωγράφου","dist":7.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandar%2BZografou.gpx"}
         ];
-        
+
+        // ============================================================
+        // ★★★ STATE ★★★
+        // ============================================================
         let state = {
             map: null,
             isOffline: false,
@@ -688,7 +1205,9 @@
             isNavigating: false,
             isScreenOn: false,
             gpsWatchId: null,
+            navIntervalId: null,
             lastPosition: null,
+            prevPosition: null,
             currentHeading: 0,
             wakeLock: null,
             currentRouteName: '',
@@ -698,24 +1217,881 @@
             alertDisabledForever: false,
             disclaimerAccepted: false,
             favorites: [],
+            offlineFavorites: [],
             mapDownloaded: false,
             gpsFirstFix: false,
-            gpsErrorCount: 0,
-            mapLoadAttempted: false,
-            mapLoadRetries: 0,
-            styleCached: false,
-            libraryLoaded: libraryLoaded,
-            mapInitialized: false,
-            styleLoaded: false,
-            fallbackUsed: false
+            gpsErrorCount: 0
         };
 
         // ============================================================
-        // ★★★ OFFLINE MAP MANAGER ★★★
+        // ★★★ FAVORITES (online) ★★★
         // ============================================================
-        
-        class OfflineMapManager {
-            constructor() {
-                this.dbName = 'AthosOfflineMap';
-                this.dbVersion = 5;
-                this.store
+        function loadFavorites() {
+            try {
+                const saved = localStorage.getItem('athos_favorites');
+                if (saved) { state.favorites = JSON.parse(saved); if (!Array.isArray(state.favorites)) state.favorites = []; }
+            } catch(e) { state.favorites = []; }
+            updateFavBadge();
+            updateOfflineFavCount();
+        }
+        function saveFavorites() { localStorage.setItem('athos_favorites', JSON.stringify(state.favorites)); updateFavBadge(); }
+        function updateFavBadge() {
+            const count = state.favorites.length;
+            document.getElementById('favCount').textContent = count;
+            const btn = document.getElementById('favBtn');
+            if (count > 0) { btn.textContent = '⭐' + count; btn.classList.add('active'); } else { btn.textContent = '⭐'; btn.classList.remove('active'); }
+        }
+        async function updateOfflineFavCount() {
+            const count = await offlineManager.getOfflineFavoriteCount();
+            document.getElementById('offlineFavCount').textContent = count;
+            const btn = document.getElementById('offlineFavBtn');
+            if (count > 0) { btn.textContent = '💾' + count; btn.classList.add('active'); } else { btn.textContent = '💾'; btn.classList.remove('active'); }
+        }
+        function toggleFavorite(index) {
+            const route = ROUTES[index];
+            if (!route) return;
+            const idx = state.favorites.findIndex(f => f.name === route.name && f.url === route.url);
+            if (idx >= 0) { state.favorites.splice(idx, 1); showToast('⭐ Αφαιρέθηκε από online αγαπημένες', '#888'); }
+            else { state.favorites.push({ ...route }); showToast('⭐ Προστέθηκε στις online αγαπημένες!', '#f1c40f'); }
+            saveFavorites();
+            renderRoutes(document.getElementById('routeSearch').value);
+            renderFavorites();
+        }
+        function isFavorite(route) { return state.favorites.some(f => f.name === route.name && f.url === route.url); }
+        async function renderFavorites() {
+            const list = document.getElementById('favList');
+            const offlineFavs = await offlineManager.getOfflineFavorites();
+            const offlineNames = offlineFavs.map(f => f.name);
+            if (state.favorites.length === 0 && offlineFavs.length === 0) {
+                list.innerHTML = '<div class="fav-empty">⭐ Δεν έχετε αγαπημένες διαδρομές.<br>Προσθέστε από τη λίστα 🗺️</div>';
+                return;
+            }
+            let html = '';
+            if (offlineFavs.length > 0) {
+                html += '<div style="color:#27ae60;font-weight:700;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(39,174,96,0.2);">💾 Offline Αποθηκευμένες</div>';
+                offlineFavs.forEach((fav) => {
+                    html += `<div class="fav-item" style="border-left:3px solid #27ae60;">
+                        <span class="fname">📱 ${fav.name} <span class="offline-badge">Offline</span></span>
+                        <span class="finfo">${fav.dist}km | ${fav.time}</span>
+                        <div class="factions">
+                            <button class="load-offline-fav" data-id="${fav.id}">📂 Φόρτωση</button>
+                            <button class="remove-offline-fav" data-id="${fav.id}">✕</button>
+                        </div>
+                    </div>`;
+                });
+            }
+            const onlineFavs = state.favorites.filter(f => !offlineNames.includes(f.name));
+            if (onlineFavs.length > 0) {
+                if (offlineFavs.length > 0) html += '<div style="color:#f1c40f;font-weight:700;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(241,196,15,0.2);margin-top:6px;">⭐ Online Αγαπημένες</div>';
+                onlineFavs.forEach((route) => {
+                    const num = ROUTES.indexOf(route) + 1;
+                    html += `<div class="fav-item">
+                        <span class="fname">${num > 0 ? '#'+num+' ' : ''}${route.name}</span>
+                        <span class="finfo">${route.dist}km | ${route.time}</span>
+                        <div class="factions">
+                            <button class="load-fav" data-name="${route.name}" data-url="${route.url}" data-dist="${route.dist}" data-time="${route.time}">📂 Φόρτωση</button>
+                            <button class="remove-fav" data-name="${route.name}">✕</button>
+                        </div>
+                    </div>`;
+                });
+            }
+            list.innerHTML = html;
+            list.querySelectorAll('.load-fav').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.dataset.url, name = this.dataset.name, dist = parseFloat(this.dataset.dist), time = this.dataset.time;
+                    if (url && name) { loadRouteFromUrl(url, name, dist, time); hideFavorites(); }
+                });
+            });
+            list.querySelectorAll('.remove-fav').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const name = this.dataset.name;
+                    const idx = state.favorites.findIndex(f => f.name === name);
+                    if (idx >= 0) { state.favorites.splice(idx, 1); saveFavorites(); renderFavorites(); renderRoutes(document.getElementById('routeSearch').value); showToast('🗑️ Αφαιρέθηκε', '#888'); }
+                });
+            });
+            list.querySelectorAll('.load-offline-fav').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const id = this.dataset.id;
+                    const favs = await offlineManager.getOfflineFavorites();
+                    const fav = favs.find(f => f.id === id);
+                    if (fav && fav.gpxData) { loadGpxFromData(fav.gpxData, fav.name); hideFavorites(); showToast('📱 Φορτώθηκε offline: '+fav.name, '#27ae60'); }
+                });
+            });
+            list.querySelectorAll('.remove-offline-fav').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const id = this.dataset.id;
+                    await offlineManager.deleteOfflineFavorite(id);
+                    updateOfflineFavCount();
+                    renderFavorites();
+                    showToast('🗑️ Αφαιρέθηκε offline διαδρομή', '#888');
+                });
+            });
+        }
+        function showFavorites() { document.getElementById('favDropdown').classList.add('active'); renderFavorites(); }
+        function hideFavorites() { document.getElementById('favDropdown').classList.remove('active'); }
+        function clearAllFavorites() {
+            if (state.favorites.length === 0) { showToast('⚠️ Δεν υπάρχουν online αγαπημένες', '#888'); return; }
+            if (confirm('🧹 Θέλετε να καθαρίσετε όλες τις online αγαπημένες;')) {
+                state.favorites = [];
+                saveFavorites();
+                renderFavorites();
+                renderRoutes(document.getElementById('routeSearch').value);
+                showToast('🧹 Καθαρίστηκαν όλες', '#e74c3c');
+            }
+        }
+        async function downloadOfflineFavorites() {
+            const offlineFavs = await offlineManager.getOfflineFavorites();
+            const count = offlineFavs.length;
+            const MAX_OFFLINE_FAVS = 10;
+            if (count >= MAX_OFFLINE_FAVS) { showToast('⚠️ Έχετε ήδη '+count+' offline διαδρομές (μέγιστο '+MAX_OFFLINE_FAVS+')', '#FF9800'); return; }
+            const offlineNames = offlineFavs.map(f => f.name);
+            const toDownload = state.favorites.filter(f => !offlineNames.includes(f.name));
+            if (toDownload.length === 0) { showToast('✅ Όλες είναι ήδη offline!', '#4CAF50'); return; }
+            const availableSlots = MAX_OFFLINE_FAVS - count;
+            const toDownloadNow = toDownload.slice(0, availableSlots);
+            if (toDownload.length > availableSlots) showToast('⚠️ Μπορείτε να κατεβάσετε μόνο '+availableSlots+' διαδρομές', '#FF9800');
+            showToast('⏳ Λήψη '+toDownloadNow.length+' διαδρομών...', '#FF9800');
+            let successCount = 0;
+            for (const route of toDownloadNow) {
+                try {
+                    const response = await fetch(route.url);
+                    if (response.ok) {
+                        const gpxData = await response.text();
+                        await offlineManager.saveOfflineFavorite(route, gpxData);
+                        successCount++;
+                    }
+                } catch (e) { console.error(e); }
+            }
+            await updateOfflineFavCount();
+            renderFavorites();
+            showToast('✅ '+successCount+' διαδρομές αποθηκεύτηκαν offline!', '#27ae60');
+        }
+
+        // ============================================================
+        // ★★★ GPS & MAP ★★★
+        // ============================================================
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2)**2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ★★★
+        function initMap() {
+            state.map = new maplibregl.Map({
+                container: 'map',
+                style: 'https://tiles.openfreemap.org/styles/liberty',
+                center: [24.32, 40.16],
+                zoom: 12
+            });
+            state.map.addControl(new maplibregl.NavigationControl());
+            const savedRotation = localStorage.getItem('athos_rotation');
+            if (savedRotation) {
+                state.map.setBearing(parseFloat(savedRotation));
+                currentRotation = parseFloat(savedRotation);
+                updateRotationIndicator();
+            }
+            document.getElementById('rotateBtn').addEventListener('click', function() {
+                const current = state.map.getBearing() || 0;
+                const newRotation = (current + 90) % 360;
+                state.map.setBearing(newRotation);
+                currentRotation = newRotation;
+                localStorage.setItem('athos_rotation', newRotation);
+                updateRotationIndicator();
+                showToast('🔄 ' + Math.round(newRotation) + '°', '#2196F3');
+            });
+            document.getElementById('closeGpsNotification').addEventListener('click', function() {
+                document.getElementById('gpsNotification').classList.remove('active');
+            });
+            document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
+            document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+        }
+
+        function initMapWithOfflineSupport() {
+            initMap();
+            document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
+            document.getElementById('offlineStatus').classList.remove('active');
+
+            offlineManager.isMapDownloaded().then(hasMap => {
+                if (hasMap) {
+                    state.mapDownloaded = true;
+                    document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+                    document.getElementById('offlineStatus').classList.add('active', 'offline');
+                    document.getElementById('wifiBtn').classList.add('active');
+                    showToast('📡 Offline χάρτης είναι διαθέσιμος! (κάντε reload για ενεργοποίηση)', '#4CAF50');
+                } else {
+                    document.getElementById('offlineStatus').textContent = '🌐 Online';
+                    document.getElementById('offlineStatus').classList.add('active', 'online');
+                    setTimeout(() => offlineUI.checkAndPromptDownload(), 2000);
+                }
+            });
+            updateOfflineFavCount();
+        }
+
+        let currentRotation = 0;
+        function updateRotationIndicator() {
+            const indicator = document.getElementById('rotationIndicator');
+            if (Math.abs(currentRotation) > 1) {
+                indicator.textContent = '🔄 ' + Math.round(currentRotation) + '°';
+                indicator.classList.add('active');
+            } else { indicator.classList.remove('active'); }
+        }
+
+        // ============================================================
+        // ★★★ GPS ★★★
+        // ============================================================
+        function toggleGps() {
+            if (state.isGpsOn) { stopGps(); } else { startGps(); }
+        }
+        function startGps() {
+            if (!navigator.geolocation) { showToast('⚠️ GPS μη διαθέσιμο', '#f44336'); return; }
+            if (!state.map) { showToast('⚠️ Περιμένετε τον χάρτη', '#FF9800'); return; }
+            document.getElementById('gpsBtn').textContent = '📍✓';
+            document.getElementById('gpsBtn').classList.add('active');
+            document.getElementById('statusDisplay').textContent = '⏳ Αναζήτηση GPS... (20s)';
+            state.isGpsOn = true;
+            state.gpsErrorCount = 0;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    state.gpsFirstFix = true;
+                    document.getElementById('statusDisplay').textContent = '📍 GPS ενεργό';
+                    state.lastPosition = { lat, lng };
+                    updateUserMarker(lat, lng);
+                    try { state.map.flyTo({ center: [lng, lat], zoom: 15, essential: true, duration: 1500 }); } catch(e) {}
+                    showToast('📍 GPS ενεργοποιήθηκε', '#4CAF50');
+                    startGpsWatch();
+                },
+                (error) => {
+                    console.error('GPS Error:', error);
+                    state.gpsErrorCount++;
+                    let msg = '❌ Σφάλμα GPS';
+                    if (error.code === 1) msg = '❌ Δεν επιτρέπεται η πρόσβαση';
+                    else if (error.code === 2) msg = '❌ Η τοποθεσία δεν είναι διαθέσιμη';
+                    else if (error.code === 3) msg = '❌ Timeout GPS - Δοκιμάστε ξανά (20s)';
+                    showToast(msg, '#f44336');
+                    document.getElementById('statusDisplay').textContent = '⚠️ ' + msg;
+                    if (state.gpsErrorCount > 3) {
+                        stopGps();
+                        showToast('⚠️ Πολλά σφάλματα GPS - Απενεργοποίηση', '#f44336');
+                    } else {
+                        setTimeout(() => { if (state.isGpsOn) startGps(); }, 5000);
+                    }
+                },
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 }
+            );
+        }
+
+        function startGpsWatch() {
+            if (state.gpsWatchId) navigator.geolocation.clearWatch(state.gpsWatchId);
+            state.gpsWatchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    state.lastPosition = { lat, lng };
+                    updateUserMarker(lat, lng);
+                    if (position.coords.speed !== null && position.coords.speed !== undefined) {
+                        state.currentSpeedKmh = position.coords.speed * 3.6;
+                        if (state.currentSpeedKmh > 0.3) document.getElementById('speedDisplay').textContent = state.currentSpeedKmh.toFixed(1) + ' km/h';
+                        else document.getElementById('speedDisplay').textContent = '';
+                    }
+                    if (state.isNavigating) {
+                        try { state.map.flyTo({ center: [lng, lat], zoom: 18, essential: true, duration: 800 }); } catch(e) {}
+                    }
+                    if (!state.gpsFirstFix) { state.gpsFirstFix = true; document.getElementById('statusDisplay').textContent = '📍 GPS ενεργό'; }
+                    if (state.routeGeometry) { updateDistProgress(); checkOffRoute(lat, lng); }
+                },
+                (error) => { console.error('Watch GPS Error:', error); },
+                { enableHighAccuracy: true, timeout: 60000, maximumAge: 20000 }
+            );
+        }
+
+        function stopGps() {
+            if (state.gpsWatchId) { navigator.geolocation.clearWatch(state.gpsWatchId); state.gpsWatchId = null; }
+            if (state.isNavigating) stopNavigation();
+            state.isGpsOn = false;
+            state.gpsFirstFix = false;
+            if (state.userMarker) { state.userMarker.remove(); state.userMarker = null; }
+            document.getElementById('gpsBtn').textContent = '📍';
+            document.getElementById('gpsBtn').classList.remove('active');
+            document.getElementById('distProgressInline').style.display = 'none';
+            document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+            document.getElementById('speedDisplay').textContent = '';
+            localStorage.setItem('athos_was_navigating', 'false');
+            showToast('📍 GPS απενεργοποιήθηκε', '#888');
+        }
+
+        function updateUserMarker(lat, lng) {
+            const el = document.createElement('div');
+            el.className = 'arrow-dot';
+            const heading = state.currentHeading || 0;
+            el.style.transform = 'rotate(' + heading + 'deg)';
+            el.innerHTML = '<div class="arrow"></div><div class="dot"></div><div class="glow"></div>';
+            try {
+                if (!state.userMarker) {
+                    state.userMarker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+                        .setLngLat([lng, lat])
+                        .addTo(state.map);
+                } else {
+                    state.userMarker.setLngLat([lng, lat]);
+                    const markerEl = state.userMarker.getElement();
+                    if (markerEl) {
+                        const dot = markerEl.querySelector('.arrow-dot');
+                        if (dot) dot.style.transform = 'rotate(' + heading + 'deg)';
+                    }
+                }
+            } catch(e) {}
+        }
+
+        // ============================================================
+        // ★★★ ΠΛΟΗΓΗΣΗ ★★★
+        // ============================================================
+        function toggleNavigation() {
+            if (state.isNavigating) { stopNavigation(); } else { startNavigation(); }
+        }
+        function startNavigation() {
+            if (!state.isGpsOn) { showToast('⚠️ Ενεργοποιήστε πρώτα το GPS', '#FF9800'); return; }
+            if (!state.lastPosition) { showToast('⚠️ Αναμονή για θέση GPS', '#FF9800'); return; }
+            document.getElementById('navBtn').textContent = '🧭✓';
+            document.getElementById('navBtn').classList.add('active');
+            state.isNavigating = true;
+            try { state.map.flyTo({ center: [state.lastPosition.lng, state.lastPosition.lat], zoom: 18, essential: true, duration: 1000 }); } catch(e) {}
+            document.getElementById('statusDisplay').textContent = '🧭 Follow ενεργό';
+            showToast('🧭 Πλοήγηση ενεργοποιήθηκε', '#4CAF50');
+            localStorage.setItem('athos_was_navigating', 'true');
+        }
+        function stopNavigation() {
+            state.isNavigating = false;
+            document.getElementById('navBtn').textContent = '🧭';
+            document.getElementById('navBtn').classList.remove('active');
+            if (state.isGpsOn) document.getElementById('statusDisplay').textContent = '📍 GPS ενεργό';
+            else document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+            localStorage.setItem('athos_was_navigating', 'false');
+            showToast('🧭 Πλοήγηση απενεργοποιήθηκε', '#888');
+        }
+
+        // ============================================================
+        // ★★★ ΔΙΑΔΡΟΜΕΣ ★★★
+        // ============================================================
+        function centerOnRoute() {
+            if (!state.routeGeometry || state.routeGeometry.length === 0) { showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή', '#FF9800'); return; }
+            try {
+                const bounds = new maplibregl.LngLatBounds();
+                state.routeGeometry.forEach(c => bounds.extend([c[0], c[1]]));
+                state.map.fitBounds(bounds, { padding: 50, maxZoom: 15, duration: 1000, essential: true });
+                showToast('🎯 Επαναφορά στη διαδρομή', '#00BCD4');
+            } catch(e) {}
+        }
+
+        function showRoutes() { document.getElementById('routeDropdown').classList.add('active'); renderRoutes(''); }
+        function hideRoutes() { document.getElementById('routeDropdown').classList.remove('active'); }
+
+        function renderRoutes(filter) {
+            const list = document.getElementById('routesList');
+            let filtered = ROUTES;
+            if (filter) { const f = filter.toLowerCase(); filtered = ROUTES.filter(r => r.name.toLowerCase().includes(f)); }
+            document.getElementById('routeCount').textContent = filtered.length;
+            let html = '', cl = '';
+            filtered.forEach((r, index) => {
+                const fl = r.name.charAt(0).toUpperCase();
+                if (fl !== cl) { cl = fl; html += '<div class="letter-header">' + cl + '</div>'; }
+                const fav = isFavorite(r);
+                const num = ROUTES.indexOf(r) + 1;
+                html += `<div class="route-item" data-url="${r.url}" data-name="${r.name}" data-dist="${r.dist}" data-time="${r.time}" data-index="${index}">
+                    <span class="rname"><span style="color:#f1c40f;font-weight:700;margin-right:4px;">${num}.</span>${r.name}</span>
+                    <span style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+                        <span class="rinfo">${r.dist}km | ${r.time}</span>
+                        <span class="fav-star ${fav ? 'active' : 'inactive'}" data-index="${index}">${fav ? '★' : '☆'}</span>
+                    </span>
+                </div>`;
+            });
+            list.innerHTML = html;
+            list.querySelectorAll('.route-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('fav-star')) return;
+                    loadRouteFromUrl(this.dataset.url, this.dataset.name, parseFloat(this.dataset.dist), this.dataset.time);
+                    hideRoutes();
+                });
+            });
+            list.querySelectorAll('.fav-star').forEach(star => {
+                star.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const index = parseInt(this.dataset.index);
+                    toggleFavorite(index);
+                });
+            });
+        }
+
+        function loadRouteFromUrl(url, name, dist, time) {
+            showToast('⏳ Φόρτωση...', '#FF9800');
+            fetch(url, { headers: { 'Accept': 'application/gpx+xml,application/xml,text/xml,*/*' } })
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                .then(text => {
+                    if (!text.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                    const data = parseGpx(text);
+                    if (data.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                    if (state.map.getLayer('route')) state.map.removeLayer('route');
+                    if (state.map.getSource('route')) state.map.removeSource('route');
+                    const ac = [];
+                    data.tracks.forEach(t => t.forEach(c => ac.push(c)));
+                    state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                    state.routeDistance = dist || computeDistance(state.routeGeometry);
+                    state.currentRouteName = name;
+                    state.originalTime = time || null;
+                    state.alertDismissed = false;
+                    state.alertDisabledForever = false;
+                    document.getElementById('offRouteWarning').classList.remove('active');
+                    document.getElementById('offRouteStatus').classList.remove('active');
+                    localStorage.setItem('athos_last_route', JSON.stringify({ url, name, dist, time }));
+                    localStorage.removeItem('athos_last_gpx_data');
+                    state.map.addSource('route', {
+                        type: 'geojson',
+                        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                    });
+                    state.map.addLayer({
+                        id: 'route',
+                        type: 'line',
+                        source: 'route',
+                        paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                    });
+                    state.routeLine = 'route';
+                    const bounds = new maplibregl.LngLatBounds();
+                    ac.forEach(c => bounds.extend([c[1], c[0]]));
+                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    updateRouteInfo();
+                    document.getElementById('centerBtn').classList.add('active');
+                    document.getElementById('centerBtnHeader').style.display = 'inline-flex';
+                    showToast('✅ Φορτώθηκε: ' + name, '#4CAF50');
+                })
+                .catch(err => showToast('❌ ' + err.message, '#f44336'));
+        }
+
+        function loadGpxFile(file) {
+            const r = new FileReader();
+            r.onload = function(e) {
+                try {
+                    const t = e.target.result;
+                    if (!t.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                    const d = parseGpx(t);
+                    if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                    if (state.map.getLayer('route')) state.map.removeLayer('route');
+                    if (state.map.getSource('route')) state.map.removeSource('route');
+                    const ac = [];
+                    d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
+                    state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                    state.routeDistance = computeDistance(state.routeGeometry);
+                    state.currentRouteName = file.name.replace('.gpx', '');
+                    state.originalTime = null;
+                    state.alertDismissed = false;
+                    state.alertDisabledForever = false;
+                    document.getElementById('offRouteWarning').classList.remove('active');
+                    document.getElementById('offRouteStatus').classList.remove('active');
+                    localStorage.setItem('athos_last_route', JSON.stringify({ url: 'file:' + file.name, name: file.name.replace('.gpx', ''), dist: state.routeDistance, time: null }));
+                    localStorage.setItem('athos_last_gpx_data', t);
+                    state.map.addSource('route', {
+                        type: 'geojson',
+                        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                    });
+                    state.map.addLayer({
+                        id: 'route',
+                        type: 'line',
+                        source: 'route',
+                        paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                    });
+                    state.routeLine = 'route';
+                    const bounds = new maplibregl.LngLatBounds();
+                    ac.forEach(c => bounds.extend([c[1], c[0]]));
+                    state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                    updateRouteInfo();
+                    document.getElementById('centerBtn').classList.add('active');
+                    document.getElementById('centerBtnHeader').style.display = 'inline-flex';
+                    showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
+                } catch(err) { showToast('❌ ' + err.message, '#f44336'); }
+            };
+            r.readAsText(file);
+        }
+
+        function loadGpxFromData(gpxData, name) {
+            try {
+                if (!gpxData.includes('<gpx')) throw new Error('Μη έγκυρο GPX');
+                const d = parseGpx(gpxData);
+                if (d.tracks.length === 0) throw new Error('Δεν βρέθηκαν');
+                if (state.map.getLayer('route')) state.map.removeLayer('route');
+                if (state.map.getSource('route')) state.map.removeSource('route');
+                const ac = [];
+                d.tracks.forEach(tr => tr.forEach(c => ac.push(c)));
+                state.routeGeometry = ac.map(c => [c[1], c[0]]);
+                state.routeDistance = computeDistance(state.routeGeometry);
+                state.currentRouteName = name || 'GPX διαδρομή';
+                state.originalTime = null;
+                state.alertDismissed = false;
+                state.alertDisabledForever = false;
+                document.getElementById('offRouteWarning').classList.remove('active');
+                document.getElementById('offRouteStatus').classList.remove('active');
+                state.map.addSource('route', {
+                    type: 'geojson',
+                    data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+                });
+                state.map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: 'route',
+                    paint: { 'line-color': '#FF5722', 'line-width': 5, 'line-opacity': 0.9 }
+                });
+                state.routeLine = 'route';
+                const bounds = new maplibregl.LngLatBounds();
+                ac.forEach(c => bounds.extend([c[1], c[0]]));
+                state.map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+                updateRouteInfo();
+                document.getElementById('centerBtn').classList.add('active');
+                document.getElementById('centerBtnHeader').style.display = 'inline-flex';
+                showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
+            } catch(err) { showToast('❌ ' + err.message, '#f44336'); }
+        }
+
+        function parseGpx(x) {
+            const p = new DOMParser();
+            const xml = p.parseFromString(x, 'text/xml');
+            if (xml.querySelector('parsererror')) throw new Error('Μη έγκυρο GPX');
+            const r = { tracks: [] };
+            xml.querySelectorAll('trk trkseg').forEach(s => {
+                const c = [];
+                s.querySelectorAll('trkpt').forEach(pt => {
+                    const la = parseFloat(pt.getAttribute('lat'));
+                    const lo = parseFloat(pt.getAttribute('lon'));
+                    if (!isNaN(la) && !isNaN(lo)) c.push([la, lo]);
+                });
+                if (c.length > 1) r.tracks.push(c);
+            });
+            return r;
+        }
+
+        function computeDistance(coords) {
+            let d = 0;
+            for (let i = 1; i < coords.length; i++) {
+                d += haversineDistance(coords[i-1][1], coords[i-1][0], coords[i][1], coords[i][0]);
+            }
+            return d;
+        }
+
+        function updateRouteInfo() {
+            document.getElementById('distDisplay').textContent = state.routeDistance.toFixed(2);
+            updateTimeDisplay();
+        }
+
+        function updateTimeDisplay() {
+            const timeEl = document.getElementById('timeDisplay');
+            if (state.routeDistance > 0) {
+                if (state.originalTime) { timeEl.textContent = state.originalTime; timeEl.className = 'time excel'; } else {
+                    const m = Math.round((state.routeDistance / state.currentSpeed) * 60);
+                    const h = Math.floor(m / 60);
+                    const mm = m % 60;
+                    timeEl.textContent = h > 0 ? h + 'h ' + mm + 'm' : mm + 'm';
+                    timeEl.className = 'time calculated';
+                }
+            } else { timeEl.textContent = '--:--'; timeEl.className = 'time'; }
+        }
+
+        function clearRoute() {
+            if (state.map.getLayer('route')) state.map.removeLayer('route');
+            if (state.map.getSource('route')) state.map.removeSource('route');
+            state.routeLine = null;
+            state.routeGeometry = null;
+            state.routeDistance = 0;
+            state.currentRouteName = '';
+            state.originalTime = null;
+            document.getElementById('distDisplay').textContent = '0.00';
+            document.getElementById('timeDisplay').textContent = '--:--';
+            document.getElementById('timeDisplay').className = 'time';
+            document.getElementById('distProgressInline').style.display = 'none';
+            document.getElementById('offRouteWarning').classList.remove('active');
+            document.getElementById('offRouteStatus').classList.remove('active');
+            document.getElementById('centerBtn').classList.remove('active');
+            document.getElementById('centerBtnHeader').style.display = 'none';
+            localStorage.removeItem('athos_last_route');
+            localStorage.removeItem('athos_last_gpx_data');
+            showToast('🗑️ Διαδρομή καθαρίστηκε', '#d35400');
+        }
+
+        function checkOffRoute(lat, lng) {
+            if (!state.routeGeometry || state.alertDisabledForever) return;
+            let min = Infinity;
+            for (const c of state.routeGeometry) {
+                const d = haversineDistance(lat, lng, c[1], c[0]) * 1000;
+                if (d < min) min = d;
+            }
+            const w = document.getElementById('offRouteWarning');
+            const s = document.getElementById('offRouteStatus');
+            const m = document.getElementById('offRouteMsg');
+            if (min > 100) {
+                m.textContent = '⚠️ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ! (' + Math.round(min) + 'm)';
+                w.classList.add('active');
+                s.classList.add('active');
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+            } else { w.classList.remove('active'); s.classList.remove('active'); }
+        }
+
+        function updateDistProgress() {
+            const el = document.getElementById('distProgressInline');
+            if (!state.routeGeometry || !state.lastPosition || state.routeDistance === 0) { el.style.display = 'none'; return; }
+            el.style.display = 'block';
+            let minDist = Infinity, closestIdx = 0;
+            for (let i = 0; i < state.routeGeometry.length; i++) {
+                const d = haversineDistance(state.lastPosition.lat, state.lastPosition.lng, state.routeGeometry[i][1], state.routeGeometry[i][0]) * 1000;
+                if (d < minDist) { minDist = d; closestIdx = i; }
+            }
+            let doneDist = 0;
+            for (let i = 1; i <= closestIdx; i++) {
+                doneDist += haversineDistance(state.routeGeometry[i-1][1], state.routeGeometry[i-1][0], state.routeGeometry[i][1], state.routeGeometry[i][0]);
+            }
+            const remaining = Math.max(0, state.routeDistance - doneDist);
+            document.getElementById('distDone').textContent = doneDist.toFixed(2);
+            document.getElementById('distRemaining').textContent = remaining.toFixed(2);
+        }
+
+        // ============================================================
+        // ★★★ SOS, SCREEN ★★★
+        // ============================================================
+        function openSos() {
+            document.getElementById('sosContainer').classList.add('active');
+            document.getElementById('sosCoords').textContent = state.lastPosition ? state.lastPosition.lat.toFixed(6) + ', ' + state.lastPosition.lng.toFixed(6) : 'Άγνωστη';
+        }
+        function closeSos() { document.getElementById('sosContainer').classList.remove('active'); }
+        function genSosMsg() {
+            return '🆘 SOS\n👤 ' + (document.getElementById('sosName').value || 'Ανώνυμος') + '\n🆘 ' + document.getElementById('sosType').value + '\n📱 ' + (document.getElementById('sosPhone').value || '-') + '\n📍 ' + document.getElementById('sosCoords').textContent;
+        }
+        function sendSms() {
+            const m = genSosMsg();
+            if (/Android|iPhone/i.test(navigator.userAgent)) { window.location.href = 'sms:6988321619?body=' + encodeURIComponent(m); } else { navigator.clipboard.writeText(m).then(() => showToast('✅ Αντιγράφηκε', '#4CAF50')); }
+            closeSos();
+        }
+        function sendEmail() { window.location.href = 'mailto:athosmaps@gmail.com?subject=SOS&body=' + encodeURIComponent(genSosMsg()); closeSos(); }
+        function call112() { if (confirm('📞 112;')) window.location.href = 'tel:112'; closeSos(); }
+        function dismissAlert() { state.alertDismissed = true; document.getElementById('offRouteWarning').classList.remove('active'); document.getElementById('offRouteStatus').classList.remove('active'); showToast('🔇 Σίγαση', '#888'); }
+        function disableAlertForever() { state.alertDisabledForever = true; document.getElementById('offRouteWarning').classList.remove('active'); document.getElementById('offRouteStatus').classList.remove('active'); showToast('🚫 Απενεργοποίηση', '#f44336'); }
+
+        async function toggleScreenOn() {
+            if (state.isScreenOn) { await disableWakeLock(); } else { await enableWakeLock(); }
+        }
+        async function enableWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    state.wakeLock = await navigator.wakeLock.request('screen');
+                    state.isScreenOn = true;
+                    const b = document.getElementById('screenBtn');
+                    b.textContent = '🔆✓';
+                    b.classList.add('active');
+                    state.wakeLock.addEventListener('release', () => {
+                        state.isScreenOn = false;
+                        b.textContent = '🔆';
+                        b.classList.remove('active');
+                    });
+                }
+            } catch(e) {}
+        }
+        async function disableWakeLock() {
+            if (state.wakeLock) { await state.wakeLock.release(); state.wakeLock = null; }
+            state.isScreenOn = false;
+            document.getElementById('screenBtn').textContent = '🔆';
+            document.getElementById('screenBtn').classList.remove('active');
+        }
+
+        // ============================================================
+        // ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★
+        // ============================================================
+        function showResumeModal(routeData) {
+            const modal = document.getElementById('resumeModal');
+            document.getElementById('resumeRouteName').textContent = routeData.name;
+            document.getElementById('resumeDist').textContent = routeData.dist || '0.00';
+            document.getElementById('resumeTime').textContent = routeData.time || '--:--';
+            pendingResumeAction = routeData;
+            modal.classList.add('active');
+        }
+        function hideResumeModal() { document.getElementById('resumeModal').classList.remove('active'); pendingResumeAction = null; }
+
+        // ============================================================
+        // ★★★ TOAST ★★★
+        // ============================================================
+        function showToast(msg, color) {
+            const t = document.createElement('div');
+            t.style.cssText = 'position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:' + color + ';color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        // ============================================================
+        // ★★★ DOM READY ★★★
+        // ============================================================
+        let pendingResumeAction = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFavorites();
+
+            function checkDisclaimer() {
+                const accepted = localStorage.getItem('athos_disclaimer_accepted');
+                if (accepted === 'true') {
+                    state.disclaimerAccepted = true;
+                    document.getElementById('disclaimerModal').classList.remove('active');
+                    initMapWithOfflineSupport();
+                    setTimeout(() => {
+                        const savedRoute = localStorage.getItem('athos_last_route');
+                        if (savedRoute) {
+                            try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
+                        }
+                    }, 800);
+                } else {
+                    document.getElementById('disclaimerModal').classList.add('active');
+                }
+            }
+
+            document.getElementById('acceptDisclaimer').addEventListener('click', function() {
+                localStorage.setItem('athos_disclaimer_accepted', 'true');
+                state.disclaimerAccepted = true;
+                document.getElementById('disclaimerModal').classList.remove('active');
+                initMapWithOfflineSupport();
+                setTimeout(() => {
+                    const savedRoute = localStorage.getItem('athos_last_route');
+                    if (savedRoute) {
+                        try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
+                    }
+                }, 800);
+            });
+
+            document.getElementById('rejectDisclaimer').addEventListener('click', function() {
+                showToast('❌ Πρέπει να αποδεχτείτε τους όρους', '#f44336');
+                setTimeout(() => {
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;"><div style="font-size:64px;">⚠️</div><h2 style="color:#FF5722;">Δεν αποδεχτήκατε τους όρους</h2><button onclick="location.reload()" style="background:#FF5722;color:white;border:none;padding:12px 30px;border-radius:8px;font-size:16px;cursor:pointer;">🔄 Επανεκκίνηση</button></div>';
+                }, 500);
+            });
+
+            checkDisclaimer();
+
+            // ★★★ EVENT LISTENERS ★★★
+            document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
+            document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
+            document.getElementById('centerBtnHeader').style.display = 'none';
+            document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
+            document.getElementById('closeHelpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
+            document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target === this) this.classList.remove('active'); });
+
+            document.getElementById('gpsBtn').addEventListener('click', toggleGps);
+            document.getElementById('navBtn').addEventListener('click', toggleNavigation);
+            document.getElementById('routesBtn').addEventListener('click', showRoutes);
+            document.getElementById('closeRoutesBtn').addEventListener('click', hideRoutes);
+            document.getElementById('closeRoutesBtn2').addEventListener('click', hideRoutes);
+            document.getElementById('routeSearch').addEventListener('input', (e) => renderRoutes(e.target.value));
+
+            document.getElementById('favBtn').addEventListener('click', showFavorites);
+            document.getElementById('closeFavBtn').addEventListener('click', hideFavorites);
+            document.getElementById('closeFavBtn2').addEventListener('click', hideFavorites);
+            document.getElementById('clearFavsBtn').addEventListener('click', clearAllFavorites);
+            document.getElementById('downloadOfflineFavsBtn').addEventListener('click', downloadOfflineFavorites);
+            document.getElementById('offlineFavBtn').addEventListener('click', () => {
+                showFavorites();
+                setTimeout(() => {
+                    const offlineSection = document.querySelector('.fav-item[style*="border-left: 3px solid #27ae60;"]');
+                    if (offlineSection) offlineSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            });
+
+            document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                if (e.target.files[0]) { loadGpxFile(e.target.files[0]); e.target.value = ''; }
+            });
+            document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+            document.getElementById('resumeBtn').addEventListener('click', function() {
+                const sr = localStorage.getItem('athos_last_route');
+                if (sr) {
+                    const r = JSON.parse(sr);
+                    if (r.url && r.url.startsWith('file:')) {
+                        const gpxData = localStorage.getItem('athos_last_gpx_data');
+                        if (gpxData) { loadGpxFromData(gpxData, r.name); startGps(); setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500); return; }
+                    }
+                    if (r.url && r.name) { loadRouteFromUrl(r.url, r.name, r.dist, r.time); startGps(); setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500); }
+                } else { showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336'); }
+            });
+
+            document.getElementById('resumeYes').addEventListener('click', function() {
+                if (pendingResumeAction) {
+                    const r = pendingResumeAction;
+                    hideResumeModal();
+                    if (r.url && r.url.startsWith('file:')) {
+                        const gpxData = localStorage.getItem('athos_last_gpx_data');
+                        if (gpxData) loadGpxFromData(gpxData, r.name);
+                    } else if (r.url) { loadRouteFromUrl(r.url, r.name, r.dist, r.time); }
+                    setTimeout(() => { startGps(); setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500); }, 1000);
+                    showToast('🔄 Συνέχεια: ' + r.name, '#4CAF50');
+                }
+            });
+            document.getElementById('resumeNo').addEventListener('click', function() {
+                hideResumeModal();
+                showToast('❌ Ακυρώθηκε', '#888');
+                localStorage.removeItem('athos_last_route');
+                localStorage.removeItem('athos_last_gpx_data');
+            });
+
+            document.getElementById('screenBtn').addEventListener('click', toggleScreenOn);
+            document.getElementById('sosBottomBtn').addEventListener('click', openSos);
+            document.getElementById('closeSosBtn').addEventListener('click', closeSos);
+            document.getElementById('sosSendSms').addEventListener('click', sendSms);
+            document.getElementById('sosSendEmail').addEventListener('click', sendEmail);
+            document.getElementById('sosCall112').addEventListener('click', call112);
+            document.getElementById('dismissAlertBtn').addEventListener('click', dismissAlert);
+            document.getElementById('disableAlertForeverBtn').addEventListener('click', disableAlertForever);
+
+            document.getElementById('wifiBtn').addEventListener('click', async function() {
+                this.disabled = true;
+                this.textContent = '⏳';
+                try {
+                    const hasMap = await offlineManager.isMapDownloaded();
+                    if (hasMap) {
+                        state.mapDownloaded = true;
+                        showToast('✅ Ο χάρτης είναι ήδη αποθηκευμένος!', '#4CAF50');
+                        document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+                        document.getElementById('offlineStatus').classList.add('active', 'offline');
+                        document.getElementById('wifiBtn').classList.add('active');
+                    } else {
+                        const info = await offlineManager.getMetadata('mapInfo');
+                        if (info && info.downloaded === true) {
+                            await offlineManager.saveMetadata({ key: 'mapInfo', value: { downloaded: false } });
+                            await offlineManager.clearTiles();
+                            offlineUI.showDownloadPrompt(true);
+                        } else {
+                            offlineUI.showDownloadPrompt(false);
+                        }
+                    }
+                } catch (error) { showToast('⚠️ Σφάλμα', '#f44336'); }
+                this.disabled = false;
+                this.textContent = '📶';
+            });
+
+            document.querySelectorAll('.speed-btn').forEach(function(b) {
+                b.addEventListener('click', function() {
+                    const speed = parseInt(this.dataset.speed);
+                    state.currentSpeed = speed;
+                    state.originalTime = null;
+                    document.querySelectorAll('.speed-btn').forEach(x => x.classList.remove('active'));
+                    this.classList.add('active');
+                    updateTimeDisplay();
+                    showToast('⚡ Ταχύτητα: ' + speed + ' km/h', '#4CAF50');
+                });
+            });
+
+            document.addEventListener('dragover', (e) => e.preventDefault());
+            document.addEventListener('drop', function(e) {
+                e.preventDefault();
+                const f = e.dataTransfer.files[0];
+                if (f && (f.name.endsWith('.gpx') || f.name.endsWith('.xml'))) loadGpxFile(f);
+            });
+
+            updateOfflineFavCount();
+        });
+    </script>
+</body>
+</html>
