@@ -9,9 +9,8 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
-    
     <style>
-        /* ★★★ STYLES (συμπυκνωμένα για χώρο – όλα όσα είχες) ★★★ */
+        /* ★★★ STYLES (όλα τα προηγούμενα) ★★★ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform 0.05s ease-out;will-change:transform;pointer-events:none}
@@ -259,7 +258,7 @@
         <div id="map"></div>
     </div>
 
-    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI ★★★ (παραμένουν ίδια) ★★★ -->
+    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI (ίδια) ★★★ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     <div class="gps-notification" id="gpsNotification">
         <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span>
@@ -430,7 +429,7 @@
 
     <script>
         // ============================================================
-        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ★★★
+        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ (με ανεξάρτητη αποποίηση) ★★★
         // ============================================================
 
         // ============================================================
@@ -1854,22 +1853,18 @@
             } else {
                 // Εμφανίζουμε το modal (είναι ήδη active) και περιμένουμε κλικ
                 document.getElementById('disclaimerModal').classList.add('active');
+                // ★★★ ΦΟΡΤΩΝΟΥΜΕ ΤΟΝ ΧΑΡΤΗ ΠΑΡΑΛΛΗΛΑ ★★★
+                initMapWithOfflineSupport();
+                // Η αποποίηση καλύπτει τον χάρτη μέχρι να πατηθεί το κουμπί
             }
 
             // ★★★ ΚΛΙΚ ΣΤΟ ΑΠΟΔΕΧΟΜΑΙ ★★★
             document.getElementById('acceptDisclaimer').addEventListener('click', function() {
                 localStorage.setItem('athos_disclaimer_accepted', 'true');
                 state.disclaimerAccepted = true;
-                // ★★★ ΚΛΕΙΝΟΥΜΕ ΑΜΕΣΑ ΤΟ MODAL ★★★
+                // ★★★ ΑΠΛΑ ΚΡΥΒΟΥΜΕ ΤΟ MODAL ★★★
                 document.getElementById('disclaimerModal').classList.remove('active');
-                // ★★★ ΜΕΤΑ ΦΟΡΤΩΝΟΥΜΕ ΤΟΝ ΧΑΡΤΗ ★★★
-                initMapWithOfflineSupport();
-                setTimeout(() => {
-                    const savedRoute = localStorage.getItem('athos_last_route');
-                    if (savedRoute) {
-                        try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
-                    }
-                }, 800);
+                // Ο χάρτης είναι ήδη φορτωμένος
             });
 
             // ★★★ ΚΛΙΚ ΣΤΟ ΔΕΝ ΑΠΟΔΕΧΟΜΑΙ ★★★
