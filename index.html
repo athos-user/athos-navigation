@@ -9,8 +9,9 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+    
     <style>
-        /* ★★★ STYLES (συμπυκνωμένα για χώρο) ★★★ */
+        /* ★★★ STYLES (συμπυκνωμένα για χώρο – όλα όσα είχες) ★★★ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform 0.05s ease-out;will-change:transform;pointer-events:none}
@@ -200,7 +201,7 @@
 </head>
 <body>
 
-    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ (active αρχικά) ★★★ -->
+    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ ★★★ -->
     <div id="disclaimerModal" class="active">
         <div class="disclaimer-content">
             <div class="disclaimer-header">
@@ -258,7 +259,7 @@
         <div id="map"></div>
     </div>
 
-    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI ★★★ -->
+    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI ★★★ (παραμένουν ίδια) ★★★ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     <div class="gps-notification" id="gpsNotification">
         <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span>
@@ -1283,7 +1284,7 @@
             return R * c;
         }
 
-        // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ★★★
+        // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ΧΑΡΤΗ ★★★
         function initMap() {
             state.map = new maplibregl.Map({
                 container: 'map',
@@ -1312,6 +1313,7 @@
             });
             document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
             document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+            state.mapInitialized = true;
         }
 
         function initMapWithOfflineSupport() {
@@ -1325,7 +1327,7 @@
                     document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
                     document.getElementById('offlineStatus').classList.add('active', 'offline');
                     document.getElementById('wifiBtn').classList.add('active');
-                    showToast('📡 Offline χάρτης είναι διαθέσιμος! (κάντε reload για ενεργοποίηση)', '#4CAF50');
+                    showToast('📡 Offline χάρτης διαθέσιμος! (κάντε reload για ενεργοποίηση)', '#4CAF50');
                 } else {
                     document.getElementById('offlineStatus').textContent = '🌐 Online';
                     document.getElementById('offlineStatus').classList.add('active', 'online');
@@ -1830,39 +1832,17 @@
         }
 
         // ============================================================
-        // ★★★ DOM READY - Η ΑΠΟΠΟΙΗΣΗ ΚΛΕΙΝΕΙ ΑΜΕΣΑ ★★★
+        // ★★★ DOM READY ★★★
         // ============================================================
         let pendingResumeAction = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             loadFavorites();
 
-            // ★★★ Η ΑΠΟΠΟΙΗΣΗ ΚΛΕΙΝΕΙ ΜΕ ΤΟ ΚΛΙΚ ★★★
-            document.getElementById('acceptDisclaimer').addEventListener('click', function() {
-                localStorage.setItem('athos_disclaimer_accepted', 'true');
-                state.disclaimerAccepted = true;
-                document.getElementById('disclaimerModal').classList.remove('active');
-                // Τώρα φορτώνουμε τον χάρτη
-                initMapWithOfflineSupport();
-                setTimeout(() => {
-                    const savedRoute = localStorage.getItem('athos_last_route');
-                    if (savedRoute) {
-                        try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
-                    }
-                }, 800);
-            });
-
-            document.getElementById('rejectDisclaimer').addEventListener('click', function() {
-                showToast('❌ Πρέπει να αποδεχτείτε τους όρους', '#f44336');
-                setTimeout(() => {
-                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;"><div style="font-size:64px;">⚠️</div><h2 style="color:#FF5722;">Δεν αποδεχτήκατε τους όρους</h2><button onclick="location.reload()" style="background:#FF5722;color:white;border:none;padding:12px 30px;border-radius:8px;font-size:16px;cursor:pointer;">🔄 Επανεκκίνηση</button></div>';
-                }, 500);
-            });
-
-            // Έλεγχος αν έχει ήδη αποδεχτεί
+            // ★★★ ΕΛΕΓΧΟΣ ΑΠΟΠΟΙΗΣΗΣ ★★★
             const accepted = localStorage.getItem('athos_disclaimer_accepted');
             if (accepted === 'true') {
-                state.disclaimerAccepted = true;
+                // Ήδη αποδεκτή – κρύβουμε το modal και φορτώνουμε τον χάρτη
                 document.getElementById('disclaimerModal').classList.remove('active');
                 initMapWithOfflineSupport();
                 setTimeout(() => {
@@ -1872,10 +1852,35 @@
                     }
                 }, 800);
             } else {
+                // Εμφανίζουμε το modal (είναι ήδη active) και περιμένουμε κλικ
                 document.getElementById('disclaimerModal').classList.add('active');
             }
 
-            // ★★★ EVENT LISTENERS ★★★
+            // ★★★ ΚΛΙΚ ΣΤΟ ΑΠΟΔΕΧΟΜΑΙ ★★★
+            document.getElementById('acceptDisclaimer').addEventListener('click', function() {
+                localStorage.setItem('athos_disclaimer_accepted', 'true');
+                state.disclaimerAccepted = true;
+                // ★★★ ΚΛΕΙΝΟΥΜΕ ΑΜΕΣΑ ΤΟ MODAL ★★★
+                document.getElementById('disclaimerModal').classList.remove('active');
+                // ★★★ ΜΕΤΑ ΦΟΡΤΩΝΟΥΜΕ ΤΟΝ ΧΑΡΤΗ ★★★
+                initMapWithOfflineSupport();
+                setTimeout(() => {
+                    const savedRoute = localStorage.getItem('athos_last_route');
+                    if (savedRoute) {
+                        try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
+                    }
+                }, 800);
+            });
+
+            // ★★★ ΚΛΙΚ ΣΤΟ ΔΕΝ ΑΠΟΔΕΧΟΜΑΙ ★★★
+            document.getElementById('rejectDisclaimer').addEventListener('click', function() {
+                showToast('❌ Πρέπει να αποδεχτείτε τους όρους', '#f44336');
+                setTimeout(function() {
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;"><div style="font-size:64px;">⚠️</div><h2 style="color:#FF5722;">Δεν αποδεχτήκατε τους όρους</h2><button onclick="location.reload()" style="background:#FF5722;color:white;border:none;padding:12px 30px;border-radius:8px;font-size:16px;cursor:pointer;">🔄 Επανεκκίνηση</button></div>';
+                }, 500);
+            });
+
+            // ★★★ EVENT LISTENERS (παραμένουν όλοι οι υπόλοιποι) ★★★
             document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').style.display = 'none';
