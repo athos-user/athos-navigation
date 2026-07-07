@@ -95,7 +95,8 @@
     #favDropdown .fav-item .factions button:active { transform:scale(0.9); }
     #favDropdown .fav-item .factions .load-fav { background:#4CAF50; }
     #favDropdown .fav-item .factions .load-offline-fav { background:#27ae60; }
-    #favDropdown .fav-item .factions .remove-fav { background:#e74c3c; }
+    #favDropdown .fav-item .factions .remove-fav { background:#e74c3c; padding:3px 10px; font-weight:700; }
+    #favDropdown .fav-item .factions .remove-offline-fav { background:#e74c3c; padding:3px 10px; font-weight:700; }
     #favDropdown .fav-item .offline-badge { background:#27ae60; color:white; padding:2px 6px; border-radius:3px; font-size:8px; }
     #favDropdown .fav-empty { color:#888; text-align:center; padding:20px 0; font-size:13px; }
     #favDropdown .fav-actions { margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
@@ -420,7 +421,7 @@
       <div class="help-section"><div class="help-section-title">⭐ Αγαπημένες &amp; Offline</div><div class="help-item"><span class="help-icon">⭐</span><div><div class="help-label">Online Αγαπημένες</div><div class="help-desc">Πατήστε <strong>⭐</strong> για να δείτε τις online αγαπημένες σας. Χρειάζεται internet.</div></div></div><div class="help-item"><span class="help-icon">💾</span><div><div class="help-label">Offline Αγαπημένες</div><div class="help-desc">Πατήστε <strong>💾</strong> για να δείτε/κατεβάσετε έως 10 διαδρομές για offline χρήση.</div></div></div><div class="help-item"><span class="help-icon">📥</span><div><div class="help-label">Λήψη Offline</div><div class="help-desc">Από το παράθυρο αγαπημένων, πατήστε <strong>"Λήψη Offline"</strong> για να κατεβάσετε διαδρομές.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά.</div></div></div></div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v5.1 · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v5.2 · 140+ Offline Routes</span></div>
     </div>
   </div>
 
@@ -1181,7 +1182,7 @@
             <span class="finfo">${fav.dist}km | ${fav.time}</span>
             <div class="factions">
               <button class="load-offline-fav" data-id="${fav.id}">📂 Φόρτωση</button>
-              <button class="remove-offline-fav" data-id="${fav.id}" style="background:#e74c3c;padding:3px 10px;font-weight:700;">✕</button>
+              <button class="remove-offline-fav" data-id="${fav.id}">✕</button>
             </div>
           </div>`;
         });
@@ -1196,7 +1197,7 @@
             <span class="finfo">${route.dist}km | ${route.time}</span>
             <div class="factions">
               <button class="load-fav" data-name="${route.name}" data-url="${route.url}" data-dist="${route.dist}" data-time="${route.time}">📂 Φόρτωση</button>
-              <button class="remove-fav" data-name="${route.name}" style="background:#e74c3c;padding:3px 10px;font-weight:700;">✕</button>
+              <button class="remove-fav" data-name="${route.name}">✕</button>
             </div>
           </div>`;
         });
@@ -1248,7 +1249,13 @@
       state.favorites = [];
       saveFavorites();
       // Clear offline
-      await offlineManager.clearOfflineFavorites();
+      try {
+        await offlineManager.clearOfflineFavorites();
+      } catch (e) {
+        console.error('Error clearing offline favorites:', e);
+        showToast('⚠️ Σφάλμα κατά τον καθαρισμό offline', '#f44336');
+        return;
+      }
       updateOfflineFavCount();
       renderFavorites();
       renderRoutes(document.getElementById('routeSearch').value);
@@ -1299,7 +1306,6 @@
     function initMap() {
       try {
         if (state.map) {
-          // already initialized
           return;
         }
         state.map = new maplibregl.Map({
@@ -1332,28 +1338,21 @@
         state.mapInitialized = true;
         state.mapLoadAttempts = 0;
 
-        // On style load error, try offline fallback
         state.map.on('error', async (e) => {
           if (e.error && e.error.status === 404) {
-            // Style might be offline, check if we have offline tiles
             const hasMap = await offlineManager.isMapDownloaded();
             if (hasMap) {
-              // We have offline tiles, but the style failed. Try to reload with offline style.
-              // For now, just show a message and let the user know they can use offline tiles.
               showToast('📡 Λειτουργία Offline με τοπικό χάρτη', '#4CAF50');
               document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
               document.getElementById('offlineStatus').classList.add('active', 'offline');
               document.getElementById('wifiBtn').classList.add('active');
-              // Remove the offline message if it's shown
               document.getElementById('offlineMessage').classList.remove('active');
             }
           }
         });
 
-        // When map loads, check offline status
         state.map.on('load', () => {
           console.log('Map loaded');
-          // Hide offline message if visible
           document.getElementById('offlineMessage').classList.remove('active');
         });
 
@@ -1364,7 +1363,6 @@
           if (state.mapLoadRetryTimer) clearTimeout(state.mapLoadRetryTimer);
           state.mapLoadRetryTimer = setTimeout(() => initMap(), 1500);
         } else {
-          // Check if offline tiles are available before showing offline message
           offlineManager.isMapDownloaded().then(hasMap => {
             if (hasMap) {
               state.mapDownloaded = true;
@@ -1395,7 +1393,6 @@
           document.getElementById('offlineStatus').classList.add('active', 'offline');
           document.getElementById('wifiBtn').classList.add('active');
           showToast('📡 Offline χάρτης διαθέσιμος!', '#4CAF50');
-          // Hide offline message if it's shown
           document.getElementById('offlineMessage').classList.remove('active');
         } else {
           document.getElementById('offlineStatus').textContent = '🌐 Online';
@@ -1403,7 +1400,6 @@
           setTimeout(() => offlineUI.checkAndPromptDownload(), 2000);
         }
       }).catch(() => {
-        // If we can't check, assume offline and try to show prompt
         document.getElementById('offlineStatus').textContent = '📡 Offline';
         document.getElementById('offlineStatus').classList.add('active', 'offline');
         setTimeout(() => offlineUI.checkAndPromptDownload(), 1000);
@@ -1923,18 +1919,31 @@
         return;
       }
 
-      checkbox.addEventListener('change', function() {
-        if (this.checked) {
+      // Function to update button state
+      function updateButton() {
+        if (checkbox.checked) {
           btnContinue.disabled = false;
           btnContinue.classList.add('enabled');
         } else {
           btnContinue.disabled = true;
           btnContinue.classList.remove('enabled');
         }
-      });
+      }
+
+      // Listen for changes on the checkbox
+      checkbox.addEventListener('change', updateButton);
+      // Also listen for click events to catch any edge cases
+      checkbox.addEventListener('click', updateButton);
+
+      // On page load, ensure button is disabled if not checked
+      updateButton();
 
       btnContinue.addEventListener('click', function() {
-        if (!checkbox.checked) return;
+        if (!checkbox.checked) {
+          // In case the button is somehow clicked when disabled, but we'll re-check
+          updateButton();
+          return;
+        }
         localStorage.setItem('athos_disclaimer_accepted', 'true');
         overlay.classList.add('hidden');
         // Small delay to let the overlay hide before starting
@@ -1947,9 +1956,9 @@
         }
       });
 
+      // If checkbox is already checked (e.g., after page refresh), enable button
       if (checkbox.checked) {
-        btnContinue.disabled = false;
-        btnContinue.classList.add('enabled');
+        updateButton();
       }
     })();
 
