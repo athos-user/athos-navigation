@@ -10,7 +10,7 @@
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <style>
-    /* ★★★ STYLES (same as before, omitted for brevity – keep original) ★★★ */
+    /* ★★★ STYLES (identical to previous) ★★★ */
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',sans-serif; background:#0d1117; overflow:hidden; height:100%; touch-action:pan-x pan-y; }
     #map-wrapper { position:fixed; top:50%; left:50%; width:200vw; height:200vh; transform:translate(-50%,-50%); z-index:1; transform-origin:center center; transition:transform 0.05s ease-out; will-change:transform; pointer-events:none; }
@@ -279,7 +279,7 @@
     <button id="clearRouteBtn" class="clear-btn" title="Καθαρισμός">🗑️</button>
     <button id="resumeBtn" class="resume-btn" title="Συνέχεια">🔄</button>
     <button id="helpBtn" class="help-btn" title="Βοήθεια">❓</button>
-    <button id="wifiBtn" class="wifi-btn" title="WiFi & Offline Map">📶</button>
+    <button id="wifiBtn" class="wifi-btn" title="WiFi & Offline Map (long press to reset)">📶</button>
     <input type="file" id="fileInput" accept=".gpx" style="display:none">
   </div>
 
@@ -345,14 +345,14 @@
     <button id="sosCall112" style="background:#f44336;">📞 112</button>
   </div>
 
-  <!-- ★★★ HELP MODAL (includes Disclaimer as a section) ★★★ -->
+  <!-- ★★★ HELP MODAL (includes Disclaimer) ★★★ -->
   <div id="helpModal">
     <div class="help-content">
       <div class="help-title"><h2>❓ Οδηγός Χρήσης &amp; Όροι</h2><button id="closeHelpBtn">✕</button></div>
       <div class="help-intro">🌐 <strong>OpenFreeMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές.</div>
       <div class="help-section"><div class="help-section-title">📍 Πλοήγηση</div><div class="help-item"><span class="help-icon">📍</span><div><div class="help-label">GPS</div><div class="help-desc">Πατήστε <strong>📍</strong> για να ενεργοποιήσετε τον δέκτη GPS. Λειτουργεί και offline!</div></div></div><div class="help-item"><span class="help-icon">🧭</span><div><div class="help-label">Follow</div><div class="help-desc">Πατήστε <strong>🧭</strong> για να ακολουθεί ο χάρτης την κίνησή σας.</div></div></div><div class="help-item"><span class="help-icon">🎯</span><div><div class="help-label">Κέντρο στη διαδρομή</div><div class="help-desc">Πατήστε <strong>🎯</strong> για να εστιάσετε σε ολόκληρη τη διαδρομή.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">⭐ Αγαπημένες &amp; Offline</div><div class="help-item"><span class="help-icon">⭐</span><div><div class="help-label">Online Αγαπημένες</div><div class="help-desc">Πατήστε <strong>⭐</strong> για να δείτε τις online αγαπημένες σας. Χρειάζεται internet.</div></div></div><div class="help-item"><span class="help-icon">💾</span><div><div class="help-label">Offline Αγαπημένες</div><div class="help-desc">Πατήστε <strong>💾</strong> για να δείτε/κατεβάσετε έως 10 διαδρομές για offline χρήση.</div></div></div><div class="help-item"><span class="help-icon">📥</span><div><div class="help-label">Λήψη Offline</div><div class="help-desc">Από το παράθυρο αγαπημένων, πατήστε <strong>"Λήψη Offline"</strong> για να κατεβάσετε διαδρομές.</div></div></div></div>
-      <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά.</div></div></div></div>
+      <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά. <br> <span style="color:#FF9800;">Long press (παρατεταμένο πάτημα) για επαναφορά όλων των offline δεδομένων.</span></div></div></div></div>
       <div class="help-section disclaimer"><div class="help-section-title">⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</div>
         <div class="help-item"><span class="help-icon">⚖️</span><div><div class="help-desc"><span class="section-label">Αποποίηση:</span> Το παρόν λογισμικό αποτελεί <strong>αποκλειστικά βοηθητικό εργαλείο</strong> προγραμματισμού διαδρομών. Σε καμία περίπτωση δεν υποκαθιστά την προσωπική κρίση, την απαιτούμενη προσοχή ή την ατομική ευθύνη του χρήστη. Ο δημιουργός της εφαρμογής <strong>δεν φέρει καμία αστική ή ποινική ευθύνη</strong> για τυχόν ατυχήματα, απώλειες ή ζημίες κατά τη διάρκεια των διαδρομών.</div></div></div>
         <div class="help-item"><span class="help-icon">⏱️</span><div><div class="help-desc"><span class="section-label orange">Εκτίμηση Χρόνου &amp; Φυσική Κατάσταση:</span> Οι αναγραφόμενοι χρόνοι πλοήγησης είναι <strong>ενδεικτικοί</strong> και βασίζονται σε μέσους όρους. Η πραγματική διάρκεια της διαδρομής εξαρτάται άμεσα από τη <strong>φυσική κατάσταση</strong> του χρήστη και τις <strong>επικρατούσες καιρικές συνθήκες</strong>.</div></div></div>
@@ -363,18 +363,18 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v5.3 · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v5.4 · 140+ Offline Routes</span></div>
     </div>
   </div>
 
   <script>
     // ============================================================
-    // ★★★ OFFLINE MAP MANAGER (enhanced with style caching) ★★★
+    // ★★★ OFFLINE MAP MANAGER (enhanced with validation) ★★★
     // ============================================================
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 6; // bumped version
+        this.dbVersion = 7; // bumped
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -464,7 +464,7 @@
         });
       }
 
-      // --- Metadata (for style and map info) ---
+      // --- Metadata ---
       async saveMetadata(metadata) {
         const db = await this.initDB();
         return new Promise((resolve, reject) => {
@@ -487,13 +487,30 @@
         });
       }
 
-      // --- Style caching ---
+      // --- Style with validation ---
       async saveStyle(styleData) {
-        await this.saveMetadata({ key: 'mapStyle', value: styleData });
+        // Store as JSON string to avoid corruption
+        await this.saveMetadata({ key: 'mapStyle', value: JSON.stringify(styleData) });
       }
 
       async getStyle() {
-        return await this.getMetadata('mapStyle');
+        const raw = await this.getMetadata('mapStyle');
+        if (!raw) return null;
+        try {
+          const obj = JSON.parse(raw);
+          // Basic validation: must have sources and layers
+          if (obj && typeof obj === 'object' && obj.sources && obj.layers) {
+            return obj;
+          } else {
+            console.warn('Invalid style object, discarding');
+            await this.saveMetadata({ key: 'mapStyle', value: null });
+            return null;
+          }
+        } catch (e) {
+          console.warn('Failed to parse style, discarding', e);
+          await this.saveMetadata({ key: 'mapStyle', value: null });
+          return null;
+        }
       }
 
       // --- Offline favorites ---
@@ -651,6 +668,13 @@
       latToTileY(lat, z) {
         const rad = lat * Math.PI / 180;
         return Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * Math.pow(2, z));
+      }
+
+      // Reset all offline data
+      async resetAllData() {
+        await this.clearTiles();
+        await this.saveMetadata({ key: 'mapInfo', value: { downloaded: false } });
+        await this.saveMetadata({ key: 'mapStyle', value: null });
       }
     }
 
@@ -889,7 +913,7 @@
     });
 
     // ============================================================
-    // ★★★ ROUTES 140+ (same as before) ★★★
+    // ★★★ ROUTES 140+ (unchanged) ★★★
     // ============================================================
     const ROUTES = [
       {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx"},
@@ -1084,7 +1108,7 @@
     };
 
     // ============================================================
-    // ★★★ FAVORITES (same) ★★★
+    // ★★★ FAVORITES (unchanged) ★★★
     // ============================================================
     function loadFavorites() {
       try {
@@ -1242,7 +1266,7 @@
     }
 
     // ============================================================
-    // ★★★ GPS & MAP (with style caching) ★★★
+    // ★★★ GPS & MAP (with robust style loading) ★★★
     // ============================================================
     function haversineDistance(lat1, lon1, lat2, lon2) {
       const R = 6371;
@@ -1253,7 +1277,7 @@
       return R * c;
     }
 
-    // ★★★ MAP INIT with style caching ★★★
+    // ★★★ MAP INIT with style caching and fallback ★★★
     async function initMap() {
       try {
         if (state.map) return;
@@ -1263,7 +1287,6 @@
         let styleLoaded = false;
 
         if (styleObj) {
-          // Use cached style
           console.log('Using cached style');
           styleLoaded = true;
         } else {
@@ -1271,6 +1294,7 @@
           if (navigator.onLine) {
             try {
               const styleUrl = 'https://tiles.openfreemap.org/styles/liberty';
+              console.log('Fetching style online...');
               const response = await fetch(styleUrl);
               if (response.ok) {
                 const styleJson = await response.json();
@@ -1300,41 +1324,41 @@
           }
         }
 
+        // 2. If still no style, use fallback style (basic OSM)
         if (!styleLoaded) {
-          // No style available: show message and fallback to a simple tile layer?
-          document.getElementById('offlineMessage').innerHTML = `
-            <h2>📡 Χρειάζεται σύνδεση</h2>
-            <p>Για πρώτη χρήση, συνδεθείτε στο διαδίκτυο για να φορτωθεί ο χάρτης. Μετά θα είναι διαθέσιμος offline.</p>
-            <button onclick="location.reload()">🔄 Δοκιμάστε ξανά</button>
-          `;
-          document.getElementById('offlineMessage').classList.add('active');
-          // Still create a map with a basic style (maybe use the standard URL as fallback)
-          try {
-            state.map = new maplibregl.Map({
-              container: 'map',
-              style: 'https://tiles.openfreemap.org/styles/liberty',
-              center: [24.32, 40.16],
-              zoom: 12
-            });
-          } catch(e) {
-            // fallback to a blank map
-            state.map = new maplibregl.Map({
-              container: 'map',
-              style: { version: 8, sources: {}, layers: [] },
-              center: [24.32, 40.16],
-              zoom: 12
-            });
-          }
-        } else {
-          // Use the cached/modified style
-          state.map = new maplibregl.Map({
-            container: 'map',
-            style: styleObj,
-            center: [24.32, 40.16],
-            zoom: 12
-          });
-          document.getElementById('offlineMessage').classList.remove('active');
+          console.warn('No style available – using fallback');
+          // Create a simple fallback style with OSM tiles (but we still use offline protocol)
+          styleObj = {
+            version: 8,
+            sources: {
+              'osm': {
+                type: 'raster',
+                tiles: ['offline://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png'],
+                tileSize: 256,
+                attribution: '© OpenFreeMap'
+              }
+            },
+            layers: [
+              {
+                id: 'osm',
+                type: 'raster',
+                source: 'osm',
+                paint: { 'raster-fade-duration': 0 }
+              }
+            ]
+          };
+          // Save it for next time
+          await offlineManager.saveStyle(styleObj);
+          styleLoaded = true;
         }
+
+        // 3. Create map with the style
+        state.map = new maplibregl.Map({
+          container: 'map',
+          style: styleObj,
+          center: [24.32, 40.16],
+          zoom: 12
+        });
 
         state.map.addControl(new maplibregl.NavigationControl());
         const savedRotation = localStorage.getItem('athos_rotation');
@@ -1381,6 +1405,9 @@
           document.getElementById('offlineMessage').classList.remove('active');
         });
 
+        // Hide offline message if map loads
+        document.getElementById('offlineMessage').classList.remove('active');
+
       } catch (e) {
         console.warn('Map initialization error:', e);
         state.mapLoadAttempts++;
@@ -1388,20 +1415,28 @@
           if (state.mapLoadRetryTimer) clearTimeout(state.mapLoadRetryTimer);
           state.mapLoadRetryTimer = setTimeout(() => initMap(), 1500);
         } else {
-          offlineManager.isMapDownloaded().then(hasMap => {
-            if (hasMap) {
-              state.mapDownloaded = true;
-              document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
-              document.getElementById('offlineStatus').classList.add('active', 'offline');
-              document.getElementById('wifiBtn').classList.add('active');
-              document.getElementById('offlineMessage').classList.remove('active');
-              showToast('📡 Offline χάρτης διαθέσιμος!', '#4CAF50');
-            } else {
-              document.getElementById('offlineMessage').classList.add('active');
-            }
-          }).catch(() => {
+          // Fallback: show a simple raster map without style
+          try {
+            state.map = new maplibregl.Map({
+              container: 'map',
+              style: {
+                version: 8,
+                sources: {
+                  'osm': {
+                    type: 'raster',
+                    tiles: ['https://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png'],
+                    tileSize: 256
+                  }
+                },
+                layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
+              },
+              center: [24.32, 40.16],
+              zoom: 12
+            });
+            console.log('Fallback map created');
+          } catch (e2) {
             document.getElementById('offlineMessage').classList.add('active');
-          });
+          }
         }
       }
     }
@@ -1431,7 +1466,7 @@
         });
         updateOfflineFavCount();
       }).catch(() => {
-        // fallback
+        // Fallback: just show message
         document.getElementById('offlineMessage').classList.add('active');
       });
     }
@@ -2020,7 +2055,47 @@
       document.getElementById('dismissAlertBtn').addEventListener('click', dismissAlert);
       document.getElementById('disableAlertForeverBtn').addEventListener('click', disableAlertForever);
 
-      document.getElementById('wifiBtn').addEventListener('click', async function() {
+      // ★★★ WiFi button: short press = download, long press = reset ★★★
+      let pressTimer = null;
+      const wifiBtn = document.getElementById('wifiBtn');
+      wifiBtn.addEventListener('mousedown', () => {
+        pressTimer = setTimeout(() => {
+          // Long press: reset all offline data
+          if (confirm('⚠️ Θέλετε να διαγράψετε όλα τα offline δεδομένα (στυλ, tiles) και να κάνετε επαναφορά;')) {
+            offlineManager.resetAllData().then(() => {
+              state.mapDownloaded = false;
+              document.getElementById('offlineStatus').classList.remove('active', 'offline');
+              document.getElementById('wifiBtn').classList.remove('active');
+              showToast('🧹 Όλα τα offline δεδομένα διαγράφηκαν. Ανανέωση...', '#FF9800');
+              setTimeout(() => location.reload(), 1500);
+            }).catch(e => showToast('❌ Σφάλμα επαναφοράς', '#f44336'));
+          }
+          pressTimer = null;
+        }, 800);
+      });
+      wifiBtn.addEventListener('mouseup', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+      wifiBtn.addEventListener('mouseleave', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+      // For touch devices
+      wifiBtn.addEventListener('touchstart', (e) => {
+        pressTimer = setTimeout(() => {
+          if (confirm('⚠️ Θέλετε να διαγράψετε όλα τα offline δεδομένα (στυλ, tiles) και να κάνετε επαναφορά;')) {
+            offlineManager.resetAllData().then(() => {
+              state.mapDownloaded = false;
+              document.getElementById('offlineStatus').classList.remove('active', 'offline');
+              document.getElementById('wifiBtn').classList.remove('active');
+              showToast('🧹 Όλα τα offline δεδομένα διαγράφηκαν. Ανανέωση...', '#FF9800');
+              setTimeout(() => location.reload(), 1500);
+            }).catch(e => showToast('❌ Σφάλμα επαναφοράς', '#f44336'));
+          }
+          pressTimer = null;
+        }, 800);
+      });
+      wifiBtn.addEventListener('touchend', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+      wifiBtn.addEventListener('touchcancel', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+      // Also normal click for download
+      wifiBtn.addEventListener('click', async function(e) {
+        // If it was a long press, the event might still fire, so we check if pressTimer was cleared
+        if (pressTimer) return; // ignore if long press is about to happen
         this.disabled = true;
         this.textContent = '⏳';
         try {
