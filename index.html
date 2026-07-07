@@ -223,6 +223,7 @@
       border: 3px solid #FF5722;
       color: #eee;
       box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      pointer-events: auto;
     }
     #disclaimerOverlay .box h2 { color: #FF5722; font-size: 20px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
     #disclaimerOverlay .box .body { font-size: 13px; line-height: 1.7; color: #ccc; max-height: 55vh; overflow-y: auto; margin-bottom: 16px; padding-right: 4px; }
@@ -236,17 +237,26 @@
     #disclaimerOverlay .box .body ul li { margin-bottom: 4px; }
     #disclaimerOverlay .box .footer { margin-top: 16px; padding-top: 14px; border-top: 2px solid rgba(255,87,34,0.2); display: flex; flex-direction: column; gap: 10px; }
     #disclaimerOverlay .box .footer .checkbox-row { display: flex; align-items: center; gap: 10px; color: #aaa; font-size: 14px; cursor: pointer; }
-    #disclaimerOverlay .box .footer .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #4CAF50; }
-    #disclaimerOverlay .box .footer .btn-continue { background: #4CAF50; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; width: 100%; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; pointer-events: none; }
-    /* ★★★ ΔΙΟΡΘΩΣΗ ★★★: Το .enabled να έχει απόλυτη προτεραιότητα */
-    #disclaimerOverlay .box .footer .btn-continue.enabled {
-      opacity: 1 !important;
+    #disclaimerOverlay .box .footer .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #4CAF50; pointer-events: auto; }
+    /* ★★★ Το κουμπί Συνέχεια είναι ΠΑΝΤΑ ενεργό – δεν χρησιμοποιούμε disabled ★★★ */
+    #disclaimerOverlay .box .footer .btn-continue {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 1;
       pointer-events: auto !important;
-      cursor: pointer !important;
     }
-    #disclaimerOverlay .box .footer .btn-continue.enabled:hover { background: #45a049; transform: scale(1.02); }
-    #disclaimerOverlay .box .footer .btn-continue.enabled:active { transform: scale(0.95); }
-    /* Το κουμπί Exit να είναι πάντα ενεργό */
+    #disclaimerOverlay .box .footer .btn-continue:hover { background: #45a049; transform: scale(1.02); }
+    #disclaimerOverlay .box .footer .btn-continue:active { transform: scale(0.95); }
     #disclaimerOverlay .box .footer .btn-exit {
       background: transparent;
       color: #888;
@@ -325,7 +335,7 @@
       </div>
       <div class="footer">
         <label class="checkbox-row"><input type="checkbox" id="disclaimerCheck"><span>Έλαβα γνώση και αποδέχομαι τους όρους χρήσης</span></label>
-        <button class="btn-continue" id="disclaimerContinue" disabled>✅ Συνέχεια</button>
+        <button class="btn-continue" id="disclaimerContinue">✅ Συνέχεια</button>
         <button class="btn-exit" id="disclaimerExit">✕ Έξοδος</button>
       </div>
     </div>
@@ -1923,71 +1933,31 @@
     // ============================================================
     let pendingResumeAction = null;
 
-    // ★★★ DISCLAIMER ★★★ (ΕΠΙΘΕΤΙΚΟΤΕΡΗ ΔΙΑΧΕΙΡΙΣΗ)
+    // ★★★ DISCLAIMER ★★★ – ΑΠΛΟΠΟΙΗΜΕΝΟ: ΤΟ ΚΟΥΜΠΙ ΕΙΝΑΙ ΠΑΝΤΑ ΕΝΕΡΓΟ ★★★
     (function() {
       const overlay = document.getElementById('disclaimerOverlay');
       const checkbox = document.getElementById('disclaimerCheck');
       const btnContinue = document.getElementById('disclaimerContinue');
       const btnExit = document.getElementById('disclaimerExit');
 
-      // Αν έχει ήδη γίνει αποδοχή, κρύβουμε το overlay και ξεκινάμε
       if (localStorage.getItem('athos_disclaimer_accepted') === 'true') {
         overlay.classList.add('hidden');
         startApp();
         return;
       }
 
-      // Συνάρτηση ενημέρωσης κουμπιού
-      function updateButton() {
-        if (checkbox.checked) {
-          btnContinue.disabled = false;
-          btnContinue.classList.add('enabled');
-        } else {
-          btnContinue.disabled = true;
-          btnContinue.classList.remove('enabled');
-        }
-      }
-
-      // Πολλαπλοί τρόποι σύλληψης της αλλαγής
-      checkbox.addEventListener('change', updateButton);
-      checkbox.addEventListener('click', function(e) {
-        // Αναγκαστική ενημέρωση μετά το click (για σιγουριά)
-        setTimeout(updateButton, 5);
-      });
-      checkbox.addEventListener('input', updateButton);
-
-      // Κλικ στο label (ολόκληρη η γραμμή)
-      document.querySelector('.checkbox-row').addEventListener('click', function(e) {
-        if (e.target.tagName !== 'INPUT') {
-          // Το label άλλαξε την κατάσταση του checkbox, περιμένουμε λίγο
-          setTimeout(updateButton, 20);
-        }
-      });
-
-      // Επιπλέον: χειρισμός του ίδιου του checkbox με επιθετικό τρόπο
-      checkbox.onclick = function() {
-        setTimeout(updateButton, 5);
-      };
-
-      // Κάθε φορά που το κουμπί πατιέται, ελέγχουμε ξανά
+      // Το κουμπί «Συνέχεια» είναι πάντα ενεργό – ελέγχουμε το checkbox μόνο στο κλικ
       btnContinue.addEventListener('click', function() {
         if (!checkbox.checked) {
-          updateButton(); // προσπαθούμε να το ενεργοποιήσουμε
-          // Εμφάνιση μηνύματος
-          const toast = document.createElement('div');
-          toast.style.cssText = 'position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:#FF9800;color:white;padding:8px 16px;border-radius:10px;z-index:99999;font-size:13px;text-align:center;max-width:90%;font-weight:600;';
-          toast.textContent = '⚠️ Πρέπει να αποδεχτείτε τους όρους χρήσης';
-          document.body.appendChild(toast);
-          setTimeout(() => toast.remove(), 3000);
+          showToast('⚠️ Πρέπει να αποδεχτείτε τους όρους χρήσης', '#FF9800');
           return;
         }
-        // Αποδοχή
         localStorage.setItem('athos_disclaimer_accepted', 'true');
         overlay.classList.add('hidden');
         setTimeout(startApp, 100);
       });
 
-      // Έξοδος – πάντα ενεργό
+      // Το κουμπί «Έξοδος» λειτουργεί πάντα
       btnExit.addEventListener('click', function() {
         if (confirm('Είστε σίγουρος ότι θέλετε να εξέλθετε;')) {
           document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;">
@@ -1998,16 +1968,10 @@
         }
       });
 
-      // Αρχική ενημέρωση (το checkbox είναι unchecked, οπότε το κουμπί θα είναι disabled)
-      updateButton();
-
-      // Έξτρα: κάθε 500ms για 2 δευτερόλεπτα ελέγχουμε μήπως το checkbox άλλαξε χωρίς event
-      let checkInterval = 0;
-      const intervalId = setInterval(function() {
-        updateButton();
-        checkInterval++;
-        if (checkInterval > 10) clearInterval(intervalId); // σταματάμε μετά από 5 sec
-      }, 500);
+      // Προαιρετικό: visual feedback για το checkbox (αλλά δεν χρειάζεται για την λειτουργία)
+      checkbox.addEventListener('change', function() {
+        // Απλώς για να δείχνει ο χρήστης ότι το τσεκάρισε – δεν αλλάζει το κουμπί
+      });
     })();
 
     function startApp() {
