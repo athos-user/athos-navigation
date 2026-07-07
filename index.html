@@ -195,7 +195,7 @@
     #offlineMessage button { background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
     #offlineMessage button:hover { background: #45a049; transform: scale(1.02); }
 
-    /* ★★★ DISCLAIMER ★★★ – αρχικά κρυφό, εμφανίζεται με .active ★★★ */
+    /* ★★★ DISCLAIMER – ΜΟΝΟ ΜΕ .active, ΠΑΝΤΑ ΠΑΝΩ ΑΠΟ ΤΟΝ ΧΑΡΤΗ ΑΛΛΑ ΜΕ pointer-events: none στο φόντο ★★★ */
     #disclaimerOverlay {
       position: fixed;
       top: 0;
@@ -203,15 +203,20 @@
       right: 0;
       bottom: 0;
       z-index: 99999;
-      background: rgba(0,0,0,0.92);
-      display: none; /* αρχικά κρυφό */
+      background: rgba(0,0,0,0.7); /* ημιδιαφανές φόντο */
+      display: none; /* κρυφό αρχικά */
       align-items: center;
       justify-content: center;
       padding: 16px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(6px);
       animation: fadeIn 0.3s ease-out;
+      pointer-events: none; /* επιτρέπει κλικ στον χάρτη από κάτω */
     }
-    #disclaimerOverlay.active { display: flex; } /* εμφάνιση μετά το load */
+    #disclaimerOverlay.active {
+      display: flex;
+      pointer-events: auto; /* ενεργοποιεί τα κλικ μόνο στο overlay (για να πιάνει το κλικ στο κουτί) */
+    }
+    /* Το κουτί του disclaimer να έχει pointer-events: auto για να δέχεται κλικ */
     #disclaimerOverlay .box {
       background: rgba(13,17,23,0.98);
       border-radius: 16px;
@@ -320,7 +325,7 @@
     <button onclick="location.reload()">🔄 Δοκιμάστε ξανά</button>
   </div>
 
-  <!-- ★★★ DISCLAIMER ★★★ – αρχικά κρυφό, ενεργοποιείται με .active ★★★ -->
+  <!-- ★★★ DISCLAIMER – αρχικά κρυφό, θα ενεργοποιηθεί με .active ★★★ -->
   <div id="disclaimerOverlay">
     <div class="box">
       <h2>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
@@ -1933,23 +1938,19 @@
     // ============================================================
     let pendingResumeAction = null;
 
-    // ★★★ DISCLAIMER ★★★ – Εμφανίζεται ΑΦΟΥ ΦΟΡΤΩΣΕΙ Ο ΧΑΡΤΗΣ ★★★
+    // ★★★ DISCLAIMER – ΕΜΦΑΝΙΖΕΤΑΙ ΜΕ .active ΜΟΝΟ ΑΦΟΥ ΦΟΡΤΩΣΕΙ Ο ΧΑΡΤΗΣ ★★★
     (function() {
       const overlay = document.getElementById('disclaimerOverlay');
       const checkbox = document.getElementById('disclaimerCheck');
       const btnContinue = document.getElementById('disclaimerContinue');
       const btnExit = document.getElementById('disclaimerExit');
 
-      // Το overlay είναι αρχικά κρυφό (display:none). Θα το εμφανίσουμε αφού φορτώσει ο χάρτης.
-      // Οι event listeners τοποθετούνται τώρα, αλλά το overlay δεν φαίνεται ακόμα.
-
-      // Αν ο χρήστης έχει ήδη αποδεχθεί, δεν χρειάζεται να δείξουμε το overlay
+      // Αν έχει ήδη αποδεχθεί, δεν το εμφανίζουμε ποτέ
       if (localStorage.getItem('athos_disclaimer_accepted') === 'true') {
-        // Δεν το εμφανίζουμε ποτέ
         return;
       }
 
-      // Τα κουμπιά είναι πάντα ενεργά – η λογική είναι στο click
+      // Τα κουμπιά πάντα ενεργά – η λογική στο click
       btnContinue.addEventListener('click', function() {
         if (!checkbox.checked) {
           showToast('⚠️ Πρέπει να αποδεχτείτε τους όρους χρήσης', '#FF9800');
@@ -1957,11 +1958,8 @@
         }
         localStorage.setItem('athos_disclaimer_accepted', 'true');
         overlay.classList.remove('active'); // κρύβουμε
-        // Ξεκινάμε την εφαρμογή – αλλά η startApp θα κληθεί μόνο άπαξ, οπότε εδώ απλά συνεχίζουμε
-        // Η startApp έχει ήδη κληθεί κατά το load, οπότε δεν χρειάζεται να την καλέσουμε ξανά.
-        // Απλά επιτρέπουμε την αλληλεπίδραση.
-        // Αν θέλουμε να φορτώσουμε κάτι που μπλοκαριζόταν, μπορούμε να το κάνουμε εδώ.
-        // Στη συγκεκριμένη περίπτωση, η εφαρμογή είναι ήδη λειτουργική.
+        // Μπορούμε να το αφαιρέσουμε κιόλας
+        overlay.style.display = 'none';
       });
 
       btnExit.addEventListener('click', function() {
@@ -1974,9 +1972,12 @@
         }
       });
 
-      // Αποθηκεύουμε την αναφορά στο overlay και σε μια συνάρτηση για να το εμφανίσουμε αργότερα
+      // Αποθήκευση συνάρτησης για εμφάνιση
       window._showDisclaimer = function() {
         if (localStorage.getItem('athos_disclaimer_accepted') !== 'true') {
+          overlay.style.display = 'flex';
+          // Σε περίπτωση που θέλουμε να φαίνεται πάντα
+          // Η κλάση .active θα προσθέσει pointer-events: auto στο overlay
           overlay.classList.add('active');
         }
       };
@@ -1984,31 +1985,27 @@
 
     // ★★★ START APP ★★★
     function startApp() {
-      // Φορτώνουμε τις αγαπημένες
       loadFavorites();
-
-      // Αρχικοποιούμε τον χάρτη (με υποστήριξη offline)
       initMapWithOfflineSupport();
 
-      // Όταν φορτώσει ο χάρτης, εμφανίζουμε το disclaimer (αν δεν έχει γίνει αποδοχή)
+      // Εμφάνιση του disclaimer όταν φορτώσει ο χάρτης
       const checkMapLoaded = setInterval(() => {
         if (state.map && state.map.loaded()) {
           clearInterval(checkMapLoaded);
-          // Εμφάνιση του disclaimer
           if (typeof window._showDisclaimer === 'function') {
             window._showDisclaimer();
           }
         }
       }, 500);
 
-      // Εναλλακτικά, αν ο χάρτης δεν φορτώσει ποτέ, εμφάνιση μετά από 5 δευτερόλεπτα
+      // Εφεδρικό: μετά από 5 δευτερόλεπτα
       setTimeout(() => {
         if (typeof window._showDisclaimer === 'function') {
           window._showDisclaimer();
         }
       }, 5000);
 
-      // ★★★ EVENT LISTENERS (όλα τα υπόλοιπα) ★★★
+      // ★★★ EVENT LISTENERS ★★★
       document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
       document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
       document.getElementById('centerBtnHeader').style.display = 'none';
@@ -2128,16 +2125,15 @@
 
       updateOfflineFavCount();
 
-      // Έλεγχος για αποθηκευμένη διαδρομή (resume) – το κάνουμε μετά από λίγο
+      // Έλεγχος για αποθηκευμένη διαδρομή
       setTimeout(() => {
         const savedRoute = localStorage.getItem('athos_last_route');
         if (savedRoute) {
           try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
         }
-      }, 1500);
-    } // end startApp
+      }, 2000);
+    }
 
-    // Ξεκινάμε την εφαρμογή όταν το DOM είναι έτοιμο
     document.addEventListener('DOMContentLoaded', startApp);
   </script>
 </body>
