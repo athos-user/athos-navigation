@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Athos Maps - Offline Πλοήγηση</title>
+  <title>Athos Maps - Offline Πλοήγηση (Raster)</title>
   <meta name="theme-color" content="#2196F3" />
   <link rel="manifest" href="/athos-navigation/manifest.json" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <style>
-    /* ★★★ STYLES (identical to previous) ★★★ */
+    /* ★★★ STYLES (identical to previous – kept for brevity, but we keep the same UI) ★★★ */
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',sans-serif; background:#0d1117; overflow:hidden; height:100%; touch-action:pan-x pan-y; }
     #map-wrapper { position:fixed; top:50%; left:50%; width:200vw; height:200vh; transform:translate(-50%,-50%); z-index:1; transform-origin:center center; transition:transform 0.05s ease-out; will-change:transform; pointer-events:none; }
@@ -349,10 +349,10 @@
   <div id="helpModal">
     <div class="help-content">
       <div class="help-title"><h2>❓ Οδηγός Χρήσης &amp; Όροι</h2><button id="closeHelpBtn">✕</button></div>
-      <div class="help-intro">🌐 <strong>OpenFreeMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές.</div>
+      <div class="help-intro">🌐 <strong>OpenFreeMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές (Raster χάρτης).</div>
       <div class="help-section"><div class="help-section-title">📍 Πλοήγηση</div><div class="help-item"><span class="help-icon">📍</span><div><div class="help-label">GPS</div><div class="help-desc">Πατήστε <strong>📍</strong> για να ενεργοποιήσετε τον δέκτη GPS. Λειτουργεί και offline!</div></div></div><div class="help-item"><span class="help-icon">🧭</span><div><div class="help-label">Follow</div><div class="help-desc">Πατήστε <strong>🧭</strong> για να ακολουθεί ο χάρτης την κίνησή σας.</div></div></div><div class="help-item"><span class="help-icon">🎯</span><div><div class="help-label">Κέντρο στη διαδρομή</div><div class="help-desc">Πατήστε <strong>🎯</strong> για να εστιάσετε σε ολόκληρη τη διαδρομή.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">⭐ Αγαπημένες &amp; Offline</div><div class="help-item"><span class="help-icon">⭐</span><div><div class="help-label">Online Αγαπημένες</div><div class="help-desc">Πατήστε <strong>⭐</strong> για να δείτε τις online αγαπημένες σας. Χρειάζεται internet.</div></div></div><div class="help-item"><span class="help-icon">💾</span><div><div class="help-label">Offline Αγαπημένες</div><div class="help-desc">Πατήστε <strong>💾</strong> για να δείτε/κατεβάσετε έως 10 διαδρομές για offline χρήση.</div></div></div><div class="help-item"><span class="help-icon">📥</span><div><div class="help-label">Λήψη Offline</div><div class="help-desc">Από το παράθυρο αγαπημένων, πατήστε <strong>"Λήψη Offline"</strong> για να κατεβάσετε διαδρομές.</div></div></div></div>
-      <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά. <br> <span style="color:#FF9800;">Long press (παρατεταμένο πάτημα) για επαναφορά όλων των offline δεδομένων.</span></div></div></div></div>
+      <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης (Raster)</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά (raster tiles). <br> <span style="color:#FF9800;">Long press (παρατεταμένο πάτημα) για επαναφορά όλων των offline δεδομένων.</span></div></div></div></div>
       <div class="help-section disclaimer"><div class="help-section-title">⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</div>
         <div class="help-item"><span class="help-icon">⚖️</span><div><div class="help-desc"><span class="section-label">Αποποίηση:</span> Το παρόν λογισμικό αποτελεί <strong>αποκλειστικά βοηθητικό εργαλείο</strong> προγραμματισμού διαδρομών. Σε καμία περίπτωση δεν υποκαθιστά την προσωπική κρίση, την απαιτούμενη προσοχή ή την ατομική ευθύνη του χρήστη. Ο δημιουργός της εφαρμογής <strong>δεν φέρει καμία αστική ή ποινική ευθύνη</strong> για τυχόν ατυχήματα, απώλειες ή ζημίες κατά τη διάρκεια των διαδρομών.</div></div></div>
         <div class="help-item"><span class="help-icon">⏱️</span><div><div class="help-desc"><span class="section-label orange">Εκτίμηση Χρόνου &amp; Φυσική Κατάσταση:</span> Οι αναγραφόμενοι χρόνοι πλοήγησης είναι <strong>ενδεικτικοί</strong> και βασίζονται σε μέσους όρους. Η πραγματική διάρκεια της διαδρομής εξαρτάται άμεσα από τη <strong>φυσική κατάσταση</strong> του χρήστη και τις <strong>επικρατούσες καιρικές συνθήκες</strong>.</div></div></div>
@@ -363,18 +363,18 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v5.4 · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v5.5 (Raster) · 140+ Offline Routes</span></div>
     </div>
   </div>
 
   <script>
     // ============================================================
-    // ★★★ OFFLINE MAP MANAGER (enhanced with validation) ★★★
+    // ★★★ OFFLINE MAP MANAGER (simplified – only tiles) ★★★
     // ============================================================
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 7; // bumped
+        this.dbVersion = 8; // bumped
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -416,7 +416,10 @@
           const store = tx.objectStore(this.storeName);
           const request = store.put({ id: key, data: data });
           request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
+          request.onerror = (err) => {
+            console.error('Error saving tile:', err);
+            reject(err);
+          };
         });
       }
 
@@ -427,17 +430,6 @@
           const store = tx.objectStore(this.storeName);
           const request = store.get(key);
           request.onsuccess = () => resolve(request.result ? request.result.data : null);
-          request.onerror = () => reject(request.error);
-        });
-      }
-
-      async deleteTile(key) {
-        const db = await this.initDB();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction([this.storeName], 'readwrite');
-          const store = tx.objectStore(this.storeName);
-          const request = store.delete(key);
-          request.onsuccess = () => resolve();
           request.onerror = () => reject(request.error);
         });
       }
@@ -464,7 +456,7 @@
         });
       }
 
-      // --- Metadata ---
+      // --- Metadata (only for map info and style – but style not used anymore) ---
       async saveMetadata(metadata) {
         const db = await this.initDB();
         return new Promise((resolve, reject) => {
@@ -487,33 +479,7 @@
         });
       }
 
-      // --- Style with validation ---
-      async saveStyle(styleData) {
-        // Store as JSON string to avoid corruption
-        await this.saveMetadata({ key: 'mapStyle', value: JSON.stringify(styleData) });
-      }
-
-      async getStyle() {
-        const raw = await this.getMetadata('mapStyle');
-        if (!raw) return null;
-        try {
-          const obj = JSON.parse(raw);
-          // Basic validation: must have sources and layers
-          if (obj && typeof obj === 'object' && obj.sources && obj.layers) {
-            return obj;
-          } else {
-            console.warn('Invalid style object, discarding');
-            await this.saveMetadata({ key: 'mapStyle', value: null });
-            return null;
-          }
-        } catch (e) {
-          console.warn('Failed to parse style, discarding', e);
-          await this.saveMetadata({ key: 'mapStyle', value: null });
-          return null;
-        }
-      }
-
-      // --- Offline favorites ---
+      // --- Offline favorites (unchanged) ---
       async saveOfflineFavorite(routeData, gpxData) {
         const db = await this.initDB();
         return new Promise((resolve, reject) => {
@@ -590,18 +556,21 @@
         }
       }
 
-      // --- Download tiles ---
+      // --- Download tiles (same as before) ---
       async downloadArea(bbox, minZoom, maxZoom, onProgress) {
         if (this.isDownloading) return;
         this.isDownloading = true;
         try {
           const tiles = this.getTilesForBbox(bbox, minZoom, maxZoom);
           const total = tiles.length;
-          let done = 0, downloaded = 0, failed = 0;
+          let done = 0,
+            downloaded = 0,
+            failed = 0;
           for (const { z, x, y } of tiles) {
             const key = `${z}/${x}/${y}`;
             const existing = await this.getTile(key);
-            if (existing) { done++; if (onProgress) onProgress({ done, total, percent: Math.round((done/total)*100), downloaded, failed }); continue; }
+            if (existing) { done++; if (onProgress) onProgress({ done, total, percent: Math.round((done / total) * 100),
+                downloaded, failed }); continue; }
             try {
               const url = `https://tiles.openfreemap.org/tiles/${z}/${x}/${y}.png`;
               const response = await fetch(url);
@@ -613,13 +582,14 @@
               } else { failed++; }
             } catch (e) { failed++; }
             done++;
-            if (onProgress) onProgress({ done, total, percent: Math.round((done/total)*100), downloaded, failed });
+            if (onProgress) onProgress({ done, total, percent: Math.round((done / total) * 100), downloaded, failed });
           }
           let success = false;
           if (downloaded > 0) {
             await this.saveMetadata({
               key: 'mapInfo',
-              value: { downloaded: true, bbox, minZoom, maxZoom, tileCount: downloaded, downloadDate: new Date().toISOString(), version: '1.0.0' }
+              value: { downloaded: true, bbox, minZoom, maxZoom, tileCount: downloaded, downloadDate: new Date()
+                  .toISOString(), version: '1.0.0' }
             });
             success = true;
           } else {
@@ -630,7 +600,8 @@
               if (!info || info.downloaded !== true) {
                 await this.saveMetadata({
                   key: 'mapInfo',
-                  value: { downloaded: true, bbox, minZoom, maxZoom, tileCount: existingCount, downloadDate: new Date().toISOString(), version: '1.0.0' }
+                  value: { downloaded: true, bbox, minZoom, maxZoom, tileCount: existingCount, downloadDate: new Date()
+                      .toISOString(), version: '1.0.0' }
                 });
               }
             }
@@ -674,7 +645,7 @@
       async resetAllData() {
         await this.clearTiles();
         await this.saveMetadata({ key: 'mapInfo', value: { downloaded: false } });
-        await this.saveMetadata({ key: 'mapStyle', value: null });
+        // No style to delete
       }
     }
 
@@ -749,13 +720,13 @@
       }
 
       showDownloadPrompt(force = false) {
-        const modal = this.createModal('📥 Λήψη Offline Χάρτη');
+        const modal = this.createModal('📥 Λήψη Offline Χάρτη (Raster)');
         const content = modal._content;
         const extraText = force ? '<div style="color:#FF9800;font-weight:700;margin:6px 0;">⚠️ Αναγκαστική λήψη – τα παλιά δεδομένα θα αντικατασταθούν</div>' : '';
         content.innerHTML += `
           <div style="text-align:center;padding:10px 0;">
             <div style="font-size:48px;margin-bottom:10px;">🗺️</div>
-            <div style="font-size:18px;font-weight:700;color:#4CAF50;margin-bottom:6px;">Λήψη Offline Χάρτη</div>
+            <div style="font-size:18px;font-weight:700;color:#4CAF50;margin-bottom:6px;">Λήψη Offline Χάρτη (Raster)</div>
             <div style="font-size:14px;color:#aaa;margin-bottom:8px;">Πλοηγηθείτε χωρίς σύνδεση!</div>
             ${extraText}
             <div style="background:rgba(255,255,255,0.05);padding:8px;border-radius:6px;margin:8px 0;">
@@ -784,7 +755,8 @@
         let isDownloading = false;
         const self = this;
         const bbox = [24.05, 39.95, 24.65, 40.40];
-        const minZoom = 8, maxZoom = 14;
+        const minZoom = 8,
+          maxZoom = 14;
 
         document.getElementById('startDownloadBtn').addEventListener('click', async function() {
           if (isDownloading) return;
@@ -879,7 +851,8 @@
     // ============================================================
     // ★★★ PROTOCOL OFFLINE ★★★
     // ============================================================
-    const GRAY_PIXEL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QzwAIQgMHAVSOGAAAAABJRU5ErkJggg==';
+    const GRAY_PIXEL =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QzwAIQgMHAVSOGAAAAABJRU5ErkJggg==';
     let offlineManager = new OfflineMapManager();
     let offlineUI = new OfflineMapUI(offlineManager);
 
@@ -897,7 +870,8 @@
           if (response.ok) {
             const blob = await response.blob();
             const arrayBuffer = await blob.arrayBuffer();
-            offlineManager.saveTile(key, arrayBuffer).catch(() => {});
+            // Save asynchronously, don't await to avoid blocking map rendering
+            offlineManager.saveTile(key, arrayBuffer).catch((err) => console.warn('Save tile error:', err));
             return { data: arrayBuffer };
           }
         } catch (e) {}
@@ -916,158 +890,310 @@
     // ★★★ ROUTES 140+ (unchanged) ★★★
     // ============================================================
     const ROUTES = [
-      {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx"},
-      {"name":"Αρσανάς Αγ. Άννας → Αγ. Άννα","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Agia%20%20Anna.gpx"},
-      {"name":"Αρσανάς Καρακάλλου → Αρσανάς Μορφονούς","dist":5.7,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakallou%20Arsanas%20Morfonous.gpx"},
-      {"name":"Αρσανάς Καρακάλλου → Ιβήρων","dist":5.1,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakalou%20Iviron.gpx"},
-      {"name":"Αρσανάς Καρακάλλου → Καρακάλλου 1","dist":1.3,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakalou%201.gpx"},
-      {"name":"Αρσανάς Καρακάλλου → Καρακάλλου 2","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakalou%202.gpx"},
-      {"name":"Αρσανάς Καυσοκαλύβια → Καυσοκαλύβια","dist":0.8,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Kaysokalivia%20Kyriako.gpx"},
-      {"name":"Αρσανάς Κωνσταμονίτου → Κωνσταμονίτου","dist":2.5,"time":"0:55","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Konstamonitou.gpx"},
-      {"name":"Αρσανάς Μορφονούς → Λακκοσκήτη","dist":4.4,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Morfonou%20Lakoskiti.gpx"},
-      {"name":"Αρσανάς Μορφονούς → Μεγίστης Λαύρας","dist":10,"time":"4:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Morfonous%20Megistis%20Lavras.gpx"},
-      {"name":"Αρσανάς Παύλου → Παύλου","dist":1.2,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Paulou.gpx"},
-      {"name":"Αρσανάς Φιλοθέου → Φιλοθέου","dist":2.6,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/ArsanasFylotheou.gpx"},
-      {"name":"Αρσανάς Χιλανδαρίου → Εσφιγμένου","dist":2.8,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Chilandariou%20Esfigmenou.gpx"},
-      {"name":"Αρσανάς Χιλανδαρίου → Χιλανδαρίου","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/ArsanasXilandari.gpx"},
-      {"name":"Αρσανας Σιμωνόπετρας → Σιμωνόπετρα","dist":1.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Simonopetra.gpx"},
-      {"name":"Άγ. Βασίλειος → Ερημητήριο Αγ. Ιωσήφ","dist":1,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Erimitirio%20Ag%20Iosif.gpx"},
-      {"name":"Άγ. Βασίλειος → Κατουνάκια-Καρούλια","dist":3,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgBasileios%20Arsanas%20Karoulia.gpx"},
-      {"name":"Άγ. Βασίλειος → Μικρή Αγ. Άννα","dist":2.3,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Mikri%20Ag%20Anna.gpx"},
-      {"name":"Άγ. Βασίλειος → Πρ. Ηλία Εκκλησάκι","dist":1,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Profitis%20Hlias.gpx"},
-      {"name":"Άγ. Βασίλειος → Σταυρό","dist":1,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Stavros.gpx"},
-      {"name":"Άγ. Νείλος → Αρσανά Αγ. Νείλου","dist":1.5,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilosArsanas.gpx"},
-      {"name":"Άγ. Νείλος → Καυσοκαλύβια","dist":2.5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilos%20Kafsokalivia.gpx"},
-      {"name":"Άγ. Νείλος → Μεγίστης Λαύρας","dist":6,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilos%20Megistis%20Lavras.gpx"},
-      {"name":"Άγ. Νείλος → Προδρόμου Ρουμανική","dist":4,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilos%20Roumaniki.gpx"},
-      {"name":"Άγ. Νείλος → Σπήλαιο Αγ. Νείλου","dist":0.5,"time":"0:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilosSpilaio.gpx"},
-      {"name":"Βατοπαιδίου → Εσφιγμένου","dist":10,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Batopaidiou%2BEsfigmenou.gpx"},
-      {"name":"Βατοπαιδίου → Ζωγράφου","dist":6.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Batopaidiou%20Zografou.gpx"},
-      {"name":"Βατοπαιδίου → Καρυές","dist":10,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Bato%20Karyes.gpx"},
-      {"name":"Βατοπαιδίου → Σκήτη Αγ. Δημητρίου","dist":3,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/BatopedioyAgDimitriow.gpx"},
-      {"name":"Γιοβάντσα → Χιλανδαρίου","dist":10,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Giovantsa%2BChilandar.gpx"},
-      {"name":"Γρηγορίου → Διονυσίου","dist":3,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Grigoriou%20Dionisiou.gpx"},
-      {"name":"Γρηγορίου → Σιμωνόπετρα","dist":2.7,"time":"1:05","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Grigoriou%20Simonopetra.gpx"},
-      {"name":"Δάφνη → Καρυές","dist":8.2,"time":"3:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Karies.gpx"},
-      {"name":"Δάφνη → Ξηροποτάμου","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Ksiropotamou.gpx"},
-      {"name":"Δάφνη → Παντελεήμονος Ρωσικό","dist":5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Panteleimonos.gpx"},
-      {"name":"Δάφνη → Σιμωνόπετρα","dist":8,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Simonopetra.gpx"},
-      {"name":"Διονυσίου → Γρηγορίου","dist":3,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/DionysiouGrigoriou.gpx"},
-      {"name":"Διονυσίου → Παύλου","dist":2.8,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/DionysiouPaulou.gpx"},
-      {"name":"Δοχειαρίου → Αρσανάς Ζωγράφου","dist":3,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Arsanas%20Zografou.gpx"},
-      {"name":"Δοχειαρίου → Κωνσταμονίτου 1","dist":5,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Konstamonitou%201.gpx"},
-      {"name":"Δοχειαρίου → Κωνσταμονίτου 2","dist":6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Konstamonitou%202.gpx"},
-      {"name":"Δοχειαρίου → Ξενοφώντος","dist":1.3,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Xenofontos.gpx"},
-      {"name":"Εσφιγμένου → Βατοπαιδίου","dist":10,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou%20Batopaidiou.gpx"},
-      {"name":"Εσφιγμένου → Χιλανδαρίου","dist":3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou%20Chilandariou.gpx"},
-      {"name":"Ζωγράφου → Βατοπαιδίου","dist":6.5,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Batopaidiou.gpx"},
-      {"name":"Ζωγράφου → Εσφιγμένου","dist":8,"time":"2:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Esfigmenou.gpx"},
-      {"name":"Ζωγράφου → Κάθισμα Αγ. Γεωργίου","dist":0.9,"time":"0:12","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Kathisma%20Ag%20Georgiou.gpx"},
-      {"name":"Ζωγράφου → Κωνσταμονίτου","dist":4,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Konstamonitou.gpx"},
-      {"name":"Ζωγράφου → Σπήλαιο Οσίου Κοσμά","dist":2,"time":"0:35","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Spilaio.gpx"},
-      {"name":"Ζωγράφου → Χιλανδαρίου","dist":7.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Chilandar.gpx"},
-      {"name":"Ιβήρων → Καλιάγρα","dist":1.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/IvironKaliarga.gpx"},
-      {"name":"Ιβήρων → Καλύβα Αναστάσεως","dist":3.8,"time":"1:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/ivironKaliviAnastaseos.gpx"},
-      {"name":"Ιβήρων → Καρυές","dist":5,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%2BKaryes.gpx"},
-      {"name":"Ιβήρων → Κελί Τιμίου Σταυρού","dist":4.3,"time":"1:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/IvironPapaTyxon.gpx"},
-      {"name":"Ιβήρων → Μυλοπόταμος","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/viron%20Mylopotamos.gpx"},
-      {"name":"Ιβήρων → Σκήτη Προδρόμου Ιβηρική","dist":1.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ibiron%20Prodromou.gpx"},
-      {"name":"Ιβήρων → Σταυρονικήτα 1","dist":3.2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%2BStavronikita%2B1.gpx"},
-      {"name":"Ιβήρων → Σταυρονικήτα 2","dist":5.8,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Ivirov%202.gpx"},
-      {"name":"Ιβήρων → Φιλοθέου 1","dist":5.5,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%20Filotheou%201.gpx"},
-      {"name":"Ιβήρων → Φιλοθέου 2","dist":6,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%2BFilotheou%2B2.gpx"},
-      {"name":"Καρακάλλου → Προβάτα","dist":2.3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/KarakalouProvata.gpx"},
-      {"name":"Καρακάλλου → Φιλοθέου","dist":2.2,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Filotheou%20Karakalou%201.gpx"},
-      {"name":"Καρούλια → Αγ. Βασίλειο","dist":3,"time":"2:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/AgBasileios%20Arsanas%20Karoulia.gpx"},
-      {"name":"Καρούλια → Κατουνάκια-Σταυρός","dist":3,"time":"2:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karoulia%20Stauros.gpx"},
-      {"name":"Καρούλια → Μικρή Αγ. Άννα","dist":2,"time":"1:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Mikri%20Agianna.gpx"},
-      {"name":"Καρυές - Άξιον Εστί","dist":1.5,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Aksion_Esti.gpx"},
-      {"name":"Καρυές → Βατοπαιδίου","dist":10,"time":"3:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Batopediou.gpx"},
-      {"name":"Καρυές → Ιβήρων","dist":5,"time":"1:35","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Iviron.gpx"},
-      {"name":"Καρυές → Καλύβα Αναστάσεως","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Pater%20Efthimios.gpx"},
-      {"name":"Καρυές → Κελί Τιμίου Σταυρού","dist":3.5,"time":"0:55","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Papa%20Tychon.gpx"},
-      {"name":"Καρυές → Μαρουδά","dist":2,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Marouda.gpx"},
-      {"name":"Καρυές → Μπουραζέρη","dist":1.3,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Mpourazeri.gpx"},
-      {"name":"Καρυές → Παναγούδα","dist":2,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karies%20Panagouda.gpx"},
-      {"name":"Καρυές → Σιμωνόπετρα","dist":12,"time":"4:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Simonopetra.gpx"},
-      {"name":"Καρυές → Σκήτη Παντελεήμονος","dist":1.6,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Skiti%20Panteleimonos.gpx"},
-      {"name":"Καρυές → Σκήτη Πρ. Ηλία","dist":5,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Profiti%20Hlia.gpx"},
-      {"name":"Καρυές → Σταυρονικήτα","dist":4.3,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Stavronikita.gpx"},
-      {"name":"Καρυές → Φιλοθέου","dist":9.8,"time":"3:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Fylotheou.gpx"},
-      {"name":"Κατουνάκια → Αγ. Βασίλειο","dist":2,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20AgBasileios.gpx"},
-      {"name":"Κατουνάκια → Καρούλια Αρσανάς","dist":0.9,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Arsanas.gpx"},
-      {"name":"Κατουνάκια → Μικρή Αγ. Άννα","dist":1,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Mikri%20Agianna.gpx"},
-      {"name":"Κατουνάκια → Σταυρό","dist":2,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Stavros.gpx"},
-      {"name":"Καυσοκαλύβια → Αγ. Νείλος","dist":2.5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Kausokalivia%20Ag%20Neilos.gpx"},
-      {"name":"Καυσοκαλύβια → Κερασιά","dist":3.5,"time":"2:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Kausokalivia%20Kerasia.gpx"},
-      {"name":"Καυσοκαλύβια → Σπήλαιο Αγ. Νήφωνος","dist":2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Kausokalivia%20Arxontariki%20Spilaio.gpx"},
-      {"name":"Κερασιά → Καυσοκαλύβια","dist":3.5,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Kerasia%20Kafsokalyvia.gpx"},
-      {"name":"Κερασιά → Σταυρός","dist":1,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Kerasia%20Stavros.gpx"},
-      {"name":"Κουτλουμουσίου → Σκήτη Παντελεήμονος","dist":1.3,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/koutloumousiou%20Skiti.gpx"},
-      {"name":"Κωνσταμονίτου → Δοχειαρίου","dist":6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou%20Doxeiariou.gpx"},
-      {"name":"Κωνσταμονίτου → Εκκλησάκι Ανάληψης","dist":1.5,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou%20Naos%20Analipsis.gpx"},
-      {"name":"Κωνσταμονίτου → Ζωγράφου","dist":4,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou%20Zografou.gpx"},
-      {"name":"Μεγίστης Λαύρας → Αγ. Νείλος","dist":6,"time":"2:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Agios%20Neilos.gpx"},
-      {"name":"Μεγίστης Λαύρας → Αρσανάς","dist":1.6,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/BatopedioyAgDimitriow.gpx"},
-      {"name":"Μεγίστης Λαύρας → Αρσανάς Μορφονούς","dist":10,"time":"4:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Lavras%20Morfonou.gpx"},
-      {"name":"Μεγίστης Λαύρας → Σκήτη Αγ. Άννας","dist":12.5,"time":"5:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Ag.%20Anna.gpx"},
-      {"name":"Μεγίστης Λαύρας → Σκήτη Τιμίου Προδρόμου Ρουμανική 1","dist":4.5,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Roumaniki%201.gpx"},
-      {"name":"Μεγίστης Λαύρας → Σκήτη Τιμίου Προδρόμου Ρουμανική 2","dist":4.5,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Roumaniki%202%20(2).gpx"},
-      {"name":"Μικρή Αγ. Άννα → Αγ. Άννα","dist":1.5,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Mikri%20Agianna%20Agianna.gpx"},
-      {"name":"Μικρή Αγ. Άννα → Καρούλια Αρσανά","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Mikri%20Ag%20Anna%20Arsanas%20Karoulia.gpx"},
-      {"name":"Μικρή Αγ. Άννα → Κατουνάκια","dist":1,"time":"0:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Mikri%20Agianna.gpx"},
-      {"name":"Νέα Σκήτη → Παύλου κάτω","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Nea%20Skiti%20Ag%20Payloy%20kato%20diadromi.gpx"},
-      {"name":"Νέα Σκήτη → Σκήτη Αγ. Άννας","dist":2,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Nea%20Skiti%20Agia%20Anna.gpx"},
-      {"name":"Ξενοφώντος → Δοχειαρίου","dist":1.3,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos%20Doxeiariou.gpx"},
-      {"name":"Ξενοφώντος → Παντελεήμονος Ρωσικό","dist":4,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos%20Panteleimonos.gpx"},
-      {"name":"Ξενοφώντος → Σκήτη Ευαγγελισμού","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos%20Skiti%20Evagelismou.gpx"},
-      {"name":"Ξηροποτάμου → Δάφνη","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ksyropotamou%20Dafni.gpx"},
-      {"name":"Ξηροποτάμου → Παντελεήμονος Ρωσικό","dist":2.8,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/KsyropotamouRosiko.gpx"},
-      {"name":"Ουρανούπολη → Σύνορα Αγίου Όρους","dist":2.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ouranoupoli%20Sinora%20Agiou%20Orous.gpx"},
-      {"name":"Παντελεήμονος Ρωσικό → Δάφνη","dist":5,"time":"1:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos%20Dafni.gpx"},
-      {"name":"Παντελεήμονος Ρωσικό → Ξενοφώντος","dist":4,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos%20Xenofontos.gpx"},
-      {"name":"Παντοκράτορος → Βατοπαιδίου 1","dist":10,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Batopaidiou%201.gpx"},
-      {"name":"Παντοκράτορος → Βατοπαιδίου 2","dist":10.5,"time":"4:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/PantokratorosBatopaidiou2.gpx"},
-      {"name":"Παντοκράτορος → Βατοπαιδίου 3","dist":9.5,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Batopaidiou%203.gpx"},
-      {"name":"Παντοκράτορος → Καλύβα Αναστάσεως","dist":3.5,"time":"1:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/pantokratorosKalybaAnastaseos.gpx"},
-      {"name":"Παντοκράτορος → Καρυές","dist":5.6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Karyes.gpx"},
-      {"name":"Παντοκράτορος → Σκήτη Προφήτη Ηλία","dist":2,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Skiti%20Pr%20Hlia.gpx"},
-      {"name":"Παντοκράτορος → Σταυρονικήτα","dist":2.9,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Stavronikita.gpx"},
-      {"name":"Παύλου → Διονυσίου","dist":2.8,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavlou%20Dionisiou.gpx"},
-      {"name":"Παύλου → Νέα Σκήτη κάτω","dist":2.4,"time":"0:35","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavlou%20Nea%20Skiti%20Kato%20diadromi.gpx"},
-      {"name":"Παύλου → Σκήτη Αγ. Άννας πάνω","dist":3.5,"time":"1:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavloy%20Skiti%20Ag%20Annas%20Pano%20diadromi.gpx"},
-      {"name":"Παύλου → Τάφος Οσίου Ιωσήφ Ησυχαστή","dist":2,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavlou%20Tafo%20Osiou%20Josef.gpx"},
-      {"name":"Προδρόμου Ρουμανική → Αρσανά Ρουμανική","dist":2,"time":"0:20","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20Arsanas.gpx"},
-      {"name":"Προδρόμου Ρουμανική → Βίγλα Κελί Αγ. Μηνά","dist":1,"time":"0:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Roymaniki%20Vigla%20Ag%20Minas.gpx"},
-      {"name":"Προδρόμου Ρουμανική → Μεγίστης Λαύρας 2","dist":4.3,"time":"0:55","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20%20Megistis%202.gpx"},
-      {"name":"Προδρόμου Ρουμανική → Μεγίστης Λαύρας 3","dist":4.5,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20Ag.%20Triada%20Megistis.gpx"},
-      {"name":"Προδρόμου Ρουμανική → Σπήλαιο Αγ. Αθανασίου","dist":0.8,"time":"0:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20Spilaio%20Ag%20Athanasiou.gpx"},
-      {"name":"Σιμωνόπετρα → Γρηγορίου","dist":2.7,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Simonopetra%20Grigoriou.gpx"},
-      {"name":"Σιμωνόπετρα → Δάφνη","dist":8,"time":"3:10","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Simonopetra%20Dafni.gpx"},
-      {"name":"Σιμωνόπετρα → Καρυές","dist":12,"time":"4:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Simonopetra%20Karyes.gpx"},
-      {"name":"Σκήτη Αγ. Άννας → Ερημητήριο Οσίου Ιωσήφ","dist":1.3,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Agianna%20Erimitirio%20Josef.gpx"},
-      {"name":"Σκήτη Αγ. Άννας → Κορυφή Άθωνα","dist":7,"time":"3:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Anna%20Korifi%20Athona.gpx"},
-      {"name":"Σκήτη Αγ. Άννας → Μικρή Αγ. Άννα","dist":1.5,"time":"0:25","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia%20Anna%20Mikri%20Ag%20Anna.gpx"},
-      {"name":"Σκήτη Αγ. Άννας → Νέα Σκήτη","dist":2.5,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia%20Anna%20Nea%20Skiti.gpx"},
-      {"name":"Σκήτη Αγ. Άννας → Παύλου κάτω","dist":3.5,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Anna%20Paulou%20Kato%20diadromi.gpx"},
-      {"name":"Σκήτη Αγ. Άννας → Παύλου πάνω","dist":3.5,"time":"1:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Anna%20Paulou%20pano%20diadromi.gpx"},
-      {"name":"Σκήτη Προφήτη Ηλία → Βογορόδιτσα","dist":3,"time":"1:15","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti%20Pr%20Hlia%20Bogorontitsa.gpx"},
-      {"name":"Σκήτη Προφήτη Ηλία → Καλύβα Αναστάσεως","dist":2.5,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti%20Pr%20Hlia%20Kaliva%20Anastaseos%20Pater%20Efthimios.gpx"},
-      {"name":"Σκήτη Προφήτη Ηλία → Παντοκράτορος","dist":2,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti%20Pr%20Hlia%20Pantokratoros.gpx"},
-      {"name":"Σταυρονικήτα → Ιβήρων 1","dist":3.2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Ivirov%201.gpx"},
-      {"name":"Σταυρονικήτα → Ιβήρων 2","dist":5.8,"time":"1:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Ivirov%202.gpx"},
-      {"name":"Σταυρονικήτα → Καλύβα Αναστάσεως","dist":3.2,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Kalivi%20Anastaseos.gpx"},
-      {"name":"Σταυρονικήτα → Καρυές","dist":4.3,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Karyes.gpx"},
-      {"name":"Σταυρονικήτα → Κελί Τιμίου Σταυρού","dist":3,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Papa%20Tychon.gpx"},
-      {"name":"Σταυρός → Καρούλια","dist":3,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavros%20Karoulia.gpx"},
-      {"name":"Φιλοθέου → Ασκητήριο Αγ. Διονυσίου","dist":1.5,"time":"0:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Fylotheou%20Askitirio%20Ag%20Dionysiou.gpx"},
-      {"name":"Φιλοθέου → Ιβήρων 1","dist":5.5,"time":"1:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Fylotheoy%20Iviron%201.gpx"},
-      {"name":"Φιλοθέου → Ιβήρων 2","dist":6,"time":"2:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/FylotheoyIviron2.gpx"},
-      {"name":"Φιλοθέου → Καρακάλλου 1","dist":2.2,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Filotheou%20Karakalou%201.gpx"},
-      {"name":"Φιλοθέου → Καρακάλλου 2","dist":3,"time":"0:50","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Filotheou%20Karakalou%202.gpx"},
-      {"name":"Φιλοθέου → Κελί Αγ. Ονουφρίου","dist":2,"time":"0:45","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Fylotheou%20Keli%20Onoufriou.gpx"},
-      {"name":"Χιλανδαρίου → Εσφιγμένου","dist":3,"time":"0:40","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandar%2BEsfigmenou%20(1).gpx"},
-      {"name":"Χιλανδαρίου → Ζωγράφου","dist":7.5,"time":"2:30","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandar%2BZografou.gpx"}
+      { "name": "Αρσανάς → Ζωγράφου", "dist": 3, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx" },
+      { "name": "Αρσανάς Αγ. Άννας → Αγ. Άννα", "dist": 2, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Agia%20%20Anna.gpx" },
+      { "name": "Αρσανάς Καρακάλλου → Αρσανάς Μορφονούς", "dist": 5.7, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakallou%20Arsanas%20Morfonous.gpx" },
+      { "name": "Αρσανάς Καρακάλλου → Ιβήρων", "dist": 5.1, "time": "1:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakalou%20Iviron.gpx" },
+      { "name": "Αρσανάς Καρακάλλου → Καρακάλλου 1", "dist": 1.3, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakalou%201.gpx" },
+      { "name": "Αρσανάς Καρακάλλου → Καρακάλλου 2", "dist": 3, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Karakalou%202.gpx" },
+      { "name": "Αρσανάς Καυσοκαλύβια → Καυσοκαλύβια", "dist": 0.8, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Kaysokalivia%20Kyriako.gpx" },
+      { "name": "Αρσανάς Κωνσταμονίτου → Κωνσταμονίτου", "dist": 2.5, "time": "0:55",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Konstamonitou.gpx" },
+      { "name": "Αρσανάς Μορφονούς → Λακκοσκήτη", "dist": 4.4, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Morfonou%20Lakoskiti.gpx" },
+      { "name": "Αρσανάς Μορφονούς → Μεγίστης Λαύρας", "dist": 10, "time": "4:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Morfonous%20Megistis%20Lavras.gpx" },
+      { "name": "Αρσανάς Παύλου → Παύλου", "dist": 1.2, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Paulou.gpx" },
+      { "name": "Αρσανάς Φιλοθέου → Φιλοθέου", "dist": 2.6, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/ArsanasFylotheou.gpx" },
+      { "name": "Αρσανάς Χιλανδαρίου → Εσφιγμένου", "dist": 2.8, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Chilandariou%20Esfigmenou.gpx" },
+      { "name": "Αρσανάς Χιλανδαρίου → Χιλανδαρίου", "dist": 2.5, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/ArsanasXilandari.gpx" },
+      { "name": "Αρσανας Σιμωνόπετρας → Σιμωνόπετρα", "dist": 1.5, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Simonopetra.gpx" },
+      { "name": "Άγ. Βασίλειος → Ερημητήριο Αγ. Ιωσήφ", "dist": 1, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Erimitirio%20Ag%20Iosif.gpx" },
+      { "name": "Άγ. Βασίλειος → Κατουνάκια-Καρούλια", "dist": 3, "time": "1:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgBasileios%20Arsanas%20Karoulia.gpx" },
+      { "name": "Άγ. Βασίλειος → Μικρή Αγ. Άννα", "dist": 2.3, "time": "1:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Mikri%20Ag%20Anna.gpx" },
+      { "name": "Άγ. Βασίλειος → Πρ. Ηλία Εκκλησάκι", "dist": 1, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Profitis%20Hlias.gpx" },
+      { "name": "Άγ. Βασίλειος → Σταυρό", "dist": 1, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Basileios%20Stavros.gpx" },
+      { "name": "Άγ. Νείλος → Αρσανά Αγ. Νείλου", "dist": 1.5, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilosArsanas.gpx" },
+      { "name": "Άγ. Νείλος → Καυσοκαλύβια", "dist": 2.5, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilos%20Kafsokalivia.gpx" },
+      { "name": "Άγ. Νείλος → Μεγίστης Λαύρας", "dist": 6, "time": "2:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilos%20Megistis%20Lavras.gpx" },
+      { "name": "Άγ. Νείλος → Προδρόμου Ρουμανική", "dist": 4, "time": "1:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilos%20Roumaniki.gpx" },
+      { "name": "Άγ. Νείλος → Σπήλαιο Αγ. Νείλου", "dist": 0.5, "time": "0:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgNeilosSpilaio.gpx" },
+      { "name": "Βατοπαιδίου → Εσφιγμένου", "dist": 10, "time": "3:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Batopaidiou%2BEsfigmenou.gpx" },
+      { "name": "Βατοπαιδίου → Ζωγράφου", "dist": 6.5, "time": "2:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Batopaidiou%20Zografou.gpx" },
+      { "name": "Βατοπαιδίου → Καρυές", "dist": 10, "time": "3:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Bato%20Karyes.gpx" },
+      { "name": "Βατοπαιδίου → Σκήτη Αγ. Δημητρίου", "dist": 3, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/BatopedioyAgDimitriow.gpx" },
+      { "name": "Γιοβάντσα → Χιλανδαρίου", "dist": 10, "time": "3:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Giovantsa%2BChilandar.gpx" },
+      { "name": "Γρηγορίου → Διονυσίου", "dist": 3, "time": "1:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Grigoriou%20Dionisiou.gpx" },
+      { "name": "Γρηγορίου → Σιμωνόπετρα", "dist": 2.7, "time": "1:05",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Grigoriou%20Simonopetra.gpx" },
+      { "name": "Δάφνη → Καρυές", "dist": 8.2, "time": "3:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Karies.gpx" },
+      { "name": "Δάφνη → Ξηροποτάμου", "dist": 2.5, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Ksiropotamou.gpx" },
+      { "name": "Δάφνη → Παντελεήμονος Ρωσικό", "dist": 5, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Panteleimonos.gpx" },
+      { "name": "Δάφνη → Σιμωνόπετρα", "dist": 8, "time": "3:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni%20Simonopetra.gpx" },
+      { "name": "Διονυσίου → Γρηγορίου", "dist": 3, "time": "1:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/DionysiouGrigoriou.gpx" },
+      { "name": "Διονυσίου → Παύλου", "dist": 2.8, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/DionysiouPaulou.gpx" },
+      { "name": "Δοχειαρίου → Αρσανάς Ζωγράφου", "dist": 3, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Arsanas%20Zografou.gpx" },
+      { "name": "Δοχειαρίου → Κωνσταμονίτου 1", "dist": 5, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Konstamonitou%201.gpx" },
+      { "name": "Δοχειαρίου → Κωνσταμονίτου 2", "dist": 6, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Konstamonitou%202.gpx" },
+      { "name": "Δοχειαρίου → Ξενοφώντος", "dist": 1.3, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dochiariou%20Xenofontos.gpx" },
+      { "name": "Εσφιγμένου → Βατοπαιδίου", "dist": 10, "time": "3:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou%20Batopaidiou.gpx" },
+      { "name": "Εσφιγμένου → Χιλανδαρίου", "dist": 3, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou%20Chilandariou.gpx" },
+      { "name": "Ζωγράφου → Βατοπαιδίου", "dist": 6.5, "time": "2:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Batopaidiou.gpx" },
+      { "name": "Ζωγράφου → Εσφιγμένου", "dist": 8, "time": "2:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Esfigmenou.gpx" },
+      { "name": "Ζωγράφου → Κάθισμα Αγ. Γεωργίου", "dist": 0.9, "time": "0:12",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Kathisma%20Ag%20Georgiou.gpx" },
+      { "name": "Ζωγράφου → Κωνσταμονίτου", "dist": 4, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Konstamonitou.gpx" },
+      { "name": "Ζωγράφου → Σπήλαιο Οσίου Κοσμά", "dist": 2, "time": "0:35",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Spilaio.gpx" },
+      { "name": "Ζωγράφου → Χιλανδαρίου", "dist": 7.5, "time": "2:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou%20Chilandar.gpx" },
+      { "name": "Ιβήρων → Καλιάγρα", "dist": 1.5, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/IvironKaliarga.gpx" },
+      { "name": "Ιβήρων → Καλύβα Αναστάσεως", "dist": 3.8, "time": "1:10",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/ivironKaliviAnastaseos.gpx" },
+      { "name": "Ιβήρων → Καρυές", "dist": 5, "time": "2:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%2BKaryes.gpx" },
+      { "name": "Ιβήρων → Κελί Τιμίου Σταυρού", "dist": 4.3, "time": "1:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/IvironPapaTyxon.gpx" },
+      { "name": "Ιβήρων → Μυλοπόταμος", "dist": 2.5, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/viron%20Mylopotamos.gpx" },
+      { "name": "Ιβήρων → Σκήτη Προδρόμου Ιβηρική", "dist": 1.5, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ibiron%20Prodromou.gpx" },
+      { "name": "Ιβήρων → Σταυρονικήτα 1", "dist": 3.2, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%2BStavronikita%2B1.gpx" },
+      { "name": "Ιβήρων → Σταυρονικήτα 2", "dist": 5.8, "time": "1:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Ivirov%202.gpx" },
+      { "name": "Ιβήρων → Φιλοθέου 1", "dist": 5.5, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%20Filotheou%201.gpx" },
+      { "name": "Ιβήρων → Φιλοθέου 2", "dist": 6, "time": "2:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron%2BFilotheou%2B2.gpx" },
+      { "name": "Καρακάλλου → Προβάτα", "dist": 2.3, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/KarakalouProvata.gpx" },
+      { "name": "Καρακάλλου → Φιλοθέου", "dist": 2.2, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Filotheou%20Karakalou%201.gpx" },
+      { "name": "Καρούλια → Αγ. Βασίλειο", "dist": 3, "time": "2:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/AgBasileios%20Arsanas%20Karoulia.gpx" },
+      { "name": "Καρούλια → Κατουνάκια-Σταυρός", "dist": 3, "time": "2:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karoulia%20Stauros.gpx" },
+      { "name": "Καρούλια → Μικρή Αγ. Άννα", "dist": 2, "time": "1:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Mikri%20Agianna.gpx" },
+      { "name": "Καρυές - Άξιον Εστί", "dist": 1.5, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Aksion_Esti.gpx" },
+      { "name": "Καρυές → Βατοπαιδίου", "dist": 10, "time": "3:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Batopediou.gpx" },
+      { "name": "Καρυές → Ιβήρων", "dist": 5, "time": "1:35",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Iviron.gpx" },
+      { "name": "Καρυές → Καλύβα Αναστάσεως", "dist": 2.5, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Pater%20Efthimios.gpx" },
+      { "name": "Καρυές → Κελί Τιμίου Σταυρού", "dist": 3.5, "time": "0:55",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Papa%20Tychon.gpx" },
+      { "name": "Καρυές → Μαρουδά", "dist": 2, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Marouda.gpx" },
+      { "name": "Καρυές → Μπουραζέρη", "dist": 1.3, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Mpourazeri.gpx" },
+      { "name": "Καρυές → Παναγούδα", "dist": 2, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karies%20Panagouda.gpx" },
+      { "name": "Καρυές → Σιμωνόπετρα", "dist": 12, "time": "4:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Simonopetra.gpx" },
+      { "name": "Καρυές → Σκήτη Παντελεήμονος", "dist": 1.6, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Skiti%20Panteleimonos.gpx" },
+      { "name": "Καρυές → Σκήτη Πρ. Ηλία", "dist": 5, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Profiti%20Hlia.gpx" },
+      { "name": "Καρυές → Σταυρονικήτα", "dist": 4.3, "time": "1:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Stavronikita.gpx" },
+      { "name": "Καρυές → Φιλοθέου", "dist": 9.8, "time": "3:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes%20Fylotheou.gpx" },
+      { "name": "Κατουνάκια → Αγ. Βασίλειο", "dist": 2, "time": "1:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20AgBasileios.gpx" },
+      { "name": "Κατουνάκια → Καρούλια Αρσανάς", "dist": 0.9, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Arsanas.gpx" },
+      { "name": "Κατουνάκια → Μικρή Αγ. Άννα", "dist": 1, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Mikri%20Agianna.gpx" },
+      { "name": "Κατουνάκια → Σταυρό", "dist": 2, "time": "1:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Stavros.gpx" },
+      { "name": "Καυσοκαλύβια → Αγ. Νείλος", "dist": 2.5, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Kausokalivia%20Ag%20Neilos.gpx" },
+      { "name": "Καυσοκαλύβια → Κερασιά", "dist": 3.5, "time": "2:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Kausokalivia%20Kerasia.gpx" },
+      { "name": "Καυσοκαλύβια → Σπήλαιο Αγ. Νήφωνος", "dist": 2, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Kausokalivia%20Arxontariki%20Spilaio.gpx" },
+      { "name": "Κερασιά → Καυσοκαλύβια", "dist": 3.5, "time": "1:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Kerasia%20Kafsokalyvia.gpx" },
+      { "name": "Κερασιά → Σταυρός", "dist": 1, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Kerasia%20Stavros.gpx" },
+      { "name": "Κουτλουμουσίου → Σκήτη Παντελεήμονος", "dist": 1.3, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/koutloumousiou%20Skiti.gpx" },
+      { "name": "Κωνσταμονίτου → Δοχειαρίου", "dist": 6, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou%20Doxeiariou.gpx" },
+      { "name": "Κωνσταμονίτου → Εκκλησάκι Ανάληψης", "dist": 1.5, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou%20Naos%20Analipsis.gpx" },
+      { "name": "Κωνσταμονίτου → Ζωγράφου", "dist": 4, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou%20Zografou.gpx" },
+      { "name": "Μεγίστης Λαύρας → Αγ. Νείλος", "dist": 6, "time": "2:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Agios%20Neilos.gpx" },
+      { "name": "Μεγίστης Λαύρας → Αρσανάς", "dist": 1.6, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/BatopedioyAgDimitriow.gpx" },
+      { "name": "Μεγίστης Λαύρας → Αρσανάς Μορφονούς", "dist": 10, "time": "4:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Lavras%20Morfonou.gpx" },
+      { "name": "Μεγίστης Λαύρας → Σκήτη Αγ. Άννας", "dist": 12.5, "time": "5:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Ag.%20Anna.gpx" },
+      { "name": "Μεγίστης Λαύρας → Σκήτη Τιμίου Προδρόμου Ρουμανική 1", "dist": 4.5, "time": "1:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Roumaniki%201.gpx" },
+      { "name": "Μεγίστης Λαύρας → Σκήτη Τιμίου Προδρόμου Ρουμανική 2", "dist": 4.5, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megistis%20Roumaniki%202%20(2).gpx" },
+      { "name": "Μικρή Αγ. Άννα → Αγ. Άννα", "dist": 1.5, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Mikri%20Agianna%20Agianna.gpx" },
+      { "name": "Μικρή Αγ. Άννα → Καρούλια Αρσανά", "dist": 2, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Mikri%20Ag%20Anna%20Arsanas%20Karoulia.gpx" },
+      { "name": "Μικρή Αγ. Άννα → Κατουνάκια", "dist": 1, "time": "0:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Katounakia%20Mikri%20Agianna.gpx" },
+      { "name": "Νέα Σκήτη → Παύλου κάτω", "dist": 2.5, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Nea%20Skiti%20Ag%20Payloy%20kato%20diadromi.gpx" },
+      { "name": "Νέα Σκήτη → Σκήτη Αγ. Άννας", "dist": 2, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Nea%20Skiti%20Agia%20Anna.gpx" },
+      { "name": "Ξενοφώντος → Δοχειαρίου", "dist": 1.3, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos%20Doxeiariou.gpx" },
+      { "name": "Ξενοφώντος → Παντελεήμονος Ρωσικό", "dist": 4, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos%20Panteleimonos.gpx" },
+      { "name": "Ξενοφώντος → Σκήτη Ευαγγελισμού", "dist": 3, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos%20Skiti%20Evagelismou.gpx" },
+      { "name": "Ξηροποτάμου → Δάφνη", "dist": 2.5, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ksyropotamou%20Dafni.gpx" },
+      { "name": "Ξηροποτάμου → Παντελεήμονος Ρωσικό", "dist": 2.8, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/KsyropotamouRosiko.gpx" },
+      { "name": "Ουρανούπολη → Σύνορα Αγίου Όρους", "dist": 2.5, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ouranoupoli%20Sinora%20Agiou%20Orous.gpx" },
+      { "name": "Παντελεήμονος Ρωσικό → Δάφνη", "dist": 5, "time": "1:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos%20Dafni.gpx" },
+      { "name": "Παντελεήμονος Ρωσικό → Ξενοφώντος", "dist": 4, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos%20Xenofontos.gpx" },
+      { "name": "Παντοκράτορος → Βατοπαιδίου 1", "dist": 10, "time": "3:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Batopaidiou%201.gpx" },
+      { "name": "Παντοκράτορος → Βατοπαιδίου 2", "dist": 10.5, "time": "4:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/PantokratorosBatopaidiou2.gpx" },
+      { "name": "Παντοκράτορος → Βατοπαιδίου 3", "dist": 9.5, "time": "3:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Batopaidiou%203.gpx" },
+      { "name": "Παντοκράτορος → Καλύβα Αναστάσεως", "dist": 3.5, "time": "1:10",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/pantokratorosKalybaAnastaseos.gpx" },
+      { "name": "Παντοκράτορος → Καρυές", "dist": 5.6, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Karyes.gpx" },
+      { "name": "Παντοκράτορος → Σκήτη Προφήτη Ηλία", "dist": 2, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Skiti%20Pr%20Hlia.gpx" },
+      { "name": "Παντοκράτορος → Σταυρονικήτα", "dist": 2.9, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros%20Stavronikita.gpx" },
+      { "name": "Παύλου → Διονυσίου", "dist": 2.8, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavlou%20Dionisiou.gpx" },
+      { "name": "Παύλου → Νέα Σκήτη κάτω", "dist": 2.4, "time": "0:35",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavlou%20Nea%20Skiti%20Kato%20diadromi.gpx" },
+      { "name": "Παύλου → Σκήτη Αγ. Άννας πάνω", "dist": 3.5, "time": "1:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavloy%20Skiti%20Ag%20Annas%20Pano%20diadromi.gpx" },
+      { "name": "Παύλου → Τάφος Οσίου Ιωσήφ Ησυχαστή", "dist": 2, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pavlou%20Tafo%20Osiou%20Josef.gpx" },
+      { "name": "Προδρόμου Ρουμανική → Αρσανά Ρουμανική", "dist": 2, "time": "0:20",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20Arsanas.gpx" },
+      { "name": "Προδρόμου Ρουμανική → Βίγλα Κελί Αγ. Μηνά", "dist": 1, "time": "0:10",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Roymaniki%20Vigla%20Ag%20Minas.gpx" },
+      { "name": "Προδρόμου Ρουμανική → Μεγίστης Λαύρας 2", "dist": 4.3, "time": "0:55",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20%20Megistis%202.gpx" },
+      { "name": "Προδρόμου Ρουμανική → Μεγίστης Λαύρας 3", "dist": 4.5, "time": "1:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20Ag.%20Triada%20Megistis.gpx" },
+      { "name": "Προδρόμου Ρουμανική → Σπήλαιο Αγ. Αθανασίου", "dist": 0.8, "time": "0:10",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Roumaniki%20Spilaio%20Ag%20Athanasiou.gpx" },
+      { "name": "Σιμωνόπετρα → Γρηγορίου", "dist": 2.7, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Simonopetra%20Grigoriou.gpx" },
+      { "name": "Σιμωνόπετρα → Δάφνη", "dist": 8, "time": "3:10",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Simonopetra%20Dafni.gpx" },
+      { "name": "Σιμωνόπετρα → Καρυές", "dist": 12, "time": "4:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Simonopetra%20Karyes.gpx" },
+      { "name": "Σκήτη Αγ. Άννας → Ερημητήριο Οσίου Ιωσήφ", "dist": 1.3, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agianna%20Erimitirio%20Josef.gpx" },
+      { "name": "Σκήτη Αγ. Άννας → Κορυφή Άθωνα", "dist": 7, "time": "3:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Anna%20Korifi%20Athona.gpx" },
+      { "name": "Σκήτη Αγ. Άννας → Μικρή Αγ. Άννα", "dist": 1.5, "time": "0:25",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia%20Anna%20Mikri%20Ag%20Anna.gpx" },
+      { "name": "Σκήτη Αγ. Άννας → Νέα Σκήτη", "dist": 2.5, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia%20Anna%20Nea%20Skiti.gpx" },
+      { "name": "Σκήτη Αγ. Άννας → Παύλου κάτω", "dist": 3.5, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Anna%20Paulou%20Kato%20diadromi.gpx" },
+      { "name": "Σκήτη Αγ. Άννας → Παύλου πάνω", "dist": 3.5, "time": "1:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Ag%20Anna%20Paulou%20pano%20diadromi.gpx" },
+      { "name": "Σκήτη Προφήτη Ηλία → Βογορόδιτσα", "dist": 3, "time": "1:15",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti%20Pr%20Hlia%20Bogorontitsa.gpx" },
+      { "name": "Σκήτη Προφήτη Ηλία → Καλύβα Αναστάσεως", "dist": 2.5, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti%20Pr%20Hlia%20Kaliva%20Anastaseos%20Pater%20Efthimios.gpx" },
+      { "name": "Σκήτη Προφήτη Ηλία → Παντοκράτορος", "dist": 2, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti%20Pr%20Hlia%20Pantokratoros.gpx" },
+      { "name": "Σταυρονικήτα → Ιβήρων 1", "dist": 3.2, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Ivirov%201.gpx" },
+      { "name": "Σταυρονικήτα → Ιβήρων 2", "dist": 5.8, "time": "1:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Ivirov%202.gpx" },
+      { "name": "Σταυρονικήτα → Καλύβα Αναστάσεως", "dist": 3.2, "time": "1:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Kalivi%20Anastaseos.gpx" },
+      { "name": "Σταυρονικήτα → Καρυές", "dist": 4.3, "time": "1:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Karyes.gpx" },
+      { "name": "Σταυρονικήτα → Κελί Τιμίου Σταυρού", "dist": 3, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita%20Papa%20Tychon.gpx" },
+      { "name": "Σταυρός → Καρούλια", "dist": 3, "time": "1:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavros%20Karoulia.gpx" },
+      { "name": "Φιλοθέου → Ασκητήριο Αγ. Διονυσίου", "dist": 1.5, "time": "0:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Fylotheou%20Askitirio%20Ag%20Dionysiou.gpx" },
+      { "name": "Φιλοθέου → Ιβήρων 1", "dist": 5.5, "time": "1:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Fylotheoy%20Iviron%201.gpx" },
+      { "name": "Φιλοθέου → Ιβήρων 2", "dist": 6, "time": "2:00",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/FylotheoyIviron2.gpx" },
+      { "name": "Φιλοθέου → Καρακάλλου 1", "dist": 2.2, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Filotheou%20Karakalou%201.gpx" },
+      { "name": "Φιλοθέου → Καρακάλλου 2", "dist": 3, "time": "0:50",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Filotheou%20Karakalou%202.gpx" },
+      { "name": "Φιλοθέου → Κελί Αγ. Ονουφρίου", "dist": 2, "time": "0:45",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Fylotheou%20Keli%20Onoufriou.gpx" },
+      { "name": "Χιλανδαρίου → Εσφιγμένου", "dist": 3, "time": "0:40",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandar%2BEsfigmenou%20(1).gpx" },
+      { "name": "Χιλανδαρίου → Ζωγράφου", "dist": 7.5, "time": "2:30",
+        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandar%2BZografou.gpx" }
     ];
 
     // ============================================================
@@ -1114,36 +1240,48 @@
       try {
         const saved = localStorage.getItem('athos_favorites');
         if (saved) { state.favorites = JSON.parse(saved); if (!Array.isArray(state.favorites)) state.favorites = []; }
-      } catch(e) { state.favorites = []; }
+      } catch (e) { state.favorites = []; }
       updateFavBadge();
       updateOfflineFavCount();
     }
-    function saveFavorites() { localStorage.setItem('athos_favorites', JSON.stringify(state.favorites)); updateFavBadge(); }
+
+    function saveFavorites() { localStorage.setItem('athos_favorites', JSON.stringify(state.favorites));
+      updateFavBadge(); }
+
     function updateFavBadge() {
       const count = state.favorites.length;
       document.getElementById('favCount').textContent = count;
       const btn = document.getElementById('favBtn');
-      if (count > 0) { btn.textContent = '⭐' + count; btn.classList.add('active'); } else { btn.textContent = '⭐'; btn.classList.remove('active'); }
+      if (count > 0) { btn.textContent = '⭐' + count;
+        btn.classList.add('active'); } else { btn.textContent = '⭐';
+        btn.classList.remove('active'); }
     }
+
     async function updateOfflineFavCount() {
       try {
         const count = await offlineManager.getOfflineFavoriteCount();
         document.getElementById('offlineFavCount').textContent = count;
         const btn = document.getElementById('offlineFavBtn');
-        if (count > 0) { btn.textContent = '💾' + count; btn.classList.add('active'); } else { btn.textContent = '💾'; btn.classList.remove('active'); }
-      } catch(e) {}
+        if (count > 0) { btn.textContent = '💾' + count;
+          btn.classList.add('active'); } else { btn.textContent = '💾';
+          btn.classList.remove('active'); }
+      } catch (e) {}
     }
+
     function toggleFavorite(index) {
       const route = ROUTES[index];
       if (!route) return;
       const idx = state.favorites.findIndex(f => f.name === route.name && f.url === route.url);
-      if (idx >= 0) { state.favorites.splice(idx, 1); showToast('⭐ Αφαιρέθηκε από online αγαπημένες', '#888'); }
-      else { state.favorites.push({ ...route }); showToast('⭐ Προστέθηκε στις online αγαπημένες!', '#f1c40f'); }
+      if (idx >= 0) { state.favorites.splice(idx, 1);
+        showToast('⭐ Αφαιρέθηκε από online αγαπημένες', '#888'); } else { state.favorites.push({ ...route });
+        showToast('⭐ Προστέθηκε στις online αγαπημένες!', '#f1c40f'); }
       saveFavorites();
       renderRoutes(document.getElementById('routeSearch').value);
       renderFavorites();
     }
+
     function isFavorite(route) { return state.favorites.some(f => f.name === route.name && f.url === route.url); }
+
     async function renderFavorites() {
       const list = document.getElementById('favList');
       const offlineFavs = await offlineManager.getOfflineFavorites();
@@ -1154,45 +1292,55 @@
       }
       let html = '';
       if (offlineFavs.length > 0) {
-        html += '<div style="color:#27ae60;font-weight:700;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(39,174,96,0.2);">💾 Offline Αποθηκευμένες</div>';
+        html +=
+          '<div style="color:#27ae60;font-weight:700;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(39,174,96,0.2);">💾 Offline Αποθηκευμένες</div>';
         offlineFavs.forEach((fav) => {
           html += `<div class="fav-item" style="border-left:3px solid #27ae60;">
-            <span class="fname">📱 ${fav.name} <span class="offline-badge">Offline</span></span>
-            <span class="finfo">${fav.dist}km | ${fav.time}</span>
-            <div class="factions">
-              <button class="load-offline-fav" data-id="${fav.id}">📂 Φόρτωση</button>
-              <button class="remove-offline-fav" data-id="${fav.id}">✕</button>
-            </div>
-          </div>`;
+                            <span class="fname">📱 ${fav.name} <span class="offline-badge">Offline</span></span>
+                            <span class="finfo">${fav.dist}km | ${fav.time}</span>
+                            <div class="factions">
+                                <button class="load-offline-fav" data-id="${fav.id}">📂 Φόρτωση</button>
+                                <button class="remove-offline-fav" data-id="${fav.id}">✕</button>
+                            </div>
+                        </div>`;
         });
       }
       const onlineFavs = state.favorites.filter(f => !offlineNames.includes(f.name));
       if (onlineFavs.length > 0) {
-        if (offlineFavs.length > 0) html += '<div style="color:#f1c40f;font-weight:700;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(241,196,15,0.2);margin-top:6px;">⭐ Online Αγαπημένες</div>';
+        if (offlineFavs.length > 0) html +=
+          '<div style="color:#f1c40f;font-weight:700;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(241,196,15,0.2);margin-top:6px;">⭐ Online Αγαπημένες</div>';
         onlineFavs.forEach((route) => {
           const num = ROUTES.indexOf(route) + 1;
           html += `<div class="fav-item">
-            <span class="fname">${num > 0 ? '#'+num+' ' : ''}${route.name}</span>
-            <span class="finfo">${route.dist}km | ${route.time}</span>
-            <div class="factions">
-              <button class="load-fav" data-name="${route.name}" data-url="${route.url}" data-dist="${route.dist}" data-time="${route.time}">📂 Φόρτωση</button>
-              <button class="remove-fav" data-name="${route.name}">✕</button>
-            </div>
-          </div>`;
+                            <span class="fname">${num > 0 ? '#'+num+' ' : ''}${route.name}</span>
+                            <span class="finfo">${route.dist}km | ${route.time}</span>
+                            <div class="factions">
+                                <button class="load-fav" data-name="${route.name}" data-url="${route.url}" data-dist="${route.dist}" data-time="${route.time}">📂 Φόρτωση</button>
+                                <button class="remove-fav" data-name="${route.name}">✕</button>
+                            </div>
+                        </div>`;
         });
       }
       list.innerHTML = html;
       list.querySelectorAll('.load-fav').forEach(btn => {
         btn.addEventListener('click', function() {
-          const url = this.dataset.url, name = this.dataset.name, dist = parseFloat(this.dataset.dist), time = this.dataset.time;
-          if (url && name) { loadRouteFromUrl(url, name, dist, time); hideFavorites(); }
+          const url = this.dataset.url,
+            name = this.dataset.name,
+            dist = parseFloat(this.dataset.dist),
+            time = this.dataset.time;
+          if (url && name) { loadRouteFromUrl(url, name, dist, time);
+            hideFavorites(); }
         });
       });
       list.querySelectorAll('.remove-fav').forEach(btn => {
         btn.addEventListener('click', function() {
           const name = this.dataset.name;
           const idx = state.favorites.findIndex(f => f.name === name);
-          if (idx >= 0) { state.favorites.splice(idx, 1); saveFavorites(); renderFavorites(); renderRoutes(document.getElementById('routeSearch').value); showToast('🗑️ Αφαιρέθηκε', '#888'); }
+          if (idx >= 0) { state.favorites.splice(idx, 1);
+            saveFavorites();
+            renderFavorites();
+            renderRoutes(document.getElementById('routeSearch').value);
+            showToast('🗑️ Αφαιρέθηκε', '#888'); }
         });
       });
       list.querySelectorAll('.load-offline-fav').forEach(btn => {
@@ -1200,7 +1348,9 @@
           const id = this.dataset.id;
           const favs = await offlineManager.getOfflineFavorites();
           const fav = favs.find(f => f.id === id);
-          if (fav && fav.gpxData) { loadGpxFromData(fav.gpxData, fav.name); hideFavorites(); showToast('📱 Φορτώθηκε offline: '+fav.name, '#27ae60'); }
+          if (fav && fav.gpxData) { loadGpxFromData(fav.gpxData, fav.name);
+            hideFavorites();
+            showToast('📱 Φορτώθηκε offline: ' + fav.name, '#27ae60'); }
         });
       });
       list.querySelectorAll('.remove-offline-fav').forEach(btn => {
@@ -1213,8 +1363,12 @@
         });
       });
     }
-    function showFavorites() { document.getElementById('favDropdown').classList.add('active'); renderFavorites(); }
+
+    function showFavorites() { document.getElementById('favDropdown').classList.add('active');
+      renderFavorites(); }
+
     function hideFavorites() { document.getElementById('favDropdown').classList.remove('active'); }
+
     async function clearAllFavorites() {
       const offlineCount = await offlineManager.getOfflineFavoriteCount();
       const onlineCount = state.favorites.length;
@@ -1237,18 +1391,21 @@
       renderRoutes(document.getElementById('routeSearch').value);
       showToast('🧹 Καθαρίστηκαν όλες οι αγαπημένες (online + offline)', '#e74c3c');
     }
+
     async function downloadOfflineFavorites() {
       const offlineFavs = await offlineManager.getOfflineFavorites();
       const count = offlineFavs.length;
       const MAX_OFFLINE_FAVS = 10;
-      if (count >= MAX_OFFLINE_FAVS) { showToast('⚠️ Έχετε ήδη '+count+' offline διαδρομές (μέγιστο '+MAX_OFFLINE_FAVS+')', '#FF9800'); return; }
+      if (count >= MAX_OFFLINE_FAVS) { showToast('⚠️ Έχετε ήδη ' + count + ' offline διαδρομές (μέγιστο ' +
+          MAX_OFFLINE_FAVS + ')', '#FF9800'); return; }
       const offlineNames = offlineFavs.map(f => f.name);
       const toDownload = state.favorites.filter(f => !offlineNames.includes(f.name));
       if (toDownload.length === 0) { showToast('✅ Όλες είναι ήδη offline!', '#4CAF50'); return; }
       const availableSlots = MAX_OFFLINE_FAVS - count;
       const toDownloadNow = toDownload.slice(0, availableSlots);
-      if (toDownload.length > availableSlots) showToast('⚠️ Μπορείτε να κατεβάσετε μόνο '+availableSlots+' διαδρομές', '#FF9800');
-      showToast('⏳ Λήψη '+toDownloadNow.length+' διαδρομών...', '#FF9800');
+      if (toDownload.length > availableSlots) showToast('⚠️ Μπορείτε να κατεβάσετε μόνο ' + availableSlots +
+        ' διαδρομές', '#FF9800');
+      showToast('⏳ Λήψη ' + toDownloadNow.length + ' διαδρομών...', '#FF9800');
       let successCount = 0;
       for (const route of toDownloadNow) {
         try {
@@ -1262,100 +1419,49 @@
       }
       await updateOfflineFavCount();
       renderFavorites();
-      showToast('✅ '+successCount+' διαδρομές αποθηκεύτηκαν offline!', '#27ae60');
+      showToast('✅ ' + successCount + ' διαδρομές αποθηκεύτηκαν offline!', '#27ae60');
     }
 
     // ============================================================
-    // ★★★ GPS & MAP (with robust style loading) ★★★
+    // ★★★ GPS & MAP (RASTER – no style) ★★★
     // ============================================================
     function haversineDistance(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2)**2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(
+        dLon / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     }
 
-    // ★★★ MAP INIT with style caching and fallback ★★★
+    // ★★★ MAP INIT with RASTER tiles ★★★
     async function initMap() {
       try {
         if (state.map) return;
 
-        // 1. Try to get cached style
-        let styleObj = await offlineManager.getStyle();
-        let styleLoaded = false;
-
-        if (styleObj) {
-          console.log('Using cached style');
-          styleLoaded = true;
-        } else {
-          // Try to fetch style online
-          if (navigator.onLine) {
-            try {
-              const styleUrl = 'https://tiles.openfreemap.org/styles/liberty';
-              console.log('Fetching style online...');
-              const response = await fetch(styleUrl);
-              if (response.ok) {
-                const styleJson = await response.json();
-                // Modify tile source to use offline protocol
-                if (styleJson.sources && styleJson.sources['openfreemap']) {
-                  const src = styleJson.sources['openfreemap'];
-                  if (src.tiles && src.tiles.length > 0) {
-                    src.tiles = src.tiles.map(t => t.replace('https://tiles.openfreemap.org', 'offline://tiles.openfreemap.org'));
-                  }
-                }
-                // Also handle any other sources that might use the same tile URL
-                for (let key in styleJson.sources) {
-                  const src = styleJson.sources[key];
-                  if (src.tiles && src.tiles.length > 0) {
-                    src.tiles = src.tiles.map(t => t.replace('https://tiles.openfreemap.org', 'offline://tiles.openfreemap.org'));
-                  }
-                }
-                // Save style
-                await offlineManager.saveStyle(styleJson);
-                styleObj = styleJson;
-                styleLoaded = true;
-                console.log('Style fetched and cached');
-              }
-            } catch (e) {
-              console.warn('Failed to fetch style online:', e);
+        // Simple raster style using offline protocol
+        const style = {
+          version: 8,
+          sources: {
+            'openfreemap': {
+              type: 'raster',
+              tiles: ['offline://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png'],
+              tileSize: 256,
+              attribution: '© OpenFreeMap'
             }
-          }
-        }
+          },
+          layers: [{
+            id: 'openfreemap',
+            type: 'raster',
+            source: 'openfreemap',
+            paint: { 'raster-fade-duration': 0 }
+          }]
+        };
 
-        // 2. If still no style, use fallback style (basic OSM)
-        if (!styleLoaded) {
-          console.warn('No style available – using fallback');
-          // Create a simple fallback style with OSM tiles (but we still use offline protocol)
-          styleObj = {
-            version: 8,
-            sources: {
-              'osm': {
-                type: 'raster',
-                tiles: ['offline://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png'],
-                tileSize: 256,
-                attribution: '© OpenFreeMap'
-              }
-            },
-            layers: [
-              {
-                id: 'osm',
-                type: 'raster',
-                source: 'osm',
-                paint: { 'raster-fade-duration': 0 }
-              }
-            ]
-          };
-          // Save it for next time
-          await offlineManager.saveStyle(styleObj);
-          styleLoaded = true;
-        }
-
-        // 3. Create map with the style
         state.map = new maplibregl.Map({
           container: 'map',
-          style: styleObj,
+          style: style,
           center: [24.32, 40.16],
           zoom: 12
         });
@@ -1382,7 +1488,7 @@
           document.getElementById('gpsNotification').classList.remove('active');
         });
 
-        document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
+        document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap (Raster)';
         document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
         state.mapInitialized = true;
         state.mapLoadAttempts = 0;
@@ -1401,11 +1507,10 @@
         });
 
         state.map.on('load', () => {
-          console.log('Map loaded');
+          console.log('Map loaded (raster)');
           document.getElementById('offlineMessage').classList.remove('active');
         });
 
-        // Hide offline message if map loads
         document.getElementById('offlineMessage').classList.remove('active');
 
       } catch (e) {
@@ -1415,35 +1520,14 @@
           if (state.mapLoadRetryTimer) clearTimeout(state.mapLoadRetryTimer);
           state.mapLoadRetryTimer = setTimeout(() => initMap(), 1500);
         } else {
-          // Fallback: show a simple raster map without style
-          try {
-            state.map = new maplibregl.Map({
-              container: 'map',
-              style: {
-                version: 8,
-                sources: {
-                  'osm': {
-                    type: 'raster',
-                    tiles: ['https://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png'],
-                    tileSize: 256
-                  }
-                },
-                layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
-              },
-              center: [24.32, 40.16],
-              zoom: 12
-            });
-            console.log('Fallback map created');
-          } catch (e2) {
-            document.getElementById('offlineMessage').classList.add('active');
-          }
+          document.getElementById('offlineMessage').classList.add('active');
         }
       }
     }
 
     function initMapWithOfflineSupport() {
       initMap().then(() => {
-        document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
+        document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap (Raster)';
         document.getElementById('offlineStatus').classList.remove('active');
 
         offlineManager.isMapDownloaded().then(hasMap => {
@@ -1466,12 +1550,12 @@
         });
         updateOfflineFavCount();
       }).catch(() => {
-        // Fallback: just show message
         document.getElementById('offlineMessage').classList.add('active');
       });
     }
 
     let currentRotation = 0;
+
     function updateRotationIndicator() {
       const indicator = document.getElementById('rotationIndicator');
       if (Math.abs(currentRotation) > 1) {
@@ -1486,6 +1570,7 @@
     function toggleGps() {
       if (state.isGpsOn) { stopGps(); } else { startGps(); }
     }
+
     function startGps() {
       if (!navigator.geolocation) { showToast('⚠️ GPS μη διαθέσιμο', '#f44336'); return; }
       if (!state.map) { showToast('⚠️ Περιμένετε τον χάρτη', '#FF9800'); return; }
@@ -1503,7 +1588,7 @@
           document.getElementById('statusDisplay').textContent = '📍 GPS ενεργό';
           state.lastPosition = { lat, lng };
           updateUserMarker(lat, lng);
-          try { state.map.flyTo({ center: [lng, lat], zoom: 15, essential: true, duration: 1500 }); } catch(e) {}
+          try { state.map.flyTo({ center: [lng, lat], zoom: 15, essential: true, duration: 1500 }); } catch (e) {}
           showToast('📍 GPS ενεργοποιήθηκε', '#4CAF50');
           startGpsWatch();
         },
@@ -1537,14 +1622,17 @@
           updateUserMarker(lat, lng);
           if (position.coords.speed !== null && position.coords.speed !== undefined) {
             state.currentSpeedKmh = position.coords.speed * 3.6;
-            if (state.currentSpeedKmh > 0.3) document.getElementById('speedDisplay').textContent = state.currentSpeedKmh.toFixed(1) + ' km/h';
+            if (state.currentSpeedKmh > 0.3) document.getElementById('speedDisplay').textContent = state.currentSpeedKmh
+              .toFixed(1) + ' km/h';
             else document.getElementById('speedDisplay').textContent = '';
           }
           if (state.isNavigating) {
-            try { state.map.flyTo({ center: [lng, lat], zoom: 18, essential: true, duration: 800 }); } catch(e) {}
+            try { state.map.flyTo({ center: [lng, lat], zoom: 18, essential: true, duration: 800 }); } catch (e) {}
           }
-          if (!state.gpsFirstFix) { state.gpsFirstFix = true; document.getElementById('statusDisplay').textContent = '📍 GPS ενεργό'; }
-          if (state.routeGeometry) { updateDistProgress(); checkOffRoute(lat, lng); }
+          if (!state.gpsFirstFix) { state.gpsFirstFix = true;
+            document.getElementById('statusDisplay').textContent = '📍 GPS ενεργό'; }
+          if (state.routeGeometry) { updateDistProgress();
+            checkOffRoute(lat, lng); }
         },
         (error) => { console.error('Watch GPS Error:', error); },
         { enableHighAccuracy: true, timeout: 60000, maximumAge: 20000 }
@@ -1552,11 +1640,13 @@
     }
 
     function stopGps() {
-      if (state.gpsWatchId) { navigator.geolocation.clearWatch(state.gpsWatchId); state.gpsWatchId = null; }
+      if (state.gpsWatchId) { navigator.geolocation.clearWatch(state.gpsWatchId);
+        state.gpsWatchId = null; }
       if (state.isNavigating) stopNavigation();
       state.isGpsOn = false;
       state.gpsFirstFix = false;
-      if (state.userMarker) { state.userMarker.remove(); state.userMarker = null; }
+      if (state.userMarker) { state.userMarker.remove();
+        state.userMarker = null; }
       document.getElementById('gpsBtn').textContent = '📍';
       document.getElementById('gpsBtn').classList.remove('active');
       document.getElementById('distProgressInline').style.display = 'none';
@@ -1585,7 +1675,7 @@
             if (dot) dot.style.transform = 'rotate(' + heading + 'deg)';
           }
         }
-      } catch(e) {}
+      } catch (e) {}
     }
 
     // ============================================================
@@ -1594,17 +1684,20 @@
     function toggleNavigation() {
       if (state.isNavigating) { stopNavigation(); } else { startNavigation(); }
     }
+
     function startNavigation() {
       if (!state.isGpsOn) { showToast('⚠️ Ενεργοποιήστε πρώτα το GPS', '#FF9800'); return; }
       if (!state.lastPosition) { showToast('⚠️ Αναμονή για θέση GPS', '#FF9800'); return; }
       document.getElementById('navBtn').textContent = '🧭✓';
       document.getElementById('navBtn').classList.add('active');
       state.isNavigating = true;
-      try { state.map.flyTo({ center: [state.lastPosition.lng, state.lastPosition.lat], zoom: 18, essential: true, duration: 1000 }); } catch(e) {}
+      try { state.map.flyTo({ center: [state.lastPosition.lng, state.lastPosition.lat], zoom: 18, essential: true,
+          duration: 1000 }); } catch (e) {}
       document.getElementById('statusDisplay').textContent = '🧭 Follow ενεργό';
       showToast('🧭 Πλοήγηση ενεργοποιήθηκε', '#4CAF50');
       localStorage.setItem('athos_was_navigating', 'true');
     }
+
     function stopNavigation() {
       state.isNavigating = false;
       document.getElementById('navBtn').textContent = '🧭';
@@ -1619,36 +1712,42 @@
     // ★★★ ROUTES (unchanged) ★★★
     // ============================================================
     function centerOnRoute() {
-      if (!state.routeGeometry || state.routeGeometry.length === 0) { showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή', '#FF9800'); return; }
+      if (!state.routeGeometry || state.routeGeometry.length === 0) { showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή',
+          '#FF9800'); return; }
       try {
         const bounds = new maplibregl.LngLatBounds();
         state.routeGeometry.forEach(c => bounds.extend([c[0], c[1]]));
         state.map.fitBounds(bounds, { padding: 50, maxZoom: 15, duration: 1000, essential: true });
         showToast('🎯 Επαναφορά στη διαδρομή', '#00BCD4');
-      } catch(e) {}
+      } catch (e) {}
     }
 
-    function showRoutes() { document.getElementById('routeDropdown').classList.add('active'); renderRoutes(''); }
+    function showRoutes() { document.getElementById('routeDropdown').classList.add('active');
+      renderRoutes(''); }
+
     function hideRoutes() { document.getElementById('routeDropdown').classList.remove('active'); }
 
     function renderRoutes(filter) {
       const list = document.getElementById('routesList');
       let filtered = ROUTES;
-      if (filter) { const f = filter.toLowerCase(); filtered = ROUTES.filter(r => r.name.toLowerCase().includes(f)); }
+      if (filter) { const f = filter.toLowerCase();
+        filtered = ROUTES.filter(r => r.name.toLowerCase().includes(f)); }
       document.getElementById('routeCount').textContent = filtered.length;
-      let html = '', cl = '';
+      let html = '',
+        cl = '';
       filtered.forEach((r, index) => {
         const fl = r.name.charAt(0).toUpperCase();
-        if (fl !== cl) { cl = fl; html += '<div class="letter-header">' + cl + '</div>'; }
+        if (fl !== cl) { cl = fl;
+          html += '<div class="letter-header">' + cl + '</div>'; }
         const fav = isFavorite(r);
         const num = ROUTES.indexOf(r) + 1;
         html += `<div class="route-item" data-url="${r.url}" data-name="${r.name}" data-dist="${r.dist}" data-time="${r.time}" data-index="${index}">
-          <span class="rname"><span style="color:#f1c40f;font-weight:700;margin-right:4px;">${num}.</span>${r.name}</span>
-          <span style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-            <span class="rinfo">${r.dist}km | ${r.time}</span>
-            <span class="fav-star ${fav ? 'active' : 'inactive'}" data-index="${index}">${fav ? '★' : '☆'}</span>
-          </span>
-        </div>`;
+                      <span class="rname"><span style="color:#f1c40f;font-weight:700;margin-right:4px;">${num}.</span>${r.name}</span>
+                      <span style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+                          <span class="rinfo">${r.dist}km | ${r.time}</span>
+                          <span class="fav-star ${fav ? 'active' : 'inactive'}" data-index="${index}">${fav ? '★' : '☆'}</span>
+                      </span>
+                  </div>`;
       });
       list.innerHTML = html;
       list.querySelectorAll('.route-item').forEach(item => {
@@ -1691,7 +1790,9 @@
           localStorage.removeItem('athos_last_gpx_data');
           state.map.addSource('route', {
             type: 'geojson',
-            data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+            data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1],
+                  c[0]
+                ]) } }
           });
           state.map.addLayer({
             id: 'route',
@@ -1731,11 +1832,14 @@
           state.alertDisabledForever = false;
           document.getElementById('offRouteWarning').classList.remove('active');
           document.getElementById('offRouteStatus').classList.remove('active');
-          localStorage.setItem('athos_last_route', JSON.stringify({ url: 'file:' + file.name, name: file.name.replace('.gpx', ''), dist: state.routeDistance, time: null }));
+          localStorage.setItem('athos_last_route', JSON.stringify({ url: 'file:' + file.name, name: file.name.replace(
+              '.gpx', ''), dist: state.routeDistance, time: null }));
           localStorage.setItem('athos_last_gpx_data', t);
           state.map.addSource('route', {
             type: 'geojson',
-            data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+            data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1],
+                  c[0]
+                ]) } }
           });
           state.map.addLayer({
             id: 'route',
@@ -1751,7 +1855,7 @@
           document.getElementById('centerBtn').classList.add('active');
           document.getElementById('centerBtnHeader').style.display = 'inline-flex';
           showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
-        } catch(err) { showToast('❌ ' + err.message, '#f44336'); }
+        } catch (err) { showToast('❌ ' + err.message, '#f44336'); }
       };
       r.readAsText(file);
     }
@@ -1775,7 +1879,9 @@
         document.getElementById('offRouteStatus').classList.remove('active');
         state.map.addSource('route', {
           type: 'geojson',
-          data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1], c[0]]) } }
+          data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: ac.map(c => [c[1],
+                c[0]
+              ]) } }
         });
         state.map.addLayer({
           id: 'route',
@@ -1791,7 +1897,7 @@
         document.getElementById('centerBtn').classList.add('active');
         document.getElementById('centerBtnHeader').style.display = 'inline-flex';
         showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
-      } catch(err) { showToast('❌ ' + err.message, '#f44336'); }
+      } catch (err) { showToast('❌ ' + err.message, '#f44336'); }
     }
 
     function parseGpx(x) {
@@ -1814,7 +1920,7 @@
     function computeDistance(coords) {
       let d = 0;
       for (let i = 1; i < coords.length; i++) {
-        d += haversineDistance(coords[i-1][1], coords[i-1][0], coords[i][1], coords[i][0]);
+        d += haversineDistance(coords[i - 1][1], coords[i - 1][0], coords[i][1], coords[i][0]);
       }
       return d;
     }
@@ -1827,14 +1933,16 @@
     function updateTimeDisplay() {
       const timeEl = document.getElementById('timeDisplay');
       if (state.routeDistance > 0) {
-        if (state.originalTime) { timeEl.textContent = state.originalTime; timeEl.className = 'time excel'; } else {
+        if (state.originalTime) { timeEl.textContent = state.originalTime;
+          timeEl.className = 'time excel'; } else {
           const m = Math.round((state.routeDistance / state.currentSpeed) * 60);
           const h = Math.floor(m / 60);
           const mm = m % 60;
           timeEl.textContent = h > 0 ? h + 'h ' + mm + 'm' : mm + 'm';
           timeEl.className = 'time calculated';
         }
-      } else { timeEl.textContent = '--:--'; timeEl.className = 'time'; }
+      } else { timeEl.textContent = '--:--';
+        timeEl.className = 'time'; }
     }
 
     function clearRoute() {
@@ -1873,21 +1981,26 @@
         w.classList.add('active');
         s.classList.add('active');
         if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
-      } else { w.classList.remove('active'); s.classList.remove('active'); }
+      } else { w.classList.remove('active');
+        s.classList.remove('active'); }
     }
 
     function updateDistProgress() {
       const el = document.getElementById('distProgressInline');
       if (!state.routeGeometry || !state.lastPosition || state.routeDistance === 0) { el.style.display = 'none'; return; }
       el.style.display = 'block';
-      let minDist = Infinity, closestIdx = 0;
+      let minDist = Infinity,
+        closestIdx = 0;
       for (let i = 0; i < state.routeGeometry.length; i++) {
-        const d = haversineDistance(state.lastPosition.lat, state.lastPosition.lng, state.routeGeometry[i][1], state.routeGeometry[i][0]) * 1000;
-        if (d < minDist) { minDist = d; closestIdx = i; }
+        const d = haversineDistance(state.lastPosition.lat, state.lastPosition.lng, state.routeGeometry[i][1], state
+          .routeGeometry[i][0]) * 1000;
+        if (d < minDist) { minDist = d;
+          closestIdx = i; }
       }
       let doneDist = 0;
       for (let i = 1; i <= closestIdx; i++) {
-        doneDist += haversineDistance(state.routeGeometry[i-1][1], state.routeGeometry[i-1][0], state.routeGeometry[i][1], state.routeGeometry[i][0]);
+        doneDist += haversineDistance(state.routeGeometry[i - 1][1], state.routeGeometry[i - 1][0], state.routeGeometry[
+          i][1], state.routeGeometry[i][0]);
       }
       const remaining = Math.max(0, state.routeDistance - doneDist);
       document.getElementById('distDone').textContent = doneDist.toFixed(2);
@@ -1899,25 +2012,46 @@
     // ============================================================
     function openSos() {
       document.getElementById('sosContainer').classList.add('active');
-      document.getElementById('sosCoords').textContent = state.lastPosition ? state.lastPosition.lat.toFixed(6) + ', ' + state.lastPosition.lng.toFixed(6) : 'Άγνωστη';
+      document.getElementById('sosCoords').textContent = state.lastPosition ? state.lastPosition.lat.toFixed(6) + ', ' +
+        state.lastPosition.lng.toFixed(6) : 'Άγνωστη';
     }
+
     function closeSos() { document.getElementById('sosContainer').classList.remove('active'); }
+
     function genSosMsg() {
-      return '🆘 SOS\n👤 ' + (document.getElementById('sosName').value || 'Ανώνυμος') + '\n🆘 ' + document.getElementById('sosType').value + '\n📱 ' + (document.getElementById('sosPhone').value || '-') + '\n📍 ' + document.getElementById('sosCoords').textContent;
+      return '🆘 SOS\n👤 ' + (document.getElementById('sosName').value || 'Ανώνυμος') + '\n🆘 ' + document.getElementById(
+        'sosType').value + '\n📱 ' + (document.getElementById('sosPhone').value || '-') + '\n📍 ' + document
+        .getElementById('sosCoords').textContent;
     }
+
     function sendSms() {
       const m = genSosMsg();
-      if (/Android|iPhone/i.test(navigator.userAgent)) { window.location.href = 'sms:6988321619?body=' + encodeURIComponent(m); } else { navigator.clipboard.writeText(m).then(() => showToast('✅ Αντιγράφηκε', '#4CAF50')); }
+      if (/Android|iPhone/i.test(navigator.userAgent)) { window.location.href = 'sms:6988321619?body=' + encodeURIComponent(
+          m); } else { navigator.clipboard.writeText(m).then(() => showToast('✅ Αντιγράφηκε', '#4CAF50')); }
       closeSos();
     }
-    function sendEmail() { window.location.href = 'mailto:athosmaps@gmail.com?subject=SOS&body=' + encodeURIComponent(genSosMsg()); closeSos(); }
-    function call112() { if (confirm('📞 112;')) window.location.href = 'tel:112'; closeSos(); }
-    function dismissAlert() { state.alertDismissed = true; document.getElementById('offRouteWarning').classList.remove('active'); document.getElementById('offRouteStatus').classList.remove('active'); showToast('🔇 Σίγαση', '#888'); }
-    function disableAlertForever() { state.alertDisabledForever = true; document.getElementById('offRouteWarning').classList.remove('active'); document.getElementById('offRouteStatus').classList.remove('active'); showToast('🚫 Απενεργοποίηση', '#f44336'); }
+
+    function sendEmail() { window.location.href = 'mailto:athosmaps@gmail.com?subject=SOS&body=' + encodeURIComponent(
+        genSosMsg());
+      closeSos(); }
+
+    function call112() { if (confirm('📞 112;')) window.location.href = 'tel:112';
+      closeSos(); }
+
+    function dismissAlert() { state.alertDismissed = true;
+      document.getElementById('offRouteWarning').classList.remove('active');
+      document.getElementById('offRouteStatus').classList.remove('active');
+      showToast('🔇 Σίγαση', '#888'); }
+
+    function disableAlertForever() { state.alertDisabledForever = true;
+      document.getElementById('offRouteWarning').classList.remove('active');
+      document.getElementById('offRouteStatus').classList.remove('active');
+      showToast('🚫 Απενεργοποίηση', '#f44336'); }
 
     async function toggleScreenOn() {
       if (state.isScreenOn) { await disableWakeLock(); } else { await enableWakeLock(); }
     }
+
     async function enableWakeLock() {
       try {
         if ('wakeLock' in navigator) {
@@ -1932,10 +2066,12 @@
             b.classList.remove('active');
           });
         }
-      } catch(e) {}
+      } catch (e) {}
     }
+
     async function disableWakeLock() {
-      if (state.wakeLock) { await state.wakeLock.release(); state.wakeLock = null; }
+      if (state.wakeLock) { await state.wakeLock.release();
+        state.wakeLock = null; }
       state.isScreenOn = false;
       document.getElementById('screenBtn').textContent = '🔆';
       document.getElementById('screenBtn').classList.remove('active');
@@ -1952,14 +2088,18 @@
       pendingResumeAction = routeData;
       modal.classList.add('active');
     }
-    function hideResumeModal() { document.getElementById('resumeModal').classList.remove('active'); pendingResumeAction = null; }
+
+    function hideResumeModal() { document.getElementById('resumeModal').classList.remove('active');
+      pendingResumeAction = null; }
 
     // ============================================================
     // ★★★ TOAST ★★★
     // ============================================================
     function showToast(msg, color) {
       const t = document.createElement('div');
-      t.style.cssText = 'position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:' + color + ';color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600';
+      t.style.cssText =
+        'position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:' + color +
+        ';color:white;padding:8px 16px;border-radius:10px;z-index:9999;font-size:13px;text-align:center;max-width:90%;pointer-events:none;font-weight:600';
       t.textContent = msg;
       document.body.appendChild(t);
       setTimeout(() => t.remove(), 3000);
@@ -1978,7 +2118,7 @@
       setTimeout(() => {
         const savedRoute = localStorage.getItem('athos_last_route');
         if (savedRoute) {
-          try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch(e) {}
+          try { const r = JSON.parse(savedRoute); if (r.url && r.name) showResumeModal(r); } catch (e) {}
         }
       }, 1000);
 
@@ -1986,9 +2126,12 @@
       document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
       document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
       document.getElementById('centerBtnHeader').style.display = 'none';
-      document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
-      document.getElementById('closeHelpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
-      document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target === this) this.classList.remove('active'); });
+      document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList
+        .add('active'));
+      document.getElementById('closeHelpBtn').addEventListener('click', () => document.getElementById('helpModal')
+        .classList.remove('active'));
+      document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target === this) this.classList
+          .remove('active'); });
 
       document.getElementById('gpsBtn').addEventListener('click', toggleGps);
       document.getElementById('navBtn').addEventListener('click', toggleNavigation);
@@ -2005,14 +2148,16 @@
       document.getElementById('offlineFavBtn').addEventListener('click', () => {
         showFavorites();
         setTimeout(() => {
-          const offlineSection = document.querySelector('.fav-item[style*="border-left: 3px solid #27ae60;"]');
+          const offlineSection = document.querySelector(
+            '.fav-item[style*="border-left: 3px solid #27ae60;"]');
           if (offlineSection) offlineSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 300);
       });
 
       document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
       document.getElementById('fileInput').addEventListener('change', function(e) {
-        if (e.target.files[0]) { loadGpxFile(e.target.files[0]); e.target.value = ''; }
+        if (e.target.files[0]) { loadGpxFile(e.target.files[0]);
+          e.target.value = ''; }
       });
       document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
       document.getElementById('resumeBtn').addEventListener('click', function() {
@@ -2021,9 +2166,15 @@
           const r = JSON.parse(sr);
           if (r.url && r.url.startsWith('file:')) {
             const gpxData = localStorage.getItem('athos_last_gpx_data');
-            if (gpxData) { loadGpxFromData(gpxData, r.name); startGps(); setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500); return; }
+            if (gpxData) { loadGpxFromData(gpxData, r.name);
+              startGps();
+              setTimeout(() => { startNavigation();
+                toggleScreenOn(); }, 1500); return; }
           }
-          if (r.url && r.name) { loadRouteFromUrl(r.url, r.name, r.dist, r.time); startGps(); setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500); }
+          if (r.url && r.name) { loadRouteFromUrl(r.url, r.name, r.dist, r.time);
+            startGps();
+            setTimeout(() => { startNavigation();
+              toggleScreenOn(); }, 1500); }
         } else { showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336'); }
       });
 
@@ -2035,7 +2186,9 @@
             const gpxData = localStorage.getItem('athos_last_gpx_data');
             if (gpxData) loadGpxFromData(gpxData, r.name);
           } else if (r.url) { loadRouteFromUrl(r.url, r.name, r.dist, r.time); }
-          setTimeout(() => { startGps(); setTimeout(() => { startNavigation(); toggleScreenOn(); }, 1500); }, 1000);
+          setTimeout(() => { startGps();
+            setTimeout(() => { startNavigation();
+              toggleScreenOn(); }, 1500); }, 1000);
           showToast('🔄 Συνέχεια: ' + r.name, '#4CAF50');
         }
       });
@@ -2060,8 +2213,7 @@
       const wifiBtn = document.getElementById('wifiBtn');
       wifiBtn.addEventListener('mousedown', () => {
         pressTimer = setTimeout(() => {
-          // Long press: reset all offline data
-          if (confirm('⚠️ Θέλετε να διαγράψετε όλα τα offline δεδομένα (στυλ, tiles) και να κάνετε επαναφορά;')) {
+          if (confirm('⚠️ Θέλετε να διαγράψετε όλα τα offline δεδομένα (tiles) και να κάνετε επαναφορά;')) {
             offlineManager.resetAllData().then(() => {
               state.mapDownloaded = false;
               document.getElementById('offlineStatus').classList.remove('active', 'offline');
@@ -2073,12 +2225,13 @@
           pressTimer = null;
         }, 800);
       });
-      wifiBtn.addEventListener('mouseup', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
-      wifiBtn.addEventListener('mouseleave', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
-      // For touch devices
+      wifiBtn.addEventListener('mouseup', () => { if (pressTimer) { clearTimeout(pressTimer);
+          pressTimer = null; } });
+      wifiBtn.addEventListener('mouseleave', () => { if (pressTimer) { clearTimeout(pressTimer);
+          pressTimer = null; } });
       wifiBtn.addEventListener('touchstart', (e) => {
         pressTimer = setTimeout(() => {
-          if (confirm('⚠️ Θέλετε να διαγράψετε όλα τα offline δεδομένα (στυλ, tiles) και να κάνετε επαναφορά;')) {
+          if (confirm('⚠️ Θέλετε να διαγράψετε όλα τα offline δεδομένα (tiles) και να κάνετε επαναφορά;')) {
             offlineManager.resetAllData().then(() => {
               state.mapDownloaded = false;
               document.getElementById('offlineStatus').classList.remove('active', 'offline');
@@ -2090,12 +2243,12 @@
           pressTimer = null;
         }, 800);
       });
-      wifiBtn.addEventListener('touchend', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
-      wifiBtn.addEventListener('touchcancel', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
-      // Also normal click for download
+      wifiBtn.addEventListener('touchend', () => { if (pressTimer) { clearTimeout(pressTimer);
+          pressTimer = null; } });
+      wifiBtn.addEventListener('touchcancel', () => { if (pressTimer) { clearTimeout(pressTimer);
+          pressTimer = null; } });
       wifiBtn.addEventListener('click', async function(e) {
-        // If it was a long press, the event might still fire, so we check if pressTimer was cleared
-        if (pressTimer) return; // ignore if long press is about to happen
+        if (pressTimer) return;
         this.disabled = true;
         this.textContent = '⏳';
         try {
@@ -2143,7 +2296,6 @@
       updateOfflineFavCount();
     }
 
-    // Start the app
     startApp();
   </script>
 </body>
