@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
     
     <style>
-        /* ★★★ STYLES (ίδια με πριν) ★★★ */
+        /* ★★★ STYLES (όλα τα προηγούμενα, ΕΚΤΟΣ από το παλιό disclaimer) ★★★ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform 0.05s ease-out;will-change:transform;pointer-events:none}
@@ -165,73 +165,200 @@
         .center-btn-fixed{position:fixed;bottom:160px;right:10px;z-index:800;background:rgba(0,188,212,0.95);color:white;border:2px solid #00BCD4;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:manipulation;user-select:none;transition:all 0.2s}
         .center-btn-fixed.active{display:flex}
         .center-btn-fixed:active{transform:scale(0.85);background:#2196F3}
+        
+        /* ★★★ ΝΕΟ ΣΤΥΛ ΓΙΑ ΤΗΝ ΑΠΟΠΟΙΗΣΗ ΜΕ TICK ★★★ */
+        #disclaimerModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            background: rgba(0,0,0,0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+        #disclaimerModal.hidden {
+            display: none !important;
+        }
+        #disclaimerModal .disclaimer-content {
+            background: rgba(13,17,23,0.98);
+            border-radius: 16px;
+            padding: 24px 20px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid #FF5722;
+            color: #eee;
+            position: relative;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,87,34,0.3);
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-header .icon { font-size: 32px; }
+        #disclaimerModal .disclaimer-content .disclaimer-header h2 {
+            color: #FF5722;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #ccc;
+            max-height: 45vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body strong { color: #FF5722; }
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box {
+            background: rgba(255,255,255,0.04);
+            border-left: 4px solid #FF5722;
+            padding: 10px 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.orange { border-left-color: #FF9800; background: rgba(255,152,0,0.08); }
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.blue { border-left-color: #2196F3; background: rgba(33,150,243,0.08); }
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.purple { border-left-color: #9C27B0; background: rgba(156,39,176,0.08); }
+        #disclaimerModal .disclaimer-content .disclaimer-body .section-box.green { border-left-color: #4CAF50; background: rgba(76,175,80,0.08); }
+        #disclaimerModal .disclaimer-content .disclaimer-body ul { margin: 6px 0 6px 18px; padding: 0; }
+        #disclaimerModal .disclaimer-content .disclaimer-body ul li { margin-bottom: 4px; }
+        #disclaimerModal .disclaimer-content .disclaimer-footer {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 2px solid rgba(255,87,34,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn {
+            background: #555;
+            color: #888;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: not-allowed;
+            transition: all 0.2s;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn.enabled {
+            background: #FF5722;
+            color: white;
+            cursor: pointer;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn.enabled:hover { background: #E64A19; transform: scale(1.02); }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn.enabled:active { transform: scale(0.95); }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #FF5722;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .checkbox-wrapper label {
+            cursor: pointer;
+            font-weight: 600;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn {
+            background: transparent;
+            color: #888;
+            border: 1px solid #555;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:hover { background: rgba(255,255,255,0.05); border-color: #888; }
+        #disclaimerModal .disclaimer-content .disclaimer-footer .reject-btn:active { transform: scale(0.95); }
         .offline-status{position:fixed;top:52px;left:8px;z-index:999;background:rgba(0,0,0,0.8);color:#4CAF50;padding:4px 10px;border-radius:6px;font-size:9px;font-weight:600;border:1px solid rgba(76,175,80,0.3);pointer-events:none;display:none}
         .offline-status.active{display:block}
         .offline-status.offline{border-color:#4CAF50;color:#4CAF50}
         .offline-status.online{border-color:#2196F3;color:#2196F3}
         .offline-status .offline-count{color:#f1c40f}
-        @media(max-width:600px){.header-wrapper{height:44px;padding:3px 4px;gap:2px}.header-wrapper button,.header-wrapper a{padding:3px 6px;font-size:9px;min-height:28px}.header-wrapper button.gps-btn,.header-wrapper button.nav-btn,.header-wrapper button.help-btn,.header-wrapper button.center-btn,.header-wrapper button.fav-btn,.header-wrapper button.wifi-btn,.header-wrapper button.offline-fav-btn{font-size:13px}.info-bar{padding:8px 12px;bottom:48px;min-width:150px}.info-bar .distance{font-size:22px}.info-bar .time{font-size:18px}.info-bar .distance-label,.info-bar .time-label{font-size:11px}.info-bar .speed-kmh{font-size:12px}.info-bar .status{font-size:10px}.offroute-warning{top:48px}.status-badge{top:48px}.rotation-indicator{top:48px;font-size:9px;padding:2px 8px}.gps-notification{top:48px;font-size:10px;padding:4px 12px}.blog-link{bottom:44px;right:6px;width:28px;height:28px}.blog-link img{width:22px;height:22px}.rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}.center-btn-fixed{bottom:150px;right:6px;width:38px;height:38px;font-size:15px}#resumeModal .resume-content{padding:18px}#resumeModal .resume-content .resume-icon{font-size:36px}#resumeModal .resume-content h2{font-size:16px}#resumeModal .resume-content .route-name{font-size:14px}#resumeModal .resume-content .route-info{font-size:12px}#helpModal .help-content{padding:14px}#helpModal .help-item{font-size:11px;padding:5px 6px}#helpModal .help-icon{font-size:16px;width:24px}#helpModal .help-title h2{font-size:15px}#helpModal .help-section{padding:6px 8px}#helpModal .help-item .help-desc{font-size:10px}.fav-star{font-size:16px;min-width:20px}#favDropdown .fav-content{padding:8px 10px}#favDropdown .fav-item{font-size:12px;padding:5px 6px;min-height:34px}#favDropdown .fav-item .factions button{font-size:9px;padding:2px 6px}#routeDropdown .route-item{font-size:12px;padding:5px 6px;min-height:34px}#routeDropdown .route-item .rname{font-size:12px}.offline-status{top:48px;font-size:8px;padding:2px 8px}}
+        @media(max-width:600px){.header-wrapper{height:44px;padding:3px 4px;gap:2px}.header-wrapper button,.header-wrapper a{padding:3px 6px;font-size:9px;min-height:28px}.header-wrapper button.gps-btn,.header-wrapper button.nav-btn,.header-wrapper button.help-btn,.header-wrapper button.center-btn,.header-wrapper button.fav-btn,.header-wrapper button.wifi-btn,.header-wrapper button.offline-fav-btn{font-size:13px}.info-bar{padding:8px 12px;bottom:48px;min-width:150px}.info-bar .distance{font-size:22px}.info-bar .time{font-size:18px}.info-bar .distance-label,.info-bar .time-label{font-size:11px}.info-bar .speed-kmh{font-size:12px}.info-bar .status{font-size:10px}.offroute-warning{top:48px}.status-badge{top:48px}.rotation-indicator{top:48px;font-size:9px;padding:2px 8px}.gps-notification{top:48px;font-size:10px;padding:4px 12px}.blog-link{bottom:44px;right:6px;width:28px;height:28px}.blog-link img{width:22px;height:22px}.rotate-btn-fixed{bottom:100px;right:6px;width:38px;height:38px;font-size:15px}.center-btn-fixed{bottom:150px;right:6px;width:38px;height:38px;font-size:15px}#resumeModal .resume-content{padding:18px}#resumeModal .resume-content .resume-icon{font-size:36px}#resumeModal .resume-content h2{font-size:16px}#resumeModal .resume-content .route-name{font-size:14px}#resumeModal .resume-content .route-info{font-size:12px}#helpModal .help-content{padding:14px}#helpModal .help-item{font-size:11px;padding:5px 6px}#helpModal .help-icon{font-size:16px;width:24px}#helpModal .help-title h2{font-size:15px}#helpModal .help-section{padding:6px 8px}#helpModal .help-item .help-desc{font-size:10px}#disclaimerModal .disclaimer-content{padding:18px 14px}#disclaimerModal .disclaimer-content .disclaimer-header h2{font-size:17px}#disclaimerModal .disclaimer-content .disclaimer-body{font-size:12px}#disclaimerModal .disclaimer-content .disclaimer-footer .accept-btn{font-size:14px;padding:12px}.fav-star{font-size:16px;min-width:20px}#favDropdown .fav-content{padding:8px 10px}#favDropdown .fav-item{font-size:12px;padding:5px 6px;min-height:34px}#favDropdown .fav-item .factions button{font-size:9px;padding:2px 6px}#routeDropdown .route-item{font-size:12px;padding:5px 6px;min-height:34px}#routeDropdown .route-item .rname{font-size:12px}.offline-status{top:48px;font-size:8px;padding:2px 8px}}
     </style>
 </head>
 <body>
 
-    <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΕΥΘΥΝΗΣ ★★★ – ΑΠΛΟ CHECKBOX ★★★ -->
-    <div id="disclaimerModal" class="active">
-        <div class="disclaimer-content" style="background:rgba(13,17,23,0.98);border-radius:16px;padding:24px 20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;border:3px solid #FF5722;color:#eee;position:relative;animation:fadeInUp 0.5s ease-out;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,0.5);">
-            <div class="disclaimer-header" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid rgba(255,87,34,0.3);">
-                <span class="icon" style="font-size:32px;">⚖️</span>
-                <h2 style="color:#FF5722;font-size:20px;font-weight:800;letter-spacing:0.5px;">Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
+    <!-- ★★★ ΝΕΟ ΠΑΡΑΘΥΡΟ ΑΠΟΠΟΙΗΣΗΣ ΜΕ CHECKBOX ★★★ -->
+    <div id="disclaimerModal">
+        <div class="disclaimer-content">
+            <div class="disclaimer-header">
+                <span class="icon">⚖️</span>
+                <h2>Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
             </div>
-            <div class="disclaimer-body" style="font-size:13px;line-height:1.7;color:#ccc;max-height:55vh;overflow-y:auto;padding-right:4px;">
-                <div class="section-box" style="background:rgba(255,255,255,0.04);border-left:4px solid #FF5722;padding:10px 12px;margin:10px 0;border-radius:4px;">
+            <div class="disclaimer-body">
+                <div class="section-box">
                     <strong>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</strong><br>
                     Το παρόν λογισμικό αποτελεί <strong>αποκλειστικά βοηθητικό εργαλείο</strong> προγραμματισμού διαδρομών. Σε καμία περίπτωση δεν υποκαθιστά την προσωπική κρίση, την απαιτούμενη προσοχή ή την ατομική ευθύνη του χρήστη. Ο δημιουργός της εφαρμογής <strong>δεν φέρει καμία αστική ή ποινική ευθύνη</strong> για τυχόν ατυχήματα, απώλειες ή ζημίες κατά τη διάρκεια των διαδρομών.
                 </div>
-                <div class="section-box orange" style="background:rgba(255,255,255,0.04);border-left:4px solid #FF9800;padding:10px 12px;margin:10px 0;border-radius:4px;">
+                <div class="section-box orange">
                     <strong>⏱️ Εκτίμηση Χρόνου &amp; Φυσική Κατάσταση</strong><br>
                     Οι αναγραφόμενοι χρόνοι πλοήγησης είναι <strong>ενδεικτικοί</strong> και βασίζονται σε μέσους όρους. Η πραγματική διάρκεια της διαδρομής εξαρτάται άμεσα από τη <strong>φυσική κατάσταση</strong> του χρήστη και τις <strong>επικρατούσες καιρικές συνθήκες</strong>.
                 </div>
-                <div class="section-box" style="background:rgba(255,255,255,0.04);border-left:4px solid #FF5722;padding:10px 12px;margin:10px 0;border-radius:4px;">
+                <div class="section-box">
                     <strong>🛣️ Μεταβολές Οδικού Δικτύου &amp; Μονοπατιών</strong><br>
                     Λόγω έντονων καιρικών φαινομένων, κατολισθήσεων ή εργασιών οδοποιίας, οι χωματόδρομοι και τα μονοπάτια ενδέχεται να έχουν υποστεί αλλοιώσεις ή να είναι <strong>μη βατά</strong>.
-                    <ul style="margin:6px 0 6px 18px;padding:0;">
+                    <ul>
                         <li><strong>Προκαταρκτικός έλεγχος:</strong> Απαιτείται η προηγούμενη ενημέρωση του χρήστη από τις τοπικές αρχές για την τρέχουσα κατάσταση των προσβάσεων.</li>
                         <li><strong>Αποδοχή κινδύνου:</strong> Η διέλευση από οποιοδήποτε σημείο γίνεται με <strong>αποκλειστική και πλήρη ευθύνη</strong> του χρήστη.</li>
                     </ul>
                 </div>
-                <div class="section-box blue" style="background:rgba(33,150,243,0.08);border-left:4px solid #2196F3;padding:10px 12px;margin:10px 0;border-radius:4px;">
+                <div class="section-box blue">
                     <strong>🗺️ Εποπτικό Μέσο &amp; Πλοήγηση</strong><br>
                     Οι παρεχόμενες πληροφορίες λειτουργούν <strong>συμπληρωματικά</strong> και δεν αντικαθιστούν τα παραδοσιακά μέσα προσανατολισμού. Κρίνεται απαραίτητη η κατοχή και η γνώση χρήσης <strong>φυσικού (έντυπου) χάρτη και πυξίδας</strong>.
                 </div>
-                <div class="section-box orange" style="background:rgba(255,152,0,0.08);border-left:4px solid #FF9800;padding:10px 12px;margin:10px 0;border-radius:4px;">
+                <div class="section-box orange">
                     <strong>📶 Περιορισμός Δικτύου &amp; Λειτουργία Offline</strong><br>
                     Στην περιοχή του <strong>Αγίου Όρους</strong>, η κάλυψη του δικτύου κινητής τηλεφωνίας είναι <strong>περιορισμένη έως εντελώς ανύπαρκτη</strong>. Για την ασφάλειά σας, απαιτείται η λήψη και χρήση χαρτών <strong>εκτός σύνδεσης (offline)</strong>.
                 </div>
-                <div class="section-box purple" style="background:rgba(156,39,176,0.08);border-left:4px solid #9C27B0;padding:10px 12px;margin:10px 0;border-radius:4px;">
+                <div class="section-box purple">
                     <strong>🛡️ Κανόνες Ασφαλείας &amp; Προετοιμασία</strong>
-                    <ul style="margin:6px 0 6px 18px;padding:0;">
+                    <ul>
                         <li><strong>Έλεγχος GPS:</strong> Επαληθεύστε τη σωστή λειτουργία του δέκτη GPS της συσκευής σας πριν την εκκίνηση.</li>
                         <li><strong>Αυτονομία ενέργειας:</strong> Φέρετε μαζί σας εξωτερική μπαταρία (power bank) πλήρως φορτισμένη.</li>
                         <li><strong>Γνωστοποίηση δρομολογίου:</strong> Ενημερώστε τρίτο πρόσωπο για την ακριβή διαδρομή και την εκτιμώμενη ώρα επιστροφής σας.</li>
                         <li><strong>Σήμανση:</strong> Ακολουθείτε αυστηρά και μόνο τα επίσημα σηματοδοτημένα μονοπάτια.</li>
                     </ul>
                 </div>
-                <div class="section-box blue" style="border-left-color: #4CAF50; background: rgba(76,175,80,0.08);padding:10px 12px;margin:10px 0;border-radius:4px;">
+                <div class="section-box green">
                     <strong>🔒 Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου</strong><br>
                     Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.
                 </div>
             </div>
-            <div class="disclaimer-footer" style="margin-top:16px;padding-top:14px;border-top:2px solid rgba(255,87,34,0.2);display:flex;flex-direction:column;gap:10px;">
-                <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;color:#eee;padding:8px 12px;background:rgba(255,255,255,0.05);border-radius:8px;">
-                    <input type="checkbox" id="disclaimerCheck" style="width:20px;height:20px;cursor:pointer;accent-color:#4CAF50;">
-                    <span>Έλαβα γνώση και αποδέχομαι τους παραπάνω όρους</span>
-                </label>
-                <button id="acceptDisclaimer" disabled style="background:#555;color:white;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer;transition:all 0.2s;width:100%;text-transform:uppercase;letter-spacing:1px;opacity:0.5;">
-                    ✅ ΣΥΝΕΧΙΣΤΕ
-                </button>
-                <button id="rejectDisclaimer" style="background:transparent;color:#888;border:1px solid #555;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;transition:all 0.2s;width:100%;">
-                    ✕ Δεν αποδέχομαι - Έξοδος
-                </button>
+            <div class="disclaimer-footer">
+                <!-- ★★★ CHECKBOX ★★★ -->
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="disclaimerCheck">
+                    <label for="disclaimerCheck">✅ Έλαβα γνώση και αποδέχομαι τους όρους χρήσης</label>
+                </div>
+                <button class="accept-btn" id="acceptDisclaimer" disabled>ΣΥΝΕΧΕΙΑ</button>
+                <button class="reject-btn" id="rejectDisclaimer">✕ Δεν αποδέχομαι - Έξοδος</button>
             </div>
         </div>
     </div>
@@ -241,7 +368,7 @@
         <div id="map"></div>
     </div>
 
-    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI (ίδια) ★★★ -->
+    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI (όλα τα άλλα) ★★★ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     <div class="gps-notification" id="gpsNotification">
         <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span>
@@ -412,7 +539,7 @@
 
     <script>
         // ============================================================
-        // ★★★ ATHOS MAPS - ΠΛΗΡΗΣ ΕΚΔΟΣΗ ΜΕ CHECKBOX ★★★
+        // ★★★ ATHOS MAPS - Η ΑΠΛΗ ΕΚΔΟΣΗ ΜΕ TICK ★★★
         // ============================================================
 
         // ============================================================
@@ -1266,7 +1393,6 @@
             return R * c;
         }
 
-        // ★★★ ΦΟΡΤΩΝΟΥΜΕ ΠΑΝΤΑ ONLINE ΧΑΡΤΗ (μέχρι να γίνει switch με reload) ★★★
         function initMap() {
             try {
                 state.map = new maplibregl.Map({
@@ -1298,14 +1424,14 @@
                 document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
                 state.mapInitialized = true;
             } catch (e) {
-                console.warn('Map initialization error (offline?):', e);
+                console.warn('Map init error (offline):', e);
                 document.getElementById('statusBadge').textContent = '⚠️ Offline mode (no map)';
                 document.getElementById('statusDisplay').textContent = 'Συνδεθείτε για να φορτώσει ο χάρτης';
             }
         }
 
         function initMapWithOfflineSupport() {
-            initMap(); // πάντα online
+            initMap();
             document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
             document.getElementById('offlineStatus').classList.remove('active');
 
@@ -1820,19 +1946,23 @@
         }
 
         // ============================================================
-        // ★★★ DOM READY ★★★ (το σημαντικό κομμάτι) ★★★
+        // ★★★ DOM READY ★★★
         // ============================================================
         let pendingResumeAction = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             loadFavorites();
 
-            // ★★★ ΕΛΕΓΧΟΣ ΑΠΟΠΟΙΗΣΗΣ ΜΕ CHECKBOX ★★★
-            const accepted = localStorage.getItem('athos_disclaimer_accepted');
+            const disclaimerModal = document.getElementById('disclaimerModal');
+            const acceptBtn = document.getElementById('acceptDisclaimer');
+            const rejectBtn = document.getElementById('rejectDisclaimer');
+            const checkBox = document.getElementById('disclaimerCheck');
 
-            // Αν έχει ήδη αποδεχτεί, κρύβουμε το modal και φορτώνουμε χάρτη
+            // ★★★ ΕΛΕΓΧΟΣ ΑΠΟΠΟΙΗΣΗΣ ★★★
+            const accepted = localStorage.getItem('athos_disclaimer_accepted');
             if (accepted === 'true') {
-                document.getElementById('disclaimerModal').classList.remove('active');
+                // Ήδη αποδεκτή – κρύβουμε το modal και φορτώνουμε τον χάρτη
+                disclaimerModal.classList.add('hidden');
                 initMapWithOfflineSupport();
                 setTimeout(() => {
                     const savedRoute = localStorage.getItem('athos_last_route');
@@ -1841,32 +1971,31 @@
                     }
                 }, 800);
             } else {
-                // Κρατάμε το modal ορατό
-                document.getElementById('disclaimerModal').classList.add('active');
-                // Το κουμπί είναι disabled μέχρι να τσεκάρει το checkbox
-                document.getElementById('acceptDisclaimer').disabled = true;
+                // Δεν έχει αποδεχτεί – κρατάμε το modal ορατό
+                disclaimerModal.classList.remove('hidden');
+                // Απενεργοποιημένο κουμπί μέχρι να τσεκάρει
+                acceptBtn.disabled = true;
+                acceptBtn.classList.remove('enabled');
             }
 
-            // ★★★ CHECKBOX – ΕΝΕΡΓΟΠΟΙΗΣΗ ΚΟΥΜΠΙΟΥ ★★★
-            document.getElementById('disclaimerCheck').addEventListener('change', function() {
-                const btn = document.getElementById('acceptDisclaimer');
+            // ★★★ CHECKBOX: Ενεργοποιεί το κουμπί ★★★
+            checkBox.addEventListener('change', function() {
                 if (this.checked) {
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                    btn.style.background = '#4CAF50';
+                    acceptBtn.disabled = false;
+                    acceptBtn.classList.add('enabled');
                 } else {
-                    btn.disabled = true;
-                    btn.style.opacity = '0.5';
-                    btn.style.background = '#555';
+                    acceptBtn.disabled = true;
+                    acceptBtn.classList.remove('enabled');
                 }
             });
 
-            // ★★★ ΚΛΙΚ ΣΤΟ ΚΟΥΜΠΙ ΣΥΝΕΧΙΣΤΕ ★★★
-            document.getElementById('acceptDisclaimer').addEventListener('click', function() {
+            // ★★★ ΚΛΙΚ ΣΤΟ ΚΟΥΜΠΙ ΣΥΝΕΧΕΙΑ ★★★
+            acceptBtn.addEventListener('click', function() {
                 if (this.disabled) return;
                 localStorage.setItem('athos_disclaimer_accepted', 'true');
                 state.disclaimerAccepted = true;
-                document.getElementById('disclaimerModal').classList.remove('active');
+                // ★★★ ΚΡΥΒΟΥΜΕ ΤΟ MODAL ★★★
+                disclaimerModal.classList.add('hidden');
                 // ★★★ ΦΟΡΤΩΝΟΥΜΕ ΤΟΝ ΧΑΡΤΗ ★★★
                 initMapWithOfflineSupport();
                 setTimeout(() => {
@@ -1878,14 +2007,14 @@
             });
 
             // ★★★ ΚΛΙΚ ΣΤΟ ΔΕΝ ΑΠΟΔΕΧΟΜΑΙ ★★★
-            document.getElementById('rejectDisclaimer').addEventListener('click', function() {
+            rejectBtn.addEventListener('click', function() {
                 showToast('❌ Πρέπει να αποδεχτείτε τους όρους', '#f44336');
                 setTimeout(function() {
                     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0d1117;color:#eee;text-align:center;padding:20px;flex-direction:column;gap:20px;"><div style="font-size:64px;">⚠️</div><h2 style="color:#FF5722;">Δεν αποδεχτήκατε τους όρους</h2><button onclick="location.reload()" style="background:#FF5722;color:white;border:none;padding:12px 30px;border-radius:8px;font-size:16px;cursor:pointer;">🔄 Επανεκκίνηση</button></div>';
                 }, 500);
             });
 
-            // ★★★ ΟΙ ΥΠΟΛΟΙΠΟΙ EVENT LISTENERS ★★★
+            // ★★★ ΟΙ ΥΠΟΛΟΙΠΟΙ EVENT LISTENERS (παραμένουν ίδιοι) ★★★
             document.getElementById('centerBtn').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').addEventListener('click', centerOnRoute);
             document.getElementById('centerBtnHeader').style.display = 'none';
