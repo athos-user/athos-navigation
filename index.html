@@ -10,7 +10,7 @@
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <style>
-    /* ★★★ STYLES – όλα τα προηγούμενα, συμπυκνωμένα ★★★ */
+    /* ★★★ STYLES ★★★ */
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',sans-serif; background:#0d1117; overflow:hidden; height:100%; touch-action:pan-x pan-y; }
     #map-wrapper { position:fixed; top:50%; left:50%; width:200vw; height:200vh; transform:translate(-50%,-50%); z-index:1; transform-origin:center center; transition:transform 0.05s ease-out; will-change:transform; pointer-events:none; }
@@ -170,7 +170,7 @@
     .offline-status.online { border-color:#2196F3; color:#2196F3; }
     .offline-status .offline-count { color:#f1c40f; }
 
-    /* ★★★ ΜΗΝΥΜΑ OFFLINE ★★★ */
+    /* ★★★ OFFLINE MESSAGE ★★★ */
     #offlineMessage {
       position: fixed;
       top: 50%;
@@ -194,7 +194,7 @@
     #offlineMessage button { background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
     #offlineMessage button:hover { background: #45a049; transform: scale(1.02); }
 
-    /* ★★★ ΑΠΟΠΟΙΗΣΗ ★★★ */
+    /* ★★★ DISCLAIMER ★★★ */
     #disclaimerOverlay {
       position: fixed;
       top: 0;
@@ -285,14 +285,14 @@
 </head>
 <body>
 
-  <!-- ★★★ ΜΗΝΥΜΑ OFFLINE ★★★ -->
+  <!-- ★★★ OFFLINE MESSAGE ★★★ -->
   <div id="offlineMessage">
     <h2>📡 Είστε εκτός σύνδεσης</h2>
     <p>Για να χρησιμοποιήσετε την εφαρμογή, απαιτείται σύνδεση στο διαδίκτυο για την αρχική φόρτωση του χάρτη και των δεδομένων.</p>
     <button onclick="location.reload()">🔄 Δοκιμάστε ξανά</button>
   </div>
 
-  <!-- ★★★ ΑΠΟΠΟΙΗΣΗ ★★★ -->
+  <!-- ★★★ DISCLAIMER ★★★ -->
   <div id="disclaimerOverlay">
     <div class="box">
       <h2>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
@@ -313,10 +313,10 @@
     </div>
   </div>
 
-  <!-- ★★★ ΧΑΡΤΗΣ ★★★ -->
+  <!-- ★★★ MAP ★★★ -->
   <div id="map-wrapper"><div id="map"></div></div>
 
-  <!-- ★★★ ΥΠΟΛΟΙΠΑ UI ★★★ -->
+  <!-- ★★★ UI ★★★ -->
   <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
   <div class="gps-notification" id="gpsNotification"><span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span><button class="close-notification" id="closeGpsNotification">✕</button></div>
   <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
@@ -385,7 +385,7 @@
     </div>
   </div>
 
-  <!-- ★★★ ΠΑΡΑΘΥΡΟ ΑΓΑΠΗΜΕΝΩΝ ★★★ -->
+  <!-- ★★★ FAVORITES ★★★ -->
   <div id="favDropdown">
     <div class="fav-content">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3>⭐ Αγαπημένες Διαδρομές (<span id="favCount">0</span>)</h3><button id="closeFavBtn" style="background:#555;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:11px;">✕</button></div>
@@ -394,7 +394,7 @@
       <div id="favList"></div>
       <div class="fav-actions">
         <button class="download-offline-favs" id="downloadOfflineFavsBtn">📥 Λήψη Offline</button>
-        <button class="clear-favs" id="clearFavsBtn">🧹 Καθαρισμός</button>
+        <button class="clear-favs" id="clearFavsBtn">🧹 Καθαρισμός Όλων</button>
         <button class="close-favs" id="closeFavBtn2">✕ Κλείσιμο</button>
       </div>
     </div>
@@ -420,7 +420,7 @@
       <div class="help-section"><div class="help-section-title">⭐ Αγαπημένες &amp; Offline</div><div class="help-item"><span class="help-icon">⭐</span><div><div class="help-label">Online Αγαπημένες</div><div class="help-desc">Πατήστε <strong>⭐</strong> για να δείτε τις online αγαπημένες σας. Χρειάζεται internet.</div></div></div><div class="help-item"><span class="help-icon">💾</span><div><div class="help-label">Offline Αγαπημένες</div><div class="help-desc">Πατήστε <strong>💾</strong> για να δείτε/κατεβάσετε έως 10 διαδρομές για offline χρήση.</div></div></div><div class="help-item"><span class="help-icon">📥</span><div><div class="help-label">Λήψη Offline</div><div class="help-desc">Από το παράθυρο αγαπημένων, πατήστε <strong>"Λήψη Offline"</strong> για να κατεβάσετε διαδρομές.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά.</div></div></div></div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v5.0 · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v5.1 · 140+ Offline Routes</span></div>
     </div>
   </div>
 
@@ -548,7 +548,6 @@
           const count = await this.getTileCount();
           return count > 0;
         } catch (e) {
-          console.warn('isMapDownloaded error:', e);
           return false;
         }
       }
@@ -632,7 +631,7 @@
         return Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * Math.pow(2, z));
       }
 
-      // --- Offline favorites ---
+      // Offline favorites
       async saveOfflineFavorite(routeData, gpxData) {
         const db = await this.initDB();
         return new Promise((resolve, reject) => {
@@ -898,7 +897,7 @@
     }
 
     // ============================================================
-    // ★★★ ΠΡΩΤΟΚΟΛΛΟ OFFLINE ★★★
+    // ★★★ PROTOCOL OFFLINE ★★★
     // ============================================================
     const GRAY_PIXEL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QzwAIQgMHAVSOGAAAAABJRU5ErkJggg==';
     let offlineManager = new OfflineMapManager();
@@ -934,7 +933,7 @@
     });
 
     // ============================================================
-    // ★★★ ROUTES - 140+ (όλες) ★★★
+    // ★★★ ROUTES 140+ ★★★
     // ============================================================
     const ROUTES = [
       {"name":"Αρσανάς → Ζωγράφου","dist":3,"time":"1:00","url":"https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx"},
@@ -1124,7 +1123,8 @@
       gpsFirstFix: false,
       gpsErrorCount: 0,
       mapInitialized: false,
-      mapLoadAttempts: 0
+      mapLoadAttempts: 0,
+      mapLoadRetryTimer: null
     };
 
     // ============================================================
@@ -1146,10 +1146,12 @@
       if (count > 0) { btn.textContent = '⭐' + count; btn.classList.add('active'); } else { btn.textContent = '⭐'; btn.classList.remove('active'); }
     }
     async function updateOfflineFavCount() {
-      const count = await offlineManager.getOfflineFavoriteCount();
-      document.getElementById('offlineFavCount').textContent = count;
-      const btn = document.getElementById('offlineFavBtn');
-      if (count > 0) { btn.textContent = '💾' + count; btn.classList.add('active'); } else { btn.textContent = '💾'; btn.classList.remove('active'); }
+      try {
+        const count = await offlineManager.getOfflineFavoriteCount();
+        document.getElementById('offlineFavCount').textContent = count;
+        const btn = document.getElementById('offlineFavBtn');
+        if (count > 0) { btn.textContent = '💾' + count; btn.classList.add('active'); } else { btn.textContent = '💾'; btn.classList.remove('active'); }
+      } catch(e) {}
     }
     function toggleFavorite(index) {
       const route = ROUTES[index];
@@ -1179,7 +1181,7 @@
             <span class="finfo">${fav.dist}km | ${fav.time}</span>
             <div class="factions">
               <button class="load-offline-fav" data-id="${fav.id}">📂 Φόρτωση</button>
-              <button class="remove-offline-fav" data-id="${fav.id}">✕</button>
+              <button class="remove-offline-fav" data-id="${fav.id}" style="background:#e74c3c;padding:3px 10px;font-weight:700;">✕</button>
             </div>
           </div>`;
         });
@@ -1194,7 +1196,7 @@
             <span class="finfo">${route.dist}km | ${route.time}</span>
             <div class="factions">
               <button class="load-fav" data-name="${route.name}" data-url="${route.url}" data-dist="${route.dist}" data-time="${route.time}">📂 Φόρτωση</button>
-              <button class="remove-fav" data-name="${route.name}">✕</button>
+              <button class="remove-fav" data-name="${route.name}" style="background:#e74c3c;padding:3px 10px;font-weight:700;">✕</button>
             </div>
           </div>`;
         });
@@ -1233,16 +1235,26 @@
     }
     function showFavorites() { document.getElementById('favDropdown').classList.add('active'); renderFavorites(); }
     function hideFavorites() { document.getElementById('favDropdown').classList.remove('active'); }
-    function clearAllFavorites() {
-      if (state.favorites.length === 0) { showToast('⚠️ Δεν υπάρχουν online αγαπημένες', '#888'); return; }
-      if (confirm('🧹 Θέλετε να καθαρίσετε όλες τις online αγαπημένες;')) {
-        state.favorites = [];
-        saveFavorites();
-        renderFavorites();
-        renderRoutes(document.getElementById('routeSearch').value);
-        showToast('🧹 Καθαρίστηκαν όλες', '#e74c3c');
+
+    async function clearAllFavorites() {
+      const offlineCount = await offlineManager.getOfflineFavoriteCount();
+      const onlineCount = state.favorites.length;
+      if (onlineCount === 0 && offlineCount === 0) {
+        showToast('⚠️ Δεν υπάρχουν αγαπημένες', '#888');
+        return;
       }
+      if (!confirm('🧹 Θέλετε να καθαρίσετε ΟΛΕΣ τις αγαπημένες (online και offline);')) return;
+      // Clear online
+      state.favorites = [];
+      saveFavorites();
+      // Clear offline
+      await offlineManager.clearOfflineFavorites();
+      updateOfflineFavCount();
+      renderFavorites();
+      renderRoutes(document.getElementById('routeSearch').value);
+      showToast('🧹 Καθαρίστηκαν όλες οι αγαπημένες (online + offline)', '#e74c3c');
     }
+
     async function downloadOfflineFavorites() {
       const offlineFavs = await offlineManager.getOfflineFavorites();
       const count = offlineFavs.length;
@@ -1283,9 +1295,13 @@
       return R * c;
     }
 
-    // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ΧΑΡΤΗ (με try/catch και εμφάνιση recovery modal) ★★★
+    // ★★★ MAP INIT ★★★
     function initMap() {
       try {
+        if (state.map) {
+          // already initialized
+          return;
+        }
         state.map = new maplibregl.Map({
           container: 'map',
           style: 'https://tiles.openfreemap.org/styles/liberty',
@@ -1315,14 +1331,54 @@
         document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
         state.mapInitialized = true;
         state.mapLoadAttempts = 0;
+
+        // On style load error, try offline fallback
+        state.map.on('error', async (e) => {
+          if (e.error && e.error.status === 404) {
+            // Style might be offline, check if we have offline tiles
+            const hasMap = await offlineManager.isMapDownloaded();
+            if (hasMap) {
+              // We have offline tiles, but the style failed. Try to reload with offline style.
+              // For now, just show a message and let the user know they can use offline tiles.
+              showToast('📡 Λειτουργία Offline με τοπικό χάρτη', '#4CAF50');
+              document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+              document.getElementById('offlineStatus').classList.add('active', 'offline');
+              document.getElementById('wifiBtn').classList.add('active');
+              // Remove the offline message if it's shown
+              document.getElementById('offlineMessage').classList.remove('active');
+            }
+          }
+        });
+
+        // When map loads, check offline status
+        state.map.on('load', () => {
+          console.log('Map loaded');
+          // Hide offline message if visible
+          document.getElementById('offlineMessage').classList.remove('active');
+        });
+
       } catch (e) {
         console.warn('Map initialization error:', e);
         state.mapLoadAttempts++;
         if (state.mapLoadAttempts < 3) {
-          setTimeout(() => initMap(), 1000);
+          if (state.mapLoadRetryTimer) clearTimeout(state.mapLoadRetryTimer);
+          state.mapLoadRetryTimer = setTimeout(() => initMap(), 1500);
         } else {
-          // Εμφάνιση μηνύματος offline
-          document.getElementById('offlineMessage').classList.add('active');
+          // Check if offline tiles are available before showing offline message
+          offlineManager.isMapDownloaded().then(hasMap => {
+            if (hasMap) {
+              state.mapDownloaded = true;
+              document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+              document.getElementById('offlineStatus').classList.add('active', 'offline');
+              document.getElementById('wifiBtn').classList.add('active');
+              document.getElementById('offlineMessage').classList.remove('active');
+              showToast('📡 Offline χάρτης διαθέσιμος!', '#4CAF50');
+            } else {
+              document.getElementById('offlineMessage').classList.add('active');
+            }
+          }).catch(() => {
+            document.getElementById('offlineMessage').classList.add('active');
+          });
         }
       }
     }
@@ -1338,14 +1394,19 @@
           document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
           document.getElementById('offlineStatus').classList.add('active', 'offline');
           document.getElementById('wifiBtn').classList.add('active');
-          showToast('📡 Offline χάρτης διαθέσιμος! (κάντε reload για ενεργοποίηση)', '#4CAF50');
+          showToast('📡 Offline χάρτης διαθέσιμος!', '#4CAF50');
+          // Hide offline message if it's shown
+          document.getElementById('offlineMessage').classList.remove('active');
         } else {
           document.getElementById('offlineStatus').textContent = '🌐 Online';
           document.getElementById('offlineStatus').classList.add('active', 'online');
           setTimeout(() => offlineUI.checkAndPromptDownload(), 2000);
         }
       }).catch(() => {
-        document.getElementById('offlineMessage').classList.add('active');
+        // If we can't check, assume offline and try to show prompt
+        document.getElementById('offlineStatus').textContent = '📡 Offline';
+        document.getElementById('offlineStatus').classList.add('active', 'offline');
+        setTimeout(() => offlineUI.checkAndPromptDownload(), 1000);
       });
       updateOfflineFavCount();
     }
@@ -1468,7 +1529,7 @@
     }
 
     // ============================================================
-    // ★★★ ΠΛΟΗΓΗΣΗ ★★★
+    // ★★★ NAVIGATION ★★★
     // ============================================================
     function toggleNavigation() {
       if (state.isNavigating) { stopNavigation(); } else { startNavigation(); }
@@ -1495,7 +1556,7 @@
     }
 
     // ============================================================
-    // ★★★ ΔΙΑΔΡΟΜΕΣ ★★★
+    // ★★★ ROUTES ★★★
     // ============================================================
     function centerOnRoute() {
       if (!state.routeGeometry || state.routeGeometry.length === 0) { showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή', '#FF9800'); return; }
@@ -1821,7 +1882,7 @@
     }
 
     // ============================================================
-    // ★★★ MODAL ΣΥΝΕΧΕΙΑΣ ★★★
+    // ★★★ RESUME MODAL ★★★
     // ============================================================
     function showResumeModal(routeData) {
       const modal = document.getElementById('resumeModal');
@@ -1849,7 +1910,7 @@
     // ============================================================
     let pendingResumeAction = null;
 
-    // ★★★ ΑΠΟΠΟΙΗΣΗ (ανεξάρτητη) ★★★
+    // ★★★ DISCLAIMER ★★★
     (function() {
       const overlay = document.getElementById('disclaimerOverlay');
       const checkbox = document.getElementById('disclaimerCheck');
@@ -1876,7 +1937,8 @@
         if (!checkbox.checked) return;
         localStorage.setItem('athos_disclaimer_accepted', 'true');
         overlay.classList.add('hidden');
-        startApp();
+        // Small delay to let the overlay hide before starting
+        setTimeout(startApp, 100);
       });
 
       btnExit.addEventListener('click', function() {
