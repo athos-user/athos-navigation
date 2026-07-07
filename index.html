@@ -10,7 +10,7 @@
     <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
     <style>
-        /* ★★★ STYLES – όλα τα προηγούμενα, συμπυκνωμένα ★★★ */
+        /* ★★★ STYLES (τα ίδια με πριν, συν μικρή προσθήκη) ★★★ */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;background:#0d1117;overflow:hidden;height:100%;touch-action:pan-x pan-y}
         #map-wrapper{position:fixed;top:50%;left:50%;width:200vw;height:200vh;transform:translate(-50%,-50%);z-index:1;transform-origin:center center;transition:transform 0.05s ease-out;will-change:transform;pointer-events:none}
@@ -289,11 +289,64 @@
         }
         #disclaimerOverlay .box .footer .btn-exit:hover { background: rgba(255,255,255,0.05); border-color: #888; }
         @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        /* ★★★ ΠΡΟΣΘΗΚΗ: μήνυμα επαναφοράς ★★★ */
+        #recoveryModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 99998;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        #recoveryModal.active { display: flex; }
+        #recoveryModal .box {
+            background: rgba(13,17,23,0.98);
+            border-radius: 16px;
+            padding: 24px 20px;
+            max-width: 420px;
+            width: 100%;
+            border: 2px solid #FF9800;
+            color: #eee;
+            text-align: center;
+        }
+        #recoveryModal .box h2 { color: #FF9800; margin-bottom: 8px; }
+        #recoveryModal .box p { color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+        #recoveryModal .box .btn-reset {
+            background: #FF5722;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+        #recoveryModal .box .btn-reset:hover { background: #E64A19; transform: scale(1.02); }
+        #recoveryModal .box .btn-retry {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #recoveryModal .box .btn-retry:hover { background: #777; }
     </style>
 </head>
 <body>
 
-    <!-- ★★★ ΑΝΕΞΑΡΤΗΤΟ OVERLAY ΑΠΟΠΟΙΗΣΗΣ ★★★ -->
+    <!-- ★★★ ΑΠΟΠΟΙΗΣΗ ★★★ -->
     <div id="disclaimerOverlay">
         <div class="box">
             <h2>⚖️ Όροι Χρήσης &amp; Αποποίηση Ευθύνης</h2>
@@ -317,10 +370,22 @@
         </div>
     </div>
 
+    <!-- ★★★ ΜΗΝΥΜΑ ΕΠΑΝΑΦΟΡΑΣ ★★★ -->
+    <div id="recoveryModal">
+        <div class="box">
+            <h2>🔄 Πρόβλημα φόρτωσης χάρτη</h2>
+            <p>Ο χάρτης δεν μπόρεσε να φορτώσει. Αυτό μπορεί να οφείλεται σε κατεστραμμένα offline δεδομένα.</p>
+            <div>
+                <button class="btn-reset" id="resetDataBtn">🧹 Επαναφορά δεδομένων</button>
+                <button class="btn-retry" id="retryBtn">🔄 Επανάληψη</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ★★★ ΧΑΡΤΗΣ ★★★ -->
     <div id="map-wrapper"><div id="map"></div></div>
 
-    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI ★★★ -->
+    <!-- ★★★ ΥΠΟΛΟΙΠΑ UI ★★★ (παραμένουν ίδια) ★★★ -->
     <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
     <div class="gps-notification" id="gpsNotification">
         <span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span>
@@ -492,7 +557,7 @@
     <!-- ★★★ SCRIPTS – ΟΛΟΚΛΗΡΗ Η ΕΦΑΡΜΟΓΗ ★★★ -->
     <script>
         // ============================================================
-        // ★★★ ΑΠΟΠΟΙΗΣΗ (πρώτη εκτέλεση – ανεξάρτητη) ★★★
+        // ★★★ ΑΠΟΠΟΙΗΣΗ (ανεξάρτητη) ★★★
         // ============================================================
         (function() {
             const overlay = document.getElementById('disclaimerOverlay');
@@ -502,7 +567,7 @@
 
             if (localStorage.getItem('athos_disclaimer_accepted') === 'true') {
                 overlay.classList.add('hidden');
-                startApp(); // Ξεκινάμε την εφαρμογή αμέσως
+                startApp();
                 return;
             }
 
@@ -536,7 +601,7 @@
         })();
 
         // ============================================================
-        // ★★★ startApp() – ΟΛΟΚΛΗΡΟΣ Ο ΚΩΔΙΚΑΣ ΤΗΣ ΕΦΑΡΜΟΓΗΣ ★★★
+        // ★★★ startApp() – ΟΛΟΚΛΗΡΟΣ Ο ΚΩΔΙΚΑΣ ★★★
         // ============================================================
         function startApp() {
             // ============================================================
@@ -655,10 +720,15 @@
                 }
 
                 async isMapDownloaded() {
-                    const info = await this.getMetadata('mapInfo');
-                    if (!info || info.downloaded !== true) return false;
-                    const count = await this.getTileCount();
-                    return count > 0;
+                    try {
+                        const info = await this.getMetadata('mapInfo');
+                        if (!info || info.downloaded !== true) return false;
+                        const count = await this.getTileCount();
+                        return count > 0;
+                    } catch (e) {
+                        console.warn('isMapDownloaded error:', e);
+                        return false;
+                    }
                 }
 
                 async downloadArea(bbox, minZoom, maxZoom, onProgress) {
@@ -804,6 +874,19 @@
                 async getOfflineFavoriteCount() {
                     const favs = await this.getOfflineFavorites();
                     return favs.length;
+                }
+
+                // ★★★ ΜΕΘΟΔΟΣ ΕΠΑΝΑΦΟΡΑΣ ★★★
+                async resetAll() {
+                    try {
+                        await this.clearTiles();
+                        await this.clearOfflineFavorites();
+                        await this.saveMetadata({ key: 'mapInfo', value: { downloaded: false } });
+                        return true;
+                    } catch (e) {
+                        console.error('Reset error:', e);
+                        return false;
+                    }
                 }
             }
 
@@ -1037,7 +1120,8 @@
                     const arrayBuffer = await blob.arrayBuffer();
                     return { data: arrayBuffer };
                 } catch (e) {
-                    return { data: null };
+                    // Αν αποτύχει και το placeholder, επιστρέφουμε ένα κενό array buffer
+                    return { data: new ArrayBuffer(0) };
                 }
             });
 
@@ -1231,7 +1315,8 @@
                 mapDownloaded: false,
                 gpsFirstFix: false,
                 gpsErrorCount: 0,
-                mapInitialized: false
+                mapInitialized: false,
+                mapLoadAttempts: 0
             };
 
             // ============================================================
@@ -1390,7 +1475,7 @@
                 return R * c;
             }
 
-            // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ΧΑΡΤΗ ★★★
+            // ★★★ ΠΑΝΤΑ ΞΕΚΙΝΑΜΕ ΜΕ ONLINE ΧΑΡΤΗ (με try/catch και εμφάνιση recovery modal) ★★★
             function initMap() {
                 try {
                     state.map = new maplibregl.Map({
@@ -1421,10 +1506,17 @@
                     document.getElementById('statusBadge').textContent = '🌐 OpenFreeMap';
                     document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
                     state.mapInitialized = true;
+                    state.mapLoadAttempts = 0;
                 } catch (e) {
-                    console.warn('Map initialization error (offline?):', e);
-                    document.getElementById('statusBadge').textContent = '⚠️ Offline mode (no map)';
-                    document.getElementById('statusDisplay').textContent = 'Συνδεθείτε για να φορτώσει ο χάρτης';
+                    console.warn('Map initialization error:', e);
+                    state.mapLoadAttempts++;
+                    if (state.mapLoadAttempts < 3) {
+                        // Προσπάθεια ξανά μετά από 1 δευτερόλεπτο
+                        setTimeout(() => initMap(), 1000);
+                    } else {
+                        // Εμφάνιση modal επαναφοράς
+                        document.getElementById('recoveryModal').classList.add('active');
+                    }
                 }
             }
 
@@ -1445,6 +1537,9 @@
                         document.getElementById('offlineStatus').classList.add('active', 'online');
                         setTimeout(() => offlineUI.checkAndPromptDownload(), 2000);
                     }
+                }).catch(() => {
+                    // Αν αποτύχει η ανάγνωση της βάσης, εμφανίζουμε recovery modal
+                    document.getElementById('recoveryModal').classList.add('active');
                 });
                 updateOfflineFavCount();
             }
@@ -1948,13 +2043,32 @@
             // ============================================================
             let pendingResumeAction = null;
 
-            // Αρχικοποιούμε τα favorites
-            loadFavorites();
+            // ★★★ RECOVERY MODAL ★★★
+            document.getElementById('resetDataBtn').addEventListener('click', async function() {
+                this.textContent = '⏳...';
+                this.disabled = true;
+                const success = await offlineManager.resetAll();
+                if (success) {
+                    document.getElementById('recoveryModal').classList.remove('active');
+                    showToast('🧹 Τα δεδομένα καθαρίστηκαν! Ανανέωση...', '#4CAF50');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    this.textContent = '❌ Σφάλμα';
+                    showToast('❌ Σφάλμα επαναφοράς, δοκιμάστε ξανά', '#f44336');
+                    setTimeout(() => { this.textContent = '🧹 Επαναφορά δεδομένων'; this.disabled = false; }, 2000);
+                }
+            });
 
-            // Φορτώνουμε τον χάρτη
+            document.getElementById('retryBtn').addEventListener('click', function() {
+                document.getElementById('recoveryModal').classList.remove('active');
+                showToast('🔄 Επανάληψη...', '#2196F3');
+                setTimeout(() => location.reload(), 500);
+            });
+
+            // Αρχικοποίηση
+            loadFavorites();
             initMapWithOfflineSupport();
 
-            // Ελέγχουμε αν υπάρχει αποθηκευμένη διαδρομή για συνέχεια
             setTimeout(() => {
                 const savedRoute = localStorage.getItem('athos_last_route');
                 if (savedRoute) {
