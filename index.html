@@ -112,6 +112,22 @@
     #helpModal .help-item .icon { font-size:16px; width:24px; text-align:center; }
     #helpModal .help-item .label { color:#eee; font-weight:600; }
     
+    #resumeModal { position:fixed; top:0; left:0; right:0; bottom:0; z-index:9998; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; padding:20px; }
+    #resumeModal.active { display:flex; }
+    #resumeModal .resume-content { background:rgba(13,17,23,0.98); border-radius:16px; padding:24px; max-width:360px; width:100%; border:2px solid #8e44ad; color:#eee; text-align:center; animation:fadeInUp 0.4s ease-out; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+    #resumeModal .resume-content .resume-icon { font-size:48px; margin-bottom:8px; }
+    #resumeModal .resume-content h2 { color:#bb86fc; font-size:18px; margin-bottom:4px; }
+    #resumeModal .resume-content .route-name { color:#eee; font-size:16px; font-weight:600; margin:6px 0; padding:8px 12px; background:rgba(255,255,255,0.06); border-radius:8px; }
+    #resumeModal .resume-content .route-info { font-size:13px; color:#aaa; margin:6px 0; }
+    #resumeModal .resume-content .route-info span { color:#4CAF50; font-weight:700; }
+    #resumeModal .resume-content .resume-actions { display:flex; gap:10px; margin-top:16px; }
+    #resumeModal .resume-content .resume-actions button { flex:1; padding:10px; border-radius:8px; border:none; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+    #resumeModal .resume-content .resume-actions button:active { transform:scale(0.95); }
+    #resumeModal .resume-content .resume-actions .btn-yes { background:#4CAF50; color:white; }
+    #resumeModal .resume-content .resume-actions .btn-no { background:#555; color:white; }
+    #resumeModal .resume-content .resume-extra { font-size:11px; color:#666; margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); }
+    
     #loadingMessage, #errorMessage { position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:rgba(0,0,0,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; padding:20px; text-align:center; }
     #loadingMessage.hidden, #errorMessage.hidden { display:none; }
     #loadingMessage .spinner { width:36px; height:36px; border:4px solid #333; border-top:4px solid #2196F3; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:12px; }
@@ -143,13 +159,13 @@
 </head>
 <body>
 
-  <!-- ★★★ LOADING ★★★ -->
+  <!-- LOADING -->
   <div id="loadingMessage">
     <div class="spinner"></div>
     <div id="loaderText">Φόρτωση χάρτη...</div>
   </div>
 
-  <!-- ★★★ ERROR ★★★ -->
+  <!-- ERROR -->
   <div id="errorMessage" class="hidden">
     <div class="err-icon">⚠️</div>
     <div class="err-text">Σφάλμα φόρτωσης χάρτη</div>
@@ -157,13 +173,13 @@
     <button onclick="location.reload()">🔄 Επανάληψη</button>
   </div>
 
-  <!-- ★★★ OFFLINE NOTIFICATION ★★★ -->
+  <!-- OFFLINE NOTIFICATION -->
   <div id="offlineNotification">🌐 Είστε offline. Οι αποθηκευμένοι χάρτες (zoom 8‑14) θα χρησιμοποιηθούν.</div>
 
-  <!-- ★★★ MAP ★★★ -->
+  <!-- MAP -->
   <div id="map"></div>
 
-  <!-- ★★★ UI ★★★ -->
+  <!-- UI -->
   <div class="offline-status" id="offlineStatus">📡 Offline</div>
   <div class="status-badge" id="statusBadge">🌐 OSM</div>
   
@@ -179,6 +195,7 @@
     <button class="fav" id="favBtn">⭐</button>
     <button class="offline-fav" id="offlineFavBtn">💾</button>
     <button class="wifi" id="wifiBtn">📶</button>
+    <button class="load" id="loadBtn">📂</button>
     <button class="clear" id="clearBtn">🗑️</button>
     <button class="help" id="helpBtn">❓</button>
     <input type="file" id="fileInput" accept=".gpx" style="display:none">
@@ -200,7 +217,7 @@
     <button class="screen" id="screenBtn">🔆 Οθόνη</button>
   </div>
 
-  <!-- ROUTES -->
+  <!-- ROUTES DROPDOWN -->
   <div id="routeDropdown">
     <div class="content">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
@@ -212,7 +229,7 @@
     </div>
   </div>
 
-  <!-- FAVORITES -->
+  <!-- FAVORITES DROPDOWN -->
   <div id="favDropdown">
     <div class="content">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
@@ -258,6 +275,21 @@
       <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span> – Κατεβάζει ολόκληρη τη διαδρομή. Λειτουργεί χωρίς internet!</div></div>
       <div class="help-item"><span class="icon">📶</span><div><span class="label">Offline Χάρτης</span> – Κατεβάζει tiles για zoom 8‑14. Long press για επαναφορά.</div></div>
       <div style="font-size:10px;color:#666;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;">Athos Maps v6.5 · 152 Routes · Offline</div>
+    </div>
+  </div>
+
+  <!-- RESUME MODAL -->
+  <div id="resumeModal">
+    <div class="resume-content">
+      <div class="resume-icon">🗺️</div>
+      <h2>Συνέχεια διαδρομής;</h2>
+      <div class="route-name" id="resumeRouteName">--</div>
+      <div class="route-info">📏 <span id="resumeDist">--</span> χλμ · ⏱️ <span id="resumeTime">--</span></div>
+      <div class="resume-actions">
+        <button class="btn-yes" id="resumeYes">✅ Ναι, συνέχεια</button>
+        <button class="btn-no" id="resumeNo">❌ Όχι, ευχαριστώ</button>
+      </div>
+      <div class="resume-extra">Θα ενεργοποιηθεί αυτόματα το GPS και η πλοήγηση</div>
     </div>
   </div>
 
@@ -761,11 +793,9 @@
           return;
         }
 
-        // Init offline manager
         offlineManager = new OfflineMapManager();
         await offlineManager.initDB();
 
-        // Check offline tiles
         const hasTiles = await offlineManager.isMapDownloaded();
         if (hasTiles) {
           state.mapDownloaded = true;
@@ -800,7 +830,6 @@
           style: style,
           center: [24.32, 40.16],
           zoom: 12,
-          // transformRequest for offline tiles
           transformRequest: async (url, resourceType) => {
             if (resourceType === 'Tile' && url.includes('tile.openstreetmap.org')) {
               const match = url.match(/\/(\d+)\/(\d+)\/(\d+)\.png$/);
@@ -889,7 +918,6 @@
       document.getElementById('favCount').textContent = onlineFavs.length + offlineFavs.length;
       let html = '';
 
-      // Offline first
       if (offlineFavs.length > 0) {
         html += '<div style="color:#27ae60;font-weight:700;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(39,174,96,0.2);">💾 Offline</div>';
         offlineFavs.forEach(fav => {
@@ -902,7 +930,6 @@
         });
       }
 
-      // Online
       const onlineFavsFiltered = onlineFavs.filter(f => !offlineFavs.some(o => o.name === f.name));
       if (onlineFavsFiltered.length > 0) {
         if (offlineFavs.length > 0) html += '<div style="color:#f1c40f;font-weight:700;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(241,196,15,0.2);margin-top:4px;">⭐ Online</div>';
@@ -919,7 +946,6 @@
 
       list.innerHTML = html;
 
-      // Event listeners
       list.querySelectorAll('.load-offline').forEach(el => {
         el.addEventListener('click', async function() {
           const id = this.dataset.id;
@@ -1072,7 +1098,6 @@
           if (state.isNavigating) {
             state.map.flyTo({ center: [lng, lat], zoom: 18, essential: true, duration: 800 });
           }
-          if (state.routeGeometry) { updateDistProgress(); checkOffRoute(lat, lng); }
         },
         (err) => { console.warn('Watch error:', err); },
         { enableHighAccuracy: true, timeout: 30000 }
@@ -1304,20 +1329,6 @@
       } catch(e) { showToast('⚠️ Σφάλμα', '#f44336'); }
     }
 
-    function checkOffRoute(lat, lng) {
-      if (!state.routeGeometry) return;
-      let min = Infinity;
-      for (const c of state.routeGeometry) {
-        const d = haversine(lat, lng, c[1], c[0]) * 1000;
-        if (d < min) min = d;
-      }
-      // Can add visual warning here if needed
-    }
-
-    function updateDistProgress() {
-      // Could add progress bar if needed
-    }
-
     // ============================================================
     // ★★★ SOS / HELP / SCREEN ★★★
     // ============================================================
@@ -1376,7 +1387,6 @@
           showToast('🌐 Χρειάζεται internet για λήψη', '#FF9800');
           return;
         }
-        // Show download prompt
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:16px;';
         const content = document.createElement('div');
@@ -1500,7 +1510,7 @@
           e.target.value = ''; }
       });
 
-      // WiFi button (short press = download, long press = reset)
+      // WiFi button
       let pressTimer = null;
       const wifiBtn = document.getElementById('wifiBtn');
       wifiBtn.addEventListener('mousedown', () => {
@@ -1549,7 +1559,6 @@
           showToast('⚡ Ταχύτητα: ' + state.currentSpeed + ' km/h', '#4CAF50');
         });
       });
-      // Default speed 4
       document.querySelector('[data-speed="4"]')?.classList.add('active');
 
       // Keyboard shortcuts
@@ -1561,7 +1570,7 @@
         else if (e.key === 'Escape') { hideRoutes(); hideFavs(); closeSos(); }
       });
 
-      // Drag and drop for GPX
+      // Drag and drop
       document.addEventListener('dragover', (e) => e.preventDefault());
       document.addEventListener('drop', function(e) {
         e.preventDefault();
