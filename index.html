@@ -376,7 +376,7 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v6.0 (OSM) · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.1 (transformRequest) · 140+ Offline Routes</span></div>
     </div>
   </div>
 
@@ -692,12 +692,12 @@
     ];
 
     // ============================================================
-    // ★★★ OFFLINE MAP MANAGER ★★★
+    // ★★★ OFFLINE MAP MANAGER (with transformRequest support) ★★★
     // ============================================================
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 13;
+        this.dbVersion = 14;
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -1140,63 +1140,6 @@
     }
 
     // ============================================================
-    // ★★★ PROTOCOL OFFLINE (with fallback tile sources) ★★★
-    // ============================================================
-    const GRAY_PIXEL =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QzwAIQgMHAVSOGAAAAABJRU5ErkJggg==';
-    let offlineManager = new OfflineMapManager();
-    let offlineUI = new OfflineMapUI(offlineManager);
-
-    // Tile sources to try in order
-    const TILE_URLS = [
-      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      'https://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png',
-      'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
-    ];
-
-    maplibregl.addProtocol('offline', async (params, abortController) => {
-      const { z, x, y } = params;
-      const key = `${z}/${x}/${y}`;
-      // 1. Check cache
-      try {
-        const cached = await offlineManager.getTile(key);
-        if (cached) {
-          console.log('Serving from cache:', key);
-          return { data: cached };
-        }
-      } catch (e) {}
-
-      // 2. Try online sources
-      if (navigator.onLine) {
-        for (const urlTemplate of TILE_URLS) {
-          try {
-            const url = urlTemplate.replace('{z}', z).replace('{x}', x).replace('{y}', y);
-            const response = await fetch(url, { signal: abortController.signal });
-            if (response.ok) {
-              const blob = await response.blob();
-              const arrayBuffer = await blob.arrayBuffer();
-              // Save to cache asynchronously (don't await to avoid blocking)
-              offlineManager.saveTile(key, arrayBuffer).catch(() => {});
-              return { data: arrayBuffer };
-            }
-          } catch (e) {
-            // Continue to next source
-          }
-        }
-      }
-
-      // 3. Fallback: gray pixel
-      try {
-        const resp = await fetch(GRAY_PIXEL);
-        const blob = await resp.blob();
-        const arrayBuffer = await blob.arrayBuffer();
-        return { data: arrayBuffer };
-      } catch (e) {
-        return { data: new ArrayBuffer(0) };
-      }
-    });
-
-    // ============================================================
     // ★★★ STATE ★★★
     // ============================================================
     let state = {
@@ -1429,18 +1372,23 @@
       return R * c;
     }
 
-    // ★★★ MAP INIT ★★★
+    // ★★★ MAP INIT with transformRequest ★★★
     async function initMap() {
       try {
         console.log('Initializing map...');
 
-        // Use the offline protocol for all tiles – this will check cache then fallback to network
+        // Ensure DB is ready before creating the map
+        await offlineManager.initDB();
+
+        // Define the tile URL template (will be intercepted by transformRequest)
+        const tileUrlTemplate = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
         const style = {
           version: 8,
           sources: {
             'osm': {
               type: 'raster',
-              tiles: ['offline://tiles.openstreetmap.org/{z}/{x}/{y}.png'],
+              tiles: [tileUrlTemplate],
               tileSize: 256,
               attribution: '© OpenStreetMap contributors'
             }
@@ -1457,7 +1405,36 @@
           container: 'map',
           style: style,
           center: [24.32, 40.16],
-          zoom: 12
+          zoom: 12,
+          transformRequest: async (url, resourceType) => {
+            // Only intercept tile requests
+            if (resourceType === 'Tile' && url.includes('tile.openstreetmap.org')) {
+              // Extract z/x/y from URL
+              const match = url.match(/\/(\d+)\/(\d+)\/(\d+)\.png$/);
+              if (match) {
+                const z = parseInt(match[1]);
+                const x = parseInt(match[2]);
+                const y = parseInt(match[3]);
+                const key = `${z}/${x}/${y}`;
+                try {
+                  // Check cache
+                  const cachedData = await offlineManager.getTile(key);
+                  if (cachedData) {
+                    // Convert ArrayBuffer to Blob and create a URL
+                    const blob = new Blob([cachedData], { type: 'image/png' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    // Return the blob URL as a response
+                    return { url: blobUrl };
+                  }
+                } catch (e) {
+                  console.warn('Cache error for tile', key, e);
+                }
+                // If not cached, allow normal fetch (no modification)
+              }
+            }
+            // For other resources, return the original URL
+            return { url };
+          }
         });
 
         state.map.addControl(new maplibregl.NavigationControl());
@@ -1508,7 +1485,7 @@
 
         state.map.on('error', (e) => {
           console.warn('Map error:', e);
-          // Do not show error overlay for tile loading issues – the protocol will fallback
+          // Don't show error overlay for tile errors – they will fall back to network
         });
 
         // Timeout: if map doesn't load in 15s, show error
