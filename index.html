@@ -255,10 +255,9 @@
   <div id="errorMessage" class="hidden">
     <div class="error-icon">⚠️</div>
     <div class="error-text">Σφάλμα φόρτωσης χάρτη</div>
-    <div class="error-detail" id="errorDetail">Παρακαλώ ελέγξτε τη σύνδεσή σας ή δοκιμάστε άλλη πηγή tiles.</div>
+    <div class="error-detail" id="errorDetail">Παρακαλώ ελέγξτε τη σύνδεσή σας.</div>
     <div class="error-actions">
       <button onclick="location.reload()">🔄 Επανάληψη</button>
-      <button id="switchTileSourceBtn" class="btn-secondary">🔄 Αλλαγή πηγής tiles</button>
     </div>
   </div>
 
@@ -323,7 +322,7 @@
     <button id="screenBtn" class="screen-btn" title="Οθόνη ON">🔆 Οθόνη</button>
   </div>
 
-  <div class="status-badge" id="statusBadge">🌐 OpenFreeMap</div>
+  <div class="status-badge" id="statusBadge">🌐 OpenStreetMap</div>
 
   <div id="routeDropdown">
     <div class="dd-content">
@@ -377,13 +376,13 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v5.9 (OSM) · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.0 (OSM) · 140+ Offline Routes</span></div>
     </div>
   </div>
 
   <script>
     // ============================================================
-    // ★★★ FULL ROUTES LIST (140+ διαδρομές) ★★★
+    // ★★★ FULL ROUTES LIST (140+ διαδρομές – same as before) ★★★
     // ============================================================
     const ROUTES = [
       { "name": "Αρσανάς → Ζωγράφου", "dist": 3, "time": "1:00",
@@ -698,7 +697,7 @@
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 12;
+        this.dbVersion = 13;
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -1141,32 +1140,52 @@
     }
 
     // ============================================================
-    // ★★★ PROTOCOL OFFLINE ★★★
+    // ★★★ PROTOCOL OFFLINE (with fallback tile sources) ★★★
     // ============================================================
     const GRAY_PIXEL =
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QzwAIQgMHAVSOGAAAAABJRU5ErkJggg==';
     let offlineManager = new OfflineMapManager();
     let offlineUI = new OfflineMapUI(offlineManager);
 
+    // Tile sources to try in order
+    const TILE_URLS = [
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'https://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png',
+      'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
+    ];
+
     maplibregl.addProtocol('offline', async (params, abortController) => {
       const { z, x, y } = params;
       const key = `${z}/${x}/${y}`;
+      // 1. Check cache
       try {
         const cached = await offlineManager.getTile(key);
-        if (cached) return { data: cached };
+        if (cached) {
+          console.log('Serving from cache:', key);
+          return { data: cached };
+        }
       } catch (e) {}
+
+      // 2. Try online sources
       if (navigator.onLine) {
-        try {
-          const url = `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
-          const response = await fetch(url, { signal: abortController.signal });
-          if (response.ok) {
-            const blob = await response.blob();
-            const arrayBuffer = await blob.arrayBuffer();
-            offlineManager.saveTile(key, arrayBuffer).catch(() => {});
-            return { data: arrayBuffer };
+        for (const urlTemplate of TILE_URLS) {
+          try {
+            const url = urlTemplate.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+            const response = await fetch(url, { signal: abortController.signal });
+            if (response.ok) {
+              const blob = await response.blob();
+              const arrayBuffer = await blob.arrayBuffer();
+              // Save to cache asynchronously (don't await to avoid blocking)
+              offlineManager.saveTile(key, arrayBuffer).catch(() => {});
+              return { data: arrayBuffer };
+            }
+          } catch (e) {
+            // Continue to next source
           }
-        } catch (e) {}
+        }
       }
+
+      // 3. Fallback: gray pixel
       try {
         const resp = await fetch(GRAY_PIXEL);
         const blob = await resp.blob();
@@ -1205,8 +1224,7 @@
       offlineFavorites: [],
       mapDownloaded: false,
       gpsFirstFix: false,
-      gpsErrorCount: 0,
-      tileSourceIndex: 0 // 0: OSM, 1: OpenFreeMap, 2: Carto
+      gpsErrorCount: 0
     };
 
     // ============================================================
@@ -1411,32 +1429,26 @@
       return R * c;
     }
 
-    // ★★★ MAP INIT (with fallback tile sources) ★★★
-    const TILE_SOURCES = [
-      { name: 'OpenStreetMap', url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' },
-      { name: 'OpenFreeMap', url: 'https://tiles.openfreemap.org/tiles/{z}/{x}/{y}.png' },
-      { name: 'CartoDB (Light)', url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png' }
-    ];
-
+    // ★★★ MAP INIT ★★★
     async function initMap() {
       try {
         console.log('Initializing map...');
-        // Use first source (OSM) as primary
-        const source = TILE_SOURCES[state.tileSourceIndex];
+
+        // Use the offline protocol for all tiles – this will check cache then fallback to network
         const style = {
           version: 8,
           sources: {
-            'tilesource': {
+            'osm': {
               type: 'raster',
-              tiles: [source.url],
+              tiles: ['offline://tiles.openstreetmap.org/{z}/{x}/{y}.png'],
               tileSize: 256,
-              attribution: '© ' + source.name
+              attribution: '© OpenStreetMap contributors'
             }
           },
           layers: [{
-            id: 'tilesource',
+            id: 'osm',
             type: 'raster',
-            source: 'tilesource',
+            source: 'osm',
             paint: { 'raster-fade-duration': 0 }
           }]
         };
@@ -1471,14 +1483,14 @@
           document.getElementById('gpsNotification').classList.remove('active');
         });
 
-        document.getElementById('statusBadge').textContent = '🌐 ' + source.name;
+        document.getElementById('statusBadge').textContent = '🌐 OpenStreetMap (offline-aware)';
         document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
 
         state.map.on('load', async () => {
           console.log('Map loaded successfully');
           document.getElementById('loadingMessage').classList.add('hidden');
 
-          // Check for offline tiles
+          // Check if we have offline tiles
           const hasTiles = await offlineManager.isMapDownloaded();
           if (hasTiles) {
             state.mapDownloaded = true;
@@ -1486,17 +1498,6 @@
             document.getElementById('offlineStatus').classList.add('active', 'offline');
             document.getElementById('wifiBtn').classList.add('active');
             showToast('📡 Λειτουργία Offline με τοπικό χάρτη', '#4CAF50');
-
-            // Switch source to offline protocol
-            try {
-              const src = state.map.getSource('tilesource');
-              if (src) {
-                src.setTiles(['offline://tiles.openstreetmap.org/{z}/{x}/{y}.png']);
-                console.log('Switched to offline tile source');
-              }
-            } catch (e) {
-              console.warn('Could not switch to offline source, staying online', e);
-            }
           } else {
             document.getElementById('offlineStatus').textContent = '🌐 Online';
             document.getElementById('offlineStatus').classList.add('active', 'online');
@@ -1507,7 +1508,7 @@
 
         state.map.on('error', (e) => {
           console.warn('Map error:', e);
-          // If tiles fail, we could try to switch source, but we'll let the user handle via the switch button.
+          // Do not show error overlay for tile loading issues – the protocol will fallback
         });
 
         // Timeout: if map doesn't load in 15s, show error
@@ -1515,7 +1516,7 @@
           if (!state.map || !state.map.loaded()) {
             document.getElementById('loadingMessage').classList.add('hidden');
             document.getElementById('errorMessage').classList.remove('hidden');
-            document.getElementById('errorDetail').textContent = 'Ο χάρτης δεν φορτώθηκε εγκαίρως. Ελέγξτε τη σύνδεσή σας ή αλλάξτε πηγή tiles.';
+            document.getElementById('errorDetail').textContent = 'Ο χάρτης δεν φορτώθηκε εγκαίρως. Ελέγξτε τη σύνδεσή σας.';
           }
         }, 15000);
 
@@ -1523,23 +1524,8 @@
         console.error('Fatal map initialization error:', error);
         document.getElementById('loadingMessage').classList.add('hidden');
         document.getElementById('errorMessage').classList.remove('hidden');
-        document.getElementById('errorDetail').textContent = error.message || 'Άγνωστο σφάλμα. Δοκιμάστε άλλη πηγή tiles.';
+        document.getElementById('errorDetail').textContent = error.message || 'Άγνωστο σφάλμα.';
       }
-    }
-
-    // ★★★ Switch tile source ★★★
-    async function switchTileSource() {
-      state.tileSourceIndex = (state.tileSourceIndex + 1) % TILE_SOURCES.length;
-      const source = TILE_SOURCES[state.tileSourceIndex];
-      showToast('🔄 Αλλαγή πηγής: ' + source.name, '#FF9800');
-      // Reload the map with the new source
-      if (state.map) {
-        state.map.remove();
-        state.map = null;
-      }
-      document.getElementById('loadingMessage').classList.remove('hidden');
-      document.getElementById('errorMessage').classList.add('hidden');
-      await initMap();
     }
 
     let currentRotation = 0;
@@ -1697,7 +1683,7 @@
     }
 
     // ============================================================
-    // ★★★ ROUTES ★★★
+    // ★★★ ROUTES (unchanged) ★★★
     // ============================================================
     function centerOnRoute() {
       if (!state.routeGeometry || state.routeGeometry.length === 0) { showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή',
@@ -1996,7 +1982,7 @@
     }
 
     // ============================================================
-    // ★★★ SOS, SCREEN ★★★
+    // ★★★ SOS, SCREEN (unchanged) ★★★
     // ============================================================
     function openSos() {
       document.getElementById('sosContainer').classList.add('active');
@@ -2263,12 +2249,6 @@
         } catch (error) { showToast('⚠️ Σφάλμα', '#f44336'); }
         this.disabled = false;
         this.textContent = '📶';
-      });
-
-      // Switch tile source button in error overlay
-      document.getElementById('switchTileSourceBtn').addEventListener('click', async function() {
-        await switchTileSource();
-        document.getElementById('errorMessage').classList.add('hidden');
       });
 
       document.querySelectorAll('.speed-btn').forEach(function(b) {
