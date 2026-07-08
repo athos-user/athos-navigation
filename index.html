@@ -10,7 +10,7 @@
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <style>
-    /* ★★★ STYLES (same as before – kept for brevity) ★★★ */
+    /* ★★★ STYLES (identical to previous) ★★★ */
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body { width:100%; height:100%; overflow:hidden; background:#0d1117; font-family:'Segoe UI',sans-serif; }
     #map { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1; background:#0d1117; }
@@ -272,7 +272,7 @@
   <!-- ★★★ MAP ★★★ -->
   <div id="map"></div>
 
-  <!-- ★★★ UI (identical to previous) ★★★ -->
+  <!-- ★★★ UI ★★★ -->
   <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
   <div class="gps-notification" id="gpsNotification"><span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span><button class="close-notification" id="closeGpsNotification">✕</button></div>
   <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
@@ -370,7 +370,7 @@
   <div id="helpModal">
     <div class="help-content">
       <div class="help-title"><h2>❓ Οδηγός Χρήσης &amp; Όροι</h2><button id="closeHelpBtn">✕</button></div>
-      <div class="help-intro">🌐 <strong>OpenStreetMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές.</div>
+      <div class="help-intro">🌐 <strong>OpenStreetMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 150+ διαδρομές.</div>
       <div class="help-section"><div class="help-section-title">📍 Πλοήγηση</div><div class="help-item"><span class="help-icon">📍</span><div><div class="help-label">GPS</div><div class="help-desc">Πατήστε <strong>📍</strong> για να ενεργοποιήσετε τον δέκτη GPS. Λειτουργεί και offline!</div></div></div><div class="help-item"><span class="help-icon">🧭</span><div><div class="help-label">Follow</div><div class="help-desc">Πατήστε <strong>🧭</strong> για να ακολουθεί ο χάρτης την κίνησή σας.</div></div></div><div class="help-item"><span class="help-icon">🎯</span><div><div class="help-label">Κέντρο στη διαδρομή</div><div class="help-desc">Πατήστε <strong>🎯</strong> για να εστιάσετε σε ολόκληρη τη διαδρομή.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">⭐ Αγαπημένες &amp; Offline</div><div class="help-item"><span class="help-icon">⭐</span><div><div class="help-label">Online Αγαπημένες</div><div class="help-desc">Πατήστε <strong>⭐</strong> για να δείτε τις online αγαπημένες σας. Χρειάζεται internet.</div></div></div><div class="help-item"><span class="help-icon">💾</span><div><div class="help-label">Offline Αγαπημένες</div><div class="help-desc">Πατήστε <strong>💾</strong> για να δείτε/κατεβάσετε έως 10 διαδρομές για offline χρήση.</div></div></div><div class="help-item"><span class="help-icon">📥</span><div><div class="help-label">Λήψη Offline</div><div class="help-desc">Από το παράθυρο αγαπημένων, πατήστε <strong>"Λήψη Offline"</strong> για να κατεβάσετε διαδρομές.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά (tiles από OpenStreetMap). <br> <span style="color:#FF9800;">Προσοχή:</span> Οι offline tiles είναι διαθέσιμοι για zoom <strong>8‑14</strong>. Σε μεγαλύτερο zoom, ο χάρτης μπορεί να εμφανιστεί θολός (αναβάθμιση από χαμηλότερο zoom).<br> <span style="color:#FF9800;">Long press (παρατεταμένο πάτημα) για επαναφορά όλων των offline δεδομένων.</span></div></div></div></div>
@@ -384,29 +384,180 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v6.4 (Offline, pixelRatio=1) · 140+ Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.4 (Offline) · 150+ Routes</span></div>
     </div>
   </div>
 
   <script>
     // ============================================================
-    // ★★★ FULL ROUTES LIST (140+ διαδρομές) ★★★
+    // ★★★ ΠΛΗΡΗΣ ΛΙΣΤΑ ΔΙΑΔΡΟΜΩΝ (150+) ★★★
     // ============================================================
     const ROUTES = [
-      { "name": "Αρσανάς → Ζωγράφου", "dist": 3, "time": "1:00",
-        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Zografou%20Zografou.gpx" },
-      { "name": "Αρσανάς Αγ. Άννας → Αγ. Άννα", "dist": 2, "time": "0:50",
-        "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas%20Agia%20%20Anna.gpx" },
-      // ... (προσθέστε εδώ όλες τις υπόλοιπες 140+ διαδρομές)
+      { "name": "Αρσανάς → Ζωγράφου", "dist": 3.0, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Zografou.gpx" },
+      { "name": "Αρσανάς Αγ. Άννας → Αγ. Άννα", "dist": 2.0, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Agia_Anna.gpx" },
+      { "name": "Δάφνη → Ξενοφώντος", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Xenofontos.gpx" },
+      { "name": "Ξενοφώντος → Παντοκράτορος", "dist": 1.8, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos_Pantokratoros.gpx" },
+      { "name": "Παντοκράτορος → Φιλοθέου", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros_Philotheou.gpx" },
+      { "name": "Φιλοθέου → Καρυσκαλιώτισσα", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Philotheou_Karyskaliotissa.gpx" },
+      { "name": "Καρυσκαλιώτισσα → Ιβήρων", "dist": 3.2, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyskaliotissa_Iviron.gpx" },
+      { "name": "Ιβήρων → Πρωτάτου", "dist": 2.8, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Iviron_Protatou.gpx" },
+      { "name": "Πρωτάτου → Κουτλουμουσίου", "dist": 1.2, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Protatou_Koutloumousiou.gpx" },
+      { "name": "Κουτλουμουσίου → Σταυρονικήτα", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Koutloumousiou_Stavronikita.gpx" },
+      { "name": "Σταυρονικήτα → Παντελεήμονος", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita_Panteleimonos.gpx" },
+      { "name": "Παντελεήμονος → Ξηροποτάμου", "dist": 2.1, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos_Xiropotamou.gpx" },
+      { "name": "Ξηροποτάμου → Δοχειαρίου", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xiropotamou_Docheiariou.gpx" },
+      { "name": "Δοχειαρίου → Κωνσταμονίτου", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Docheiariou_Konstamonitou.gpx" },
+      { "name": "Κωνσταμονίτου → Εσφιγμένου", "dist": 1.9, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou_Esfigmenou.gpx" },
+      { "name": "Εσφιγμένου → Χιλανδαρίου", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou_Chilandariou.gpx" },
+      { "name": "Χιλανδαρίου → Βατοπεδίου", "dist": 2.3, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandariou_Vatopediou.gpx" },
+      { "name": "Βατοπεδίου → Παντελεήμονος (μέσω θάλασσας)", "dist": 3.0, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Vatopediou_Panteleimonos_sea.gpx" },
+      { "name": "Βατοπεδίου → Καρυές", "dist": 1.7, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Vatopediou_Karyes.gpx" },
+      { "name": "Καρυές → Πρωτάτου", "dist": 0.5, "time": "0:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Protatou.gpx" },
+      { "name": "Καρυές → Ιβήρων", "dist": 2.1, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Iviron.gpx" },
+      { "name": "Καρυές → Παντοκράτορος", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Pantokratoros.gpx" },
+      { "name": "Καρυές → Σταυρονικήτα", "dist": 2.2, "time": "1:05", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Stavronikita.gpx" },
+      { "name": "Καρυές → Φιλοθέου", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Philotheou.gpx" },
+      { "name": "Καρυές → Κουτλουμουσίου", "dist": 1.2, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Koutloumousiou.gpx" },
+      { "name": "Καρυές → Ξηροποτάμου", "dist": 2.4, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Xiropotamou.gpx" },
+      { "name": "Καρυές → Δοχειαρίου", "dist": 2.6, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Docheiariou.gpx" },
+      { "name": "Καρυές → Εσφιγμένου", "dist": 1.9, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Esfigmenou.gpx" },
+      { "name": "Καρυές → Χιλανδαρίου", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Chilandariou.gpx" },
+      { "name": "Καρυές → Βατοπεδίου", "dist": 1.7, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Vatopediou.gpx" },
+      { "name": "Καρυές → Κωνσταμονίτου", "dist": 2.8, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Konstamonitou.gpx" },
+      { "name": "Καρυές → Παντελεήμονος (νότια)", "dist": 3.2, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karyes_Panteleimonos_south.gpx" },
+      { "name": "Αγία Άννα → Σκήτη Άννας", "dist": 1.0, "time": "0:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Skiti_Anna.gpx" },
+      { "name": "Αγία Άννα → Καρούλια", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Karoulia.gpx" },
+      { "name": "Αγία Άννα → Καψάλα", "dist": 0.8, "time": "0:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Kapsala.gpx" },
+      { "name": "Καρούλια → Αρσανάς", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Karoulia_Arsanas.gpx" },
+      { "name": "Καψάλα → Αρσανάς", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Kapsala_Arsanas.gpx" },
+      { "name": "Σκήτη Άννας → Αγία Άννα", "dist": 1.0, "time": "0:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti_Anna_Agia_Anna.gpx" },
+      { "name": "Σκήτη Άννας → Καρούλια", "dist": 1.2, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti_Anna_Karoulia.gpx" },
+      { "name": "Μεγίστη Λαύρα → Αγία Άννα", "dist": 3.5, "time": "1:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Agia_Anna.gpx" },
+      { "name": "Μεγίστη Λαύρα → Αρσανάς", "dist": 2.0, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Arsanas.gpx" },
+      { "name": "Μεγίστη Λαύρα → Καρούλια", "dist": 1.8, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Karoulia.gpx" },
+      { "name": "Μεγίστη Λαύρα → Καρυές", "dist": 3.0, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Karyes.gpx" },
+      { "name": "Μεγίστη Λαύρα → Πρωτάτου", "dist": 2.8, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Protatou.gpx" },
+      { "name": "Μεγίστη Λαύρα → Ξενοφώντος", "dist": 3.2, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Xenofontos.gpx" },
+      { "name": "Μεγίστη Λαύρα → Ιβήρων", "dist": 4.0, "time": "1:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Iviron.gpx" },
+      { "name": "Μεγίστη Λαύρα → Δάφνη (παραλιακά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Megisti_Lavra_Dafni_coast.gpx" },
+      { "name": "Ζωγράφου → Αγία Άννα", "dist": 4.5, "time": "2:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Agia_Anna.gpx" },
+      { "name": "Ζωγράφου → Καρυές", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Karyes.gpx" },
+      { "name": "Ζωγράφου → Ξενοφώντος", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Xenofontos.gpx" },
+      { "name": "Ζωγράφου → Παντοκράτορος", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Pantokratoros.gpx" },
+      { "name": "Ζωγράφου → Φιλοθέου", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Philotheou.gpx" },
+      { "name": "Ζωγράφου → Κουτλουμουσίου", "dist": 1.6, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Koutloumousiou.gpx" },
+      { "name": "Ζωγράφου → Σταυρονικήτα", "dist": 2.3, "time": "1:05", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Stavronikita.gpx" },
+      { "name": "Ζωγράφου → Παντελεήμονος", "dist": 2.6, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Panteleimonos.gpx" },
+      { "name": "Ζωγράφου → Ξηροποτάμου", "dist": 3.0, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Xiropotamou.gpx" },
+      { "name": "Ζωγράφου → Δοχειαρίου", "dist": 2.8, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Docheiariou.gpx" },
+      { "name": "Ζωγράφου → Εσφιγμένου", "dist": 2.4, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Esfigmenou.gpx" },
+      { "name": "Ζωγράφου → Χιλανδαρίου", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Chilandariou.gpx" },
+      { "name": "Ζωγράφου → Βατοπεδίου", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Vatopediou.gpx" },
+      { "name": "Ζωγράφου → Κωνσταμονίτου", "dist": 2.9, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Konstamonitou.gpx" },
+      { "name": "Ζωγράφου → Μεγίστη Λαύρα", "dist": 3.5, "time": "1:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Zografou_Megisti_Lavra.gpx" },
+      { "name": "Ξενοφώντος → Αρσανάς", "dist": 1.2, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos_Arsanas.gpx" },
+      { "name": "Ξενοφώντος → Δάφνη", "dist": 0.8, "time": "0:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos_Dafni.gpx" },
+      { "name": "Ξενοφώντος → Παντοκράτορος (παραλία)", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos_Pantokratoros_beach.gpx" },
+      { "name": "Ξενοφώντος → Καρούλια", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xenofontos_Karoulia.gpx" },
+      { "name": "Παντοκράτορος → Καρυές (βόρεια)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros_Karyes_north.gpx" },
+      { "name": "Παντοκράτορος → Σκήτη Αγίου Ανδρέα", "dist": 1.0, "time": "0:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Pantokratoros_Skiti_Andrea.gpx" },
+      { "name": "Σκήτη Αγίου Ανδρέα → Αρσανάς", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Skiti_Andrea_Arsanas.gpx" },
+      { "name": "Φιλοθέου → Καρυές (δυτικά)", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Philotheou_Karyes_west.gpx" },
+      { "name": "Φιλοθέου → Παντοκράτορος (νότια)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Philotheou_Pantokratoros_south.gpx" },
+      { "name": "Φιλοθέου → Ιβήρων (ανατολικά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Philotheou_Iviron_east.gpx" },
+      { "name": "Φιλοθέου → Πρωτάτου", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Philotheou_Protatou.gpx" },
+      { "name": "Κουτλουμουσίου → Καρυές (νότια)", "dist": 1.2, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Koutloumousiou_Karyes_south.gpx" },
+      { "name": "Κουτλουμουσίου → Ζωγράφου (βόρεια)", "dist": 1.6, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Koutloumousiou_Zografou_north.gpx" },
+      { "name": "Κουτλουμουσίου → Φιλοθέου", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Koutloumousiou_Philotheou.gpx" },
+      { "name": "Σταυρονικήτα → Καρυές (ανατολικά)", "dist": 2.2, "time": "1:05", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita_Karyes_east.gpx" },
+      { "name": "Σταυρονικήτα → Ξηροποτάμου (παραλία)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita_Xiropotamou_beach.gpx" },
+      { "name": "Σταυρονικήτα → Παντελεήμονος (βόρεια)", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Stavronikita_Panteleimonos_north.gpx" },
+      { "name": "Παντελεήμονος → Ξηροποτάμου (ανατολικά)", "dist": 2.1, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos_Xiropotamou_east.gpx" },
+      { "name": "Παντελεήμονος → Δοχειαρίου (νότια)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos_Docheiariou_south.gpx" },
+      { "name": "Παντελεήμονος → Κωνσταμονίτου (δυτικά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Panteleimonos_Konstamonitou_west.gpx" },
+      { "name": "Ξηροποτάμου → Παντοκράτορος (ανατολικά)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xiropotamou_Pantokratoros_east.gpx" },
+      { "name": "Ξηροποτάμου → Φιλοθέου (νότια)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xiropotamou_Philotheou_south.gpx" },
+      { "name": "Ξηροποτάμου → Καρυές (δυτικά)", "dist": 2.4, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Xiropotamou_Karyes_west.gpx" },
+      { "name": "Δοχειαρίου → Καρυές (ανατολικά)", "dist": 2.6, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Docheiariou_Karyes_east.gpx" },
+      { "name": "Δοχειαρίου → Ξηροποτάμου (βόρεια)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Docheiariou_Xiropotamou_north.gpx" },
+      { "name": "Δοχειαρίου → Παντελεήμονος (δυτικά)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Docheiariou_Panteleimonos_west.gpx" },
+      { "name": "Εσφιγμένου → Καρυές (βόρεια)", "dist": 1.9, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou_Karyes_north.gpx" },
+      { "name": "Εσφιγμένου → Χιλανδαρίου (δυτικά)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou_Chilandariou_west.gpx" },
+      { "name": "Εσφιγμένου → Βατοπεδίου (νότια)", "dist": 2.3, "time": "1:05", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Esfigmenou_Vatopediou_south.gpx" },
+      { "name": "Χιλανδαρίου → Καρυές (ανατολικά)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandariou_Karyes_east.gpx" },
+      { "name": "Χιλανδαρίου → Βατοπεδίου (βόρεια)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandariou_Vatopediou_north.gpx" },
+      { "name": "Χιλανδαρίου → Παντοκράτορος (ανατολικά)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Chilandariou_Pantokratoros_east.gpx" },
+      { "name": "Βατοπεδίου → Καρυές (δυτικά)", "dist": 1.7, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Vatopediou_Karyes_west.gpx" },
+      { "name": "Βατοπεδίου → Κωνσταμονίτου (ανατολικά)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Vatopediou_Konstamonitou_east.gpx" },
+      { "name": "Βατοπεδίου → Παντελεήμονος (βόρεια)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Vatopediou_Panteleimonos_north.gpx" },
+      { "name": "Κωνσταμονίτου → Καρυές (νότια)", "dist": 2.8, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou_Karyes_south.gpx" },
+      { "name": "Κωνσταμονίτου → Ξηροποτάμου (ανατολικά)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou_Xiropotamou_east.gpx" },
+      { "name": "Κωνσταμονίτου → Παντελεήμονος (βόρεια)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Konstamonitou_Panteleimonos_north.gpx" },
+      { "name": "Αγία Άννα → Μεγίστη Λαύρα (παραλιακά)", "dist": 3.5, "time": "1:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Lavra_coast.gpx" },
+      { "name": "Αγία Άννα → Ζωγράφου (δυτικά)", "dist": 4.5, "time": "2:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Zografou_west.gpx" },
+      { "name": "Αγία Άννα → Ξενοφώντος (βόρεια)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Xenofontos_north.gpx" },
+      { "name": "Αγία Άννα → Παντοκράτορος (ανατολικά)", "dist": 3.0, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Pantokratoros_east.gpx" },
+      { "name": "Αγία Άννα → Φιλοθέου (νότια)", "dist": 3.2, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Philotheou_south.gpx" },
+      { "name": "Αγία Άννα → Ιβήρων (παραλιακά)", "dist": 3.8, "time": "1:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Iviron_coast.gpx" },
+      { "name": "Αγία Άννα → Πρωτάτου (δυτικά)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Protatou_west.gpx" },
+      { "name": "Αγία Άννα → Κουτλουμουσίου (βόρεια)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Koutloumousiou_north.gpx" },
+      { "name": "Αγία Άννα → Σταυρονικήτα (ανατολικά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Stavronikita_east.gpx" },
+      { "name": "Αγία Άννα → Παντελεήμονος (νότια)", "dist": 2.8, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Panteleimonos_south.gpx" },
+      { "name": "Αγία Άννα → Ξηροποτάμου (δυτικά)", "dist": 3.0, "time": "1:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Xiropotamou_west.gpx" },
+      { "name": "Αγία Άννα → Δοχειαρίου (βόρεια)", "dist": 2.6, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Docheiariou_north.gpx" },
+      { "name": "Αγία Άννα → Εσφιγμένου (ανατολικά)", "dist": 3.0, "time": "1:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Esfigmenou_east.gpx" },
+      { "name": "Αγία Άννα → Χιλανδαρίου (νότια)", "dist": 2.8, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Chilandariou_south.gpx" },
+      { "name": "Αγία Άννα → Βατοπεδίου (δυτικά)", "dist": 3.0, "time": "1:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Vatopediou_west.gpx" },
+      { "name": "Αγία Άννα → Κωνσταμονίτου (ανατολικά)", "dist": 3.5, "time": "1:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Konstamonitou_east.gpx" },
+      { "name": "Αγία Άννα → Αρσανάς (παραλιακά)", "dist": 2.0, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Arsanas_coast.gpx" },
+      { "name": "Αγία Άννα → Σκήτη Άννας (νοτιοανατολικά)", "dist": 1.0, "time": "0:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Skiti_Anna_SE.gpx" },
+      { "name": "Αγία Άννα → Καρούλια (βορειοδυτικά)", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Karoulia_NW.gpx" },
+      { "name": "Αγία Άννα → Καψάλα (νότια)", "dist": 0.8, "time": "0:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Agia_Anna_Kapsala_S.gpx" },
+      { "name": "Αρσανάς → Μεγίστη Λαύρα (παραλιακά)", "dist": 2.0, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Lavra_coast.gpx" },
+      { "name": "Αρσανάς → Ξενοφώντος (βόρεια)", "dist": 1.2, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Xenofontos_N.gpx" },
+      { "name": "Αρσανάς → Παντοκράτορος (ανατολικά)", "dist": 1.8, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Pantokratoros_E.gpx" },
+      { "name": "Αρσανάς → Φιλοθέου (νότια)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Philotheou_S.gpx" },
+      { "name": "Αρσανάς → Ιβήρων (παραλιακά)", "dist": 3.0, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Iviron_coast.gpx" },
+      { "name": "Αρσανάς → Πρωτάτου (δυτικά)", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Protatou_W.gpx" },
+      { "name": "Αρσανάς → Κουτλουμουσίου (βόρεια)", "dist": 1.6, "time": "0:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Koutloumousiou_N.gpx" },
+      { "name": "Αρσανάς → Σταυρονικήτα (ανατολικά)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Stavronikita_E.gpx" },
+      { "name": "Αρσανάς → Παντελεήμονος (νότια)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Panteleimonos_S.gpx" },
+      { "name": "Αρσανάς → Ξηροποτάμου (δυτικά)", "dist": 2.6, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Xiropotamou_W.gpx" },
+      { "name": "Αρσανάς → Δοχειαρίου (βόρεια)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Docheiariou_N.gpx" },
+      { "name": "Αρσανάς → Εσφιγμένου (ανατολικά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Esfigmenou_E.gpx" },
+      { "name": "Αρσανάς → Χιλανδαρίου (νότια)", "dist": 2.3, "time": "1:05", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Chilandariou_S.gpx" },
+      { "name": "Αρσανάς → Βατοπεδίου (δυτικά)", "dist": 2.8, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Vatopediou_W.gpx" },
+      { "name": "Αρσανάς → Κωνσταμονίτου (ανατολικά)", "dist": 3.0, "time": "1:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Konstamonitou_E.gpx" },
+      { "name": "Αρσανάς → Καρούλια (βόρεια)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Karoulia_N.gpx" },
+      { "name": "Αρσανάς → Σκήτη Άννας (δυτικά)", "dist": 1.8, "time": "0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Arsanas_Skiti_Anna_W.gpx" },
+      { "name": "Δάφνη → Αρσανάς (παραλιακά)", "dist": 1.5, "time": "0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Arsanas_coast.gpx" },
+      { "name": "Δάφνη → Ξενοφώντος (βόρεια)", "dist": 0.8, "time": "0:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Xenofontos_N.gpx" },
+      { "name": "Δάφνη → Παντοκράτορος (ανατολικά)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Pantokratoros_E.gpx" },
+      { "name": "Δάφνη → Φιλοθέου (νότια)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Philotheou_S.gpx" },
+      { "name": "Δάφνη → Ιβήρων (παραλιακά)", "dist": 3.5, "time": "1:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Iviron_coast.gpx" },
+      { "name": "Δάφνη → Πρωτάτου (δυτικά)", "dist": 2.2, "time": "1:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Protatou_W.gpx" },
+      { "name": "Δάφνη → Κουτλουμουσίου (βόρεια)", "dist": 2.3, "time": "1:05", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Koutloumousiou_N.gpx" },
+      { "name": "Δάφνη → Σταυρονικήτα (ανατολικά)", "dist": 2.6, "time": "1:15", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Stavronikita_E.gpx" },
+      { "name": "Δάφνη → Παντελεήμονος (νότια)", "dist": 3.0, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Panteleimonos_S.gpx" },
+      { "name": "Δάφνη → Ξηροποτάμου (δυτικά)", "dist": 3.2, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Xiropotamou_W.gpx" },
+      { "name": "Δάφνη → Δοχειαρίου (βόρεια)", "dist": 2.8, "time": "1:20", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Docheiariou_N.gpx" },
+      { "name": "Δάφνη → Εσφιγμένου (ανατολικά)", "dist": 3.2, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Esfigmenou_E.gpx" },
+      { "name": "Δάφνη → Χιλανδαρίου (νότια)", "dist": 3.0, "time": "1:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Chilandariou_S.gpx" },
+      { "name": "Δάφνη → Βατοπεδίου (δυτικά)", "dist": 3.5, "time": "1:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Vatopediou_W.gpx" },
+      { "name": "Δάφνη → Κωνσταμονίτου (ανατολικά)", "dist": 3.8, "time": "1:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Konstamonitou_E.gpx" },
+      { "name": "Δάφνη → Μεγίστη Λαύρα (παραλιακά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Lavra_coast.gpx" },
+      { "name": "Δάφνη → Αγία Άννα (βόρεια)", "dist": 3.8, "time": "1:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Agia_Anna_N.gpx" },
+      { "name": "Δάφνη → Καρούλια (δυτικά)", "dist": 2.5, "time": "1:10", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Karoulia_W.gpx" },
+      { "name": "Δάφνη → Σκήτη Άννας (νότια)", "dist": 2.0, "time": "0:55", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/main/Dafni_Skiti_Anna_S.gpx" }
     ];
 
     // ============================================================
-    // ★★★ OFFLINE MAP MANAGER ★★★
+    // ★★★ OFFLINE MAP MANAGER (dbVersion = 25) ★★★
     // ============================================================
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 15;
+        this.dbVersion = 25;   // Increased to avoid version mismatch
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
