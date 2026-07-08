@@ -7,8 +7,9 @@
   <meta name="theme-color" content="#2196F3" />
   <link rel="manifest" href="/athos-navigation/manifest.json" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
-  <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+  <!-- MapLibre CSS & JS (σταθερή έκδοση) -->
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.6.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.6.0/dist/maplibre-gl.js" onerror="document.getElementById('errorMessage').classList.remove('hidden'); document.getElementById('errorDetail').textContent='Το MapLibre GL δεν φορτώθηκε. Ελέγξτε τη σύνδεσή σας ή δοκιμάστε ξανά.';"></script>
   <style>
     /* ★★★ STYLES (identical to previous) ★★★ */
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -272,7 +273,7 @@
   <!-- ★★★ MAP ★★★ -->
   <div id="map"></div>
 
-  <!-- ★★★ UI ★★★ -->
+  <!-- ★★★ UI (identical to previous) ★★★ -->
   <div class="rotation-indicator" id="rotationIndicator">🔄 0°</div>
   <div class="gps-notification" id="gpsNotification"><span>📍 Θέση &amp; 🧭 Follow απενεργοποιήθηκαν</span><button class="close-notification" id="closeGpsNotification">✕</button></div>
   <button class="rotate-btn-fixed" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
@@ -1268,10 +1269,18 @@
       return R * c;
     }
 
-    // ★★★ MAP INIT – FIXED: removed pixelRatio: 1 ★★★
+    // ★★★ MAP INIT – FIXED: removed pixelRatio: 1 & added check for maplibregl ★★★
     async function initMap() {
       try {
         console.log('Initializing map...');
+
+        // Check if maplibregl is defined (if script loaded)
+        if (typeof maplibregl === 'undefined') {
+          document.getElementById('loadingMessage').classList.add('hidden');
+          document.getElementById('errorMessage').classList.remove('hidden');
+          document.getElementById('errorDetail').textContent = 'Το MapLibre GL δεν φορτώθηκε. Ελέγξτε τη σύνδεσή σας ή δοκιμάστε ξανά.';
+          return;
+        }
 
         if (offlineManager && typeof offlineManager.initDB === 'function') {
           await offlineManager.initDB();
