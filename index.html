@@ -202,6 +202,10 @@
     #errorMessage .btn-secondary { background:#555; }
     #errorMessage .btn-secondary:hover { background:#777; }
     
+    /* ★★★ OFFLINE MESSAGE (now used as a notification, not error) ★★★ */
+    #offlineNotification { position:fixed; bottom:120px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(255,152,0,0.95); color:white; padding:12px 20px; border-radius:12px; box-shadow:0 4px 20px rgba(255,152,0,0.4); display:none; text-align:center; max-width:90%; font-size:13px; font-weight:600; border:1px solid rgba(255,255,255,0.2); }
+    #offlineNotification.active { display:block; }
+    
     @media(max-width:600px) {
       .header-wrapper { height:44px; padding:3px 4px; gap:2px; }
       .header-wrapper button { padding:3px 6px; font-size:9px; min-height:28px; }
@@ -240,6 +244,7 @@
       .offline-status { top:48px; font-size:8px; padding:2px 8px; }
       #errorMessage .error-actions { flex-direction:column; align-items:center; }
       #errorMessage button { width:100%; }
+      #offlineNotification { bottom:100px; font-size:11px; padding:8px 14px; }
     }
   </style>
 </head>
@@ -260,6 +265,9 @@
       <button onclick="location.reload()">🔄 Επανάληψη</button>
     </div>
   </div>
+
+  <!-- ★★★ OFFLINE NOTIFICATION (not error) ★★★ -->
+  <div id="offlineNotification">🌐 Είστε εκτός σύνδεσης. Οι αποθηκευμένοι χάρτες θα χρησιμοποιηθούν.</div>
 
   <!-- ★★★ MAP ★★★ -->
   <div id="map"></div>
@@ -376,7 +384,7 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v6.2 (transformRequest) · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.3 (Offline) · 140+ Routes</span></div>
     </div>
   </div>
 
@@ -697,7 +705,7 @@
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 14;
+        this.dbVersion = 15;
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -992,6 +1000,11 @@
             state.mapDownloaded = true;
             return;
           }
+          // If offline and no tiles, show a special message
+          if (!navigator.onLine) {
+            this.showToast('🌐 Είστε offline. Συνδεθείτε στο internet για να κατεβάσετε τον χάρτη.', '#FF9800');
+            return;
+          }
           this.showDownloadPrompt();
         } catch (e) {
           this.showDownloadPrompt();
@@ -1143,17 +1156,14 @@
     // ============================================================
     // ★★★ CREATE MANAGER INSTANCE (BEFORE ANY USAGE) ★★★
     // ============================================================
-    // Define offlineManager and offlineUI right here, before any function uses them.
     let offlineManager = null;
     let offlineUI = null;
 
-    // Immediately initialize them (they will open IndexedDB when needed)
     try {
       offlineManager = new OfflineMapManager();
       offlineUI = new OfflineMapUI(offlineManager);
     } catch (e) {
       console.warn('Failed to create offline manager:', e);
-      // Create dummy objects to avoid errors
       offlineManager = {
         initDB: async () => {},
         getTile: async () => null,
@@ -1412,7 +1422,6 @@
       try {
         console.log('Initializing map...');
 
-        // Ensure DB is ready (if offlineManager is real)
         if (offlineManager && typeof offlineManager.initDB === 'function') {
           await offlineManager.initDB();
         }
@@ -1496,7 +1505,10 @@
           console.log('Map loaded successfully');
           document.getElementById('loadingMessage').classList.add('hidden');
 
-          // Check if we have offline tiles
+          // Hide offline notification if it was shown
+          document.getElementById('offlineNotification').classList.remove('active');
+
+          // Check offline tiles
           if (offlineManager && typeof offlineManager.isMapDownloaded === 'function') {
             const hasTiles = await offlineManager.isMapDownloaded();
             if (hasTiles) {
@@ -1508,7 +1520,16 @@
             } else {
               document.getElementById('offlineStatus').textContent = '🌐 Online';
               document.getElementById('offlineStatus').classList.add('active', 'online');
-              setTimeout(() => offlineUI.checkAndPromptDownload(), 3000);
+              // If offline and no tiles, show notification
+              if (!navigator.onLine) {
+                document.getElementById('offlineNotification').textContent = '🌐 Είστε offline. Χρειάζεστε λήψη χάρτη. Συνδεθείτε για λήψη.';
+                document.getElementById('offlineNotification').classList.add('active');
+                setTimeout(() => {
+                  document.getElementById('offlineNotification').classList.remove('active');
+                }, 8000);
+              } else {
+                setTimeout(() => offlineUI.checkAndPromptDownload(), 3000);
+              }
             }
           } else {
             document.getElementById('offlineStatus').textContent = '🌐 Online';
@@ -1519,16 +1540,19 @@
 
         state.map.on('error', (e) => {
           console.warn('Map error:', e);
+          // Don't show fatal errors for tiles; they'll fallback to gray
         });
 
-        // Timeout: if map doesn't load in 15s, show error
+        // Instead of a timeout that shows error, we'll just remove loading after 10s even if not loaded
+        // but only if we have a map instance. If not, we show error.
         setTimeout(() => {
+          document.getElementById('loadingMessage').classList.add('hidden');
           if (!state.map || !state.map.loaded()) {
-            document.getElementById('loadingMessage').classList.add('hidden');
+            // Show error only if map not present
             document.getElementById('errorMessage').classList.remove('hidden');
-            document.getElementById('errorDetail').textContent = 'Ο χάρτης δεν φορτώθηκε εγκαίρως. Ελέγξτε τη σύνδεσή σας.';
+            document.getElementById('errorDetail').textContent = 'Ο χάρτης δεν φορτώθηκε. Ελέγξτε τη σύνδεσή σας.';
           }
-        }, 15000);
+        }, 10000);
 
       } catch (error) {
         console.error('Fatal map initialization error:', error);
