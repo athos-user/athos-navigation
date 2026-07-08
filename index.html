@@ -370,7 +370,7 @@
   <div id="helpModal">
     <div class="help-content">
       <div class="help-title"><h2>❓ Οδηγός Χρήσης &amp; Όροι</h2><button id="closeHelpBtn">✕</button></div>
-      <div class="help-intro">🌐 <strong>OpenStreetMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 140+ διαδρομές.</div>
+      <div class="help-intro">🌐 <strong>OpenStreetMap</strong> — Offline πλοήγηση στο Άγιο Όρος με 152 διαδρομές.</div>
       <div class="help-section"><div class="help-section-title">📍 Πλοήγηση</div><div class="help-item"><span class="help-icon">📍</span><div><div class="help-label">GPS</div><div class="help-desc">Πατήστε <strong>📍</strong> για να ενεργοποιήσετε τον δέκτη GPS. Λειτουργεί και offline!</div></div></div><div class="help-item"><span class="help-icon">🧭</span><div><div class="help-label">Follow</div><div class="help-desc">Πατήστε <strong>🧭</strong> για να ακολουθεί ο χάρτης την κίνησή σας.</div></div></div><div class="help-item"><span class="help-icon">🎯</span><div><div class="help-label">Κέντρο στη διαδρομή</div><div class="help-desc">Πατήστε <strong>🎯</strong> για να εστιάσετε σε ολόκληρη τη διαδρομή.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">⭐ Αγαπημένες &amp; Offline</div><div class="help-item"><span class="help-icon">⭐</span><div><div class="help-label">Online Αγαπημένες</div><div class="help-desc">Πατήστε <strong>⭐</strong> για να δείτε τις online αγαπημένες σας. Χρειάζεται internet.</div></div></div><div class="help-item"><span class="help-icon">💾</span><div><div class="help-label">Offline Αγαπημένες</div><div class="help-desc">Πατήστε <strong>💾</strong> για να δείτε/κατεβάσετε έως 10 διαδρομές για offline χρήση.</div></div></div><div class="help-item"><span class="help-icon">📥</span><div><div class="help-label">Λήψη Offline</div><div class="help-desc">Από το παράθυρο αγαπημένων, πατήστε <strong>"Λήψη Offline"</strong> για να κατεβάσετε διαδρομές.</div></div></div></div>
       <div class="help-section"><div class="help-section-title">📶 Offline Χάρτης</div><div class="help-item"><span class="help-icon">📶</span><div><div class="help-label">Λήψη Offline Χάρτη</div><div class="help-desc">Πατήστε <strong>📶</strong> για να κατεβάσετε τον χάρτη τοπικά (tiles από OpenStreetMap). <br> <span style="color:#FF9800;">Προσοχή:</span> Οι offline tiles είναι διαθέσιμοι για zoom <strong>8‑14</strong>. Σε μεγαλύτερο zoom, ο χάρτης μπορεί να εμφανιστεί θολός (αναβάθμιση από χαμηλότερο zoom).<br> <span style="color:#FF9800;">Long press (παρατεταμένο πάτημα) για επαναφορά όλων των offline δεδομένων.</span></div></div></div></div>
@@ -384,7 +384,7 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v6.4 (Offline) · 140+ Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.4 (Offline) · 152 Routes</span></div>
     </div>
   </div>
 
@@ -557,7 +557,7 @@
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 27;  // ★★★ FIXED: version 27 ★★★
+        this.dbVersion = 27;
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -1962,8 +1962,7 @@
     }
 
     // ============================================================
-    // ★★★ DOM READY ★★★
-    // ============================================================
+    // ★★★ DOM READY ★★★    // ============================================================
     let pendingResumeAction = null;
 
     // ★★★ START APP ★★★
