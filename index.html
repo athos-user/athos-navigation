@@ -376,13 +376,13 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v6.1 (transformRequest) · 140+ Offline Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.2 (transformRequest) · 140+ Offline Routes</span></div>
     </div>
   </div>
 
   <script>
     // ============================================================
-    // ★★★ FULL ROUTES LIST (140+ διαδρομές – same as before) ★★★
+    // ★★★ FULL ROUTES LIST (140+ διαδρομές) ★★★
     // ============================================================
     const ROUTES = [
       { "name": "Αρσανάς → Ζωγράφου", "dist": 3, "time": "1:00",
@@ -692,7 +692,7 @@
     ];
 
     // ============================================================
-    // ★★★ OFFLINE MAP MANAGER (with transformRequest support) ★★★
+    // ★★★ OFFLINE MAP MANAGER ★★★
     // ============================================================
     class OfflineMapManager {
       constructor() {
@@ -797,6 +797,7 @@
         });
       }
 
+      // Offline favorites
       async saveOfflineFavorite(routeData, gpxData) {
         const db = await this.initDB();
         return new Promise((resolve, reject) => {
@@ -1140,6 +1141,40 @@
     }
 
     // ============================================================
+    // ★★★ CREATE MANAGER INSTANCE (BEFORE ANY USAGE) ★★★
+    // ============================================================
+    // Define offlineManager and offlineUI right here, before any function uses them.
+    let offlineManager = null;
+    let offlineUI = null;
+
+    // Immediately initialize them (they will open IndexedDB when needed)
+    try {
+      offlineManager = new OfflineMapManager();
+      offlineUI = new OfflineMapUI(offlineManager);
+    } catch (e) {
+      console.warn('Failed to create offline manager:', e);
+      // Create dummy objects to avoid errors
+      offlineManager = {
+        initDB: async () => {},
+        getTile: async () => null,
+        saveTile: async () => {},
+        isMapDownloaded: async () => false,
+        getOfflineFavorites: async () => [],
+        saveOfflineFavorite: async () => {},
+        deleteOfflineFavorite: async () => {},
+        clearOfflineFavorites: async () => {},
+        getOfflineFavoriteCount: async () => 0,
+        resetAllData: async () => {},
+        downloadArea: async () => ({ success: false })
+      };
+      offlineUI = {
+        showToast: (msg, color) => { console.log(msg); },
+        checkAndPromptDownload: async () => {},
+        showDownloadPrompt: () => {}
+      };
+    }
+
+    // ============================================================
     // ★★★ STATE ★★★
     // ============================================================
     let state = {
@@ -1377,10 +1412,11 @@
       try {
         console.log('Initializing map...');
 
-        // Ensure DB is ready before creating the map
-        await offlineManager.initDB();
+        // Ensure DB is ready (if offlineManager is real)
+        if (offlineManager && typeof offlineManager.initDB === 'function') {
+          await offlineManager.initDB();
+        }
 
-        // Define the tile URL template (will be intercepted by transformRequest)
         const tileUrlTemplate = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
         const style = {
@@ -1407,32 +1443,25 @@
           center: [24.32, 40.16],
           zoom: 12,
           transformRequest: async (url, resourceType) => {
-            // Only intercept tile requests
             if (resourceType === 'Tile' && url.includes('tile.openstreetmap.org')) {
-              // Extract z/x/y from URL
               const match = url.match(/\/(\d+)\/(\d+)\/(\d+)\.png$/);
-              if (match) {
+              if (match && offlineManager && typeof offlineManager.getTile === 'function') {
                 const z = parseInt(match[1]);
                 const x = parseInt(match[2]);
                 const y = parseInt(match[3]);
                 const key = `${z}/${x}/${y}`;
                 try {
-                  // Check cache
                   const cachedData = await offlineManager.getTile(key);
                   if (cachedData) {
-                    // Convert ArrayBuffer to Blob and create a URL
                     const blob = new Blob([cachedData], { type: 'image/png' });
                     const blobUrl = URL.createObjectURL(blob);
-                    // Return the blob URL as a response
                     return { url: blobUrl };
                   }
                 } catch (e) {
                   console.warn('Cache error for tile', key, e);
                 }
-                // If not cached, allow normal fetch (no modification)
               }
             }
-            // For other resources, return the original URL
             return { url };
           }
         });
@@ -1468,24 +1497,28 @@
           document.getElementById('loadingMessage').classList.add('hidden');
 
           // Check if we have offline tiles
-          const hasTiles = await offlineManager.isMapDownloaded();
-          if (hasTiles) {
-            state.mapDownloaded = true;
-            document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
-            document.getElementById('offlineStatus').classList.add('active', 'offline');
-            document.getElementById('wifiBtn').classList.add('active');
-            showToast('📡 Λειτουργία Offline με τοπικό χάρτη', '#4CAF50');
+          if (offlineManager && typeof offlineManager.isMapDownloaded === 'function') {
+            const hasTiles = await offlineManager.isMapDownloaded();
+            if (hasTiles) {
+              state.mapDownloaded = true;
+              document.getElementById('offlineStatus').textContent = '📡 Offline v1.0';
+              document.getElementById('offlineStatus').classList.add('active', 'offline');
+              document.getElementById('wifiBtn').classList.add('active');
+              showToast('📡 Λειτουργία Offline με τοπικό χάρτη', '#4CAF50');
+            } else {
+              document.getElementById('offlineStatus').textContent = '🌐 Online';
+              document.getElementById('offlineStatus').classList.add('active', 'online');
+              setTimeout(() => offlineUI.checkAndPromptDownload(), 3000);
+            }
           } else {
             document.getElementById('offlineStatus').textContent = '🌐 Online';
             document.getElementById('offlineStatus').classList.add('active', 'online');
-            setTimeout(() => offlineUI.checkAndPromptDownload(), 3000);
           }
           updateOfflineFavCount();
         });
 
         state.map.on('error', (e) => {
           console.warn('Map error:', e);
-          // Don't show error overlay for tile errors – they will fall back to network
         });
 
         // Timeout: if map doesn't load in 15s, show error
