@@ -256,7 +256,7 @@
     <div>Φόρτωση χάρτη...</div>
   </div>
 
-  <!-- ★★★ ERROR OVERLAY ★★★ -->
+  <!-- ★★★ ERROR OVERLAY (only for critical errors) ★★★ -->
   <div id="errorMessage" class="hidden">
     <div class="error-icon">⚠️</div>
     <div class="error-text">Σφάλμα φόρτωσης χάρτη</div>
@@ -267,7 +267,7 @@
   </div>
 
   <!-- ★★★ OFFLINE NOTIFICATION ★★★ -->
-  <div id="offlineNotification">🌐 Είστε εκτός σύνδεσης. Οι αποθηκευμένοι χάρτες (zoom 8‑14) θα χρησιμοποιηθούν.</div>
+  <div id="offlineNotification">🌐 Είστε εκτός σύνδεσης. Χρησιμοποιούνται αποθηκευμένοι tiles (zoom 8‑14).</div>
 
   <!-- ★★★ MAP ★★★ -->
   <div id="map"></div>
@@ -384,7 +384,7 @@
         <div class="help-item"><span class="help-icon">🔒</span><div><div class="help-desc"><span class="section-label green">Προστασία Προσωπικών Δεδομένων &amp; Απορρήτου:</span> Η γεωγραφική σας θέση (τοποθεσία) και η διαδρομή σας <strong>δεν καταγράφονται</strong> από την εφαρμογή. Τα προσωπικά στοιχεία που δηλώνετε στην ενότητα επείγουσας ανάγκης (ονοματεπώνυμο, τηλέφωνο επικοινωνίας και θέση) <strong>δεν αποθηκεύονται</strong> σε καμία βάση δεδομένων. Χρησιμοποιούνται <strong>αποκλειστικά και μόνο</strong> για την άμεση επικοινωνία με τις αρμόδιες αρχές, με σκοπό τη λήψη των απαραίτητων μέτρων διάσωσης και συνδρομής, ανάλογα με την κατάσταση έκτακτης ανάγκης που περιγράφεται.</div></div></div>
       </div>
       <div class="help-security"><strong>🛡️ Σημείωμα:</strong> Το GPS λειτουργεί ανεξάρτητα από το internet. Οι offline διαδρομές αποθηκεύονται τοπικά.</div>
-      <div class="help-footer"><span>Athos Maps v6.5 (Offline, pixelRatio=1) · 140+ Routes</span></div>
+      <div class="help-footer"><span>Athos Maps v6.6 (Offline) · 140+ Routes</span></div>
     </div>
   </div>
 
@@ -553,7 +553,7 @@
     class OfflineMapManager {
       constructor() {
         this.dbName = 'AthosOfflineMap';
-        this.dbVersion = 16;
+        this.dbVersion = 17;
         this.storeName = 'mapTiles';
         this.favStoreName = 'offlineFavorites';
         this.metadataStore = 'metadata';
@@ -1264,7 +1264,7 @@
       return R * c;
     }
 
-    // ★★★ MAP INIT with pixelRatio=1 and renderWorldCopies=false ★★★
+    // ★★★ MAP INIT with improved error handling ★★★
     async function initMap() {
       try {
         console.log('Initializing map...');
@@ -1298,8 +1298,8 @@
           style: style,
           center: [24.32, 40.16],
           zoom: 12,
-          pixelRatio: 1,          // prevent blurring on high-DPI screens
-          renderWorldCopies: false, // reduce rendering overhead, improves clarity
+          pixelRatio: 1,
+          renderWorldCopies: false,
           transformRequest: async (url, resourceType) => {
             if (resourceType === 'Tile' && url.includes('tile.openstreetmap.org')) {
               const match = url.match(/\/(\d+)\/(\d+)\/(\d+)\.png$/);
@@ -1350,10 +1350,10 @@
         document.getElementById('statusBadge').textContent = '🌐 OpenStreetMap (offline-aware)';
         document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
 
+        // Listen for load event to hide loading spinner
         state.map.on('load', async () => {
           console.log('Map loaded successfully');
           document.getElementById('loadingMessage').classList.add('hidden');
-
           document.getElementById('offlineNotification').classList.remove('active');
 
           if (offlineManager && typeof offlineManager.isMapDownloaded === 'function') {
@@ -1384,17 +1384,22 @@
           updateOfflineFavCount();
         });
 
+        // Critical error: only show overlay for style or network errors that break the map
         state.map.on('error', (e) => {
           console.warn('Map error:', e);
+          // If the error is about tiles, ignore (they will be gray)
+          if (e.error && e.error.status === 404) return;
+          // For other errors (like style fetch), show error overlay
+          document.getElementById('loadingMessage').classList.add('hidden');
+          document.getElementById('errorMessage').classList.remove('hidden');
+          document.getElementById('errorDetail').textContent = e.error ? e.error.message : 'Σφάλμα φόρτωσης χάρτη.';
         });
 
+        // Hide loading after 5 seconds even if map not fully loaded, but don't show error
+        // This prevents indefinite spinner if tiles are slow to load
         setTimeout(() => {
           document.getElementById('loadingMessage').classList.add('hidden');
-          if (!state.map || !state.map.loaded()) {
-            document.getElementById('errorMessage').classList.remove('hidden');
-            document.getElementById('errorDetail').textContent = 'Ο χάρτης δεν φορτώθηκε. Ελέγξτε τη σύνδεσή σας.';
-          }
-        }, 10000);
+        }, 5000);
 
       } catch (error) {
         console.error('Fatal map initialization error:', error);
