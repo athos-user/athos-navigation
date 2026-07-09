@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Athos Maps - Offline Πλοήγηση</title>
+  <title>Athos Maps - Offline</title>
   <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>" />
   
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
@@ -14,7 +14,7 @@
     html, body { width:100%; height:100%; overflow:hidden; background:#0d1117; font-family:'Segoe UI',sans-serif; }
     #map { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1; background:#0d1117; }
     
-    .header-wrapper { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(13,17,23,0.95); border-bottom:2px solid #2196F3; overflow-x:auto; white-space:nowrap; padding:4px 6px; height:44px; display:flex; align-items:center; justify-content:center; gap:3px; }
+    .header-wrapper { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(13,17,23,0.95); border-bottom:2px solid #2196F3; backdrop-filter:blur(8px); overflow-x:auto; white-space:nowrap; padding:4px 6px; height:44px; display:flex; align-items:center; justify-content:center; gap:3px; }
     .header-wrapper button { flex-shrink:0; display:inline-flex; align-items:center; gap:3px; padding:4px 8px; font-size:10px; border-radius:6px; border:none; color:white; cursor:pointer; min-height:28px; font-weight:600; background:#555; }
     .header-wrapper button:active { transform:scale(0.94); }
     .header-wrapper button.gps { background:#2196F3; font-size:15px; }
@@ -29,8 +29,9 @@
     .header-wrapper button.fav.active { background:#e67e22; }
     .header-wrapper button.load { background:#4CAF50; font-size:10px; }
     .header-wrapper button.help { background:#9C27B0; font-size:15px; }
+    .header-wrapper button.resume { background:#e91e63; font-size:10px; display:none; }
     
-    .info-bar { position:fixed; bottom:56px; left:50%; transform:translateX(-50%); z-index:900; background:rgba(13,17,23,0.95); padding:8px 16px; border-radius:12px; text-align:center; min-width:160px; max-width:95%; border:2px solid #2196F3; color:#eee; }
+    .info-bar { position:fixed; bottom:56px; left:50%; transform:translateX(-50%); z-index:900; background:rgba(13,17,23,0.95); padding:8px 16px; border-radius:12px; text-align:center; min-width:160px; max-width:95%; border:2px solid #2196F3; color:#eee; backdrop-filter:blur(8px); }
     .info-bar .dist { font-size:24px; font-weight:800; color:#4CAF50; }
     .info-bar .time { font-size:20px; font-weight:700; color:#FF9800; }
     .info-bar .status { font-size:11px; color:#aaa; margin-top:4px; }
@@ -138,7 +139,7 @@
 
   <div id="map"></div>
 
-  <!-- ★★★ RESUME MODAL ★★★ -->
+  <!-- RESUME MODAL -->
   <div id="resumeModal">
     <div class="resume-content">
       <div class="resume-icon">🗺️</div>
@@ -167,6 +168,7 @@
     <button class="load" id="loadBtn">📂</button>
     <button class="clear" id="clearBtn">🗑️</button>
     <button class="help" id="helpBtn">❓</button>
+    <button class="resume" id="resumeBtn">🔄</button>
     <input type="file" id="fileInput" accept=".gpx" style="display:none">
   </div>
 
@@ -215,7 +217,7 @@
       </div>
       <div class="help-item"><span class="icon">📍</span><div><span class="label">GPS</span> – Ενεργοποιεί τον δέκτη GPS.</div></div>
       <div class="help-item"><span class="icon">🧭</span><div><span class="label">Follow</span> – Ο χάρτης ακολουθεί την κίνησή σας.</div></div>
-      <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – Όλες οι διαδρομές του Αγίου Όρους.</div></div>
+      <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – 152 διαδρομές στο Άγιο Όρος.</div></div>
       <div class="help-item"><span class="icon">⭐</span><div><span class="label">Αγαπημένες</span> – Αποθήκευση αγαπημένων διαδρομών.</div></div>
       <div style="font-size:10px;color:#666;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;">Athos Maps · Offline</div>
     </div>
@@ -957,6 +959,19 @@
         localStorage.removeItem('athos_last_route');
         localStorage.removeItem('athos_last_gpx_data');
         showToast('❌ Ακυρώθηκε', '#888');
+      });
+
+      // Resume button (header)
+      document.getElementById('resumeBtn').addEventListener('click', function() {
+        const saved = localStorage.getItem('athos_last_route');
+        if (saved) {
+          try {
+            const r = JSON.parse(saved);
+            if (r.url && r.name) showResumeModal(r);
+          } catch(e) {}
+        } else {
+          showToast('❌ Δεν υπάρχει αποθηκευμένη διαδρομή', '#f44336');
+        }
       });
 
       // Event listeners
