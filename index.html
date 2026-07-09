@@ -32,7 +32,6 @@
             z-index: 1;
             background: #0d1117;
         }
-        /* ★★★ ΒΕΛΤΙΩΣΗ: Υψηλότερη ανάλυση για τα tiles ★★★ */
         .maplibregl-canvas {
             image-rendering: auto !important;
         }
@@ -778,26 +777,7 @@
             cursor: pointer;
         }
 
-        #offlineNotification {
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            background: rgba(255, 152, 0, 0.95);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 10px;
-            display: none;
-            text-align: center;
-            max-width: 90%;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        #offlineNotification.active {
-            display: block;
-        }
+        /* ★★★ ΑΦΑΙΡΕΘΗΚΕ το offlineNotification ★★★ */
 
         @media(max-width:600px) {
             .header-wrapper {
@@ -856,11 +836,6 @@
                 padding: 4px 6px;
                 min-height: 30px;
             }
-            #offlineNotification {
-                bottom: 100px;
-                font-size: 10px;
-                padding: 6px 12px;
-            }
         }
     </style>
 </head>
@@ -877,8 +852,6 @@
         <div class="err-detail" id="errorDetail">Παρακαλώ ελέγξτε τη σύνδεσή σας.</div>
         <button onclick="location.reload()">🔄 Επανάληψη</button>
     </div>
-
-    <div id="offlineNotification">🌐 Είστε offline. Οι αποθηκευμένες διαδρομές θα χρησιμοποιηθούν.</div>
 
     <div id="map"></div>
 
@@ -1521,7 +1494,6 @@
                     updateOfflineFavCount();
                 });
 
-                // ★★★ ΒΕΛΤΙΩΣΗ: Source με υψηλότερη ανάλυση ★★★
                 const style = {
                     version: 8,
                     sources: {
@@ -1550,9 +1522,7 @@
                     style: style,
                     center: [24.32, 40.16],
                     zoom: 12,
-                    // ★★★ Αυξημένο max zoom για καλύτερη ανάλυση ★★★
                     maxZoom: 19,
-                    // ★★★ Αναλογία οθόνης για καθαρή εμφάνιση ★★★
                     renderWorldCopies: false
                 });
 
@@ -1564,9 +1534,41 @@
                     state.map.resize();
                     showToast('✅ Χάρτης έτοιμος!', '#4CAF50');
                     document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
-                    document.getElementById('offlineStatus').textContent = '🌐 Online';
-                    document.getElementById('offlineStatus').classList.add('active');
+                    
+                    // ★★★ ΕΝΗΜΕΡΩΣΗ OFFLINE STATUS ★★★
+                    if (!navigator.onLine) {
+                        document.getElementById('offlineStatus').textContent = '📡 Offline';
+                        document.getElementById('offlineStatus').classList.add('active', 'offline');
+                    } else {
+                        document.getElementById('offlineStatus').textContent = '🌐 Online';
+                        document.getElementById('offlineStatus').classList.add('active', 'online');
+                    }
+                    
                     updateOfflineFavCount();
+                    
+                    // ★★★ ΑΥΤΟΜΑΤΗ ΦΟΡΤΩΣΗ ΤΕΛΕΥΤΑΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★
+                    setTimeout(() => {
+                        const saved = localStorage.getItem('athos_last_route');
+                        if (saved) {
+                            try {
+                                const r = JSON.parse(saved);
+                                if (r.url && r.name) {
+                                    // Αν είμαστε offline και η διαδρομή είναι αποθηκευμένη
+                                    if (!navigator.onLine) {
+                                        offlineManager.getOfflineFavorites().then(favs => {
+                                            const found = favs.find(f => f.name === r.name);
+                                            if (found && found.gpxData) {
+                                                loadGpxFromData(found.gpxData, r.name);
+                                                showToast('📱 Φορτώθηκε offline: ' + r.name, '#27ae60');
+                                            }
+                                        });
+                                    } else {
+                                        showResumeModal(r);
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                    }, 2000);
                 });
 
                 state.map.on('error', function(e) {
@@ -1579,16 +1581,6 @@
                         document.getElementById('loadingMessage').classList.add('hidden');
                     }
                 }, 5000);
-
-                setTimeout(() => {
-                    const saved = localStorage.getItem('athos_last_route');
-                    if (saved) {
-                        try {
-                            const r = JSON.parse(saved);
-                            if (r.url && r.name) showResumeModal(r);
-                        } catch (e) {}
-                    }
-                }, 1500);
 
             } catch (err) {
                 console.error(err);
