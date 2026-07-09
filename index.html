@@ -1538,8 +1538,31 @@
                     container: 'map',
                     style: style,
                     center: [24.32, 40.16],
-                    zoom: 12
-                    // ★★★ pixelRatio ΑΦΑΙΡΕΘΗΚΕ – ο χάρτης είναι κρυστάλλινος ★★★
+                    zoom: 12,
+                    // ★★★ transformRequest με forced pixel_ratio=2 ★★★
+                    transformRequest: async (url, resourceType) => {
+                        if (resourceType === 'Tile' && url.includes('tile.openstreetmap.org')) {
+                            const match = url.match(/\/(\d+)\/(\d+)\/(\d+)\.png$/);
+                            if (match && offlineManager) {
+                                const z = parseInt(match[1]),
+                                    x = parseInt(match[2]),
+                                    y = parseInt(match[3]);
+                                const key = `${z}/${x}/${y}`;
+                                try {
+                                    const cached = await offlineManager.getTile(key);
+                                    if (cached) {
+                                        const blob = new Blob([cached], { type: 'image/png' });
+                                        return { url: URL.createObjectURL(blob) };
+                                    }
+                                } catch (e) { /* ignore */ }
+                            }
+                            // ★★★ ΑΝΑΓΚΑΖΟΥΜΕ 2x ΑΝΑΛΥΣΗ ΓΙΑ RETINA ★★★
+                            if (!url.includes('?') && !url.includes('&')) {
+                                return { url: url + '?pixel_ratio=2' };
+                            }
+                        }
+                        return { url };
+                    }
                 });
 
                 state.map.addControl(new maplibregl.NavigationControl());
