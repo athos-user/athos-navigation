@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Athos Maps - Offline Πλήρης</title>
+    <title>Athos Maps - Offline Πλοήγηση</title>
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>" />
 
-    <!-- MapLibre CSS + JS (από cdnjs - πιο σταθερό) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.6.0/maplibre-gl.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.6.0/maplibre-gl.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.6.0/maplibre-gl.min.js"></script>
 
     <style>
@@ -875,7 +874,7 @@
         <button onclick="location.reload()">🔄 Επανάληψη</button>
     </div>
 
-    <div id="offlineNotification">🌐 Είστε offline. Οι αποθηκευμένοι χάρτες θα χρησιμοποιηθούν.</div>
+    <div id="offlineNotification">🌐 Είστε offline. Οι αποθηκευμένες διαδρομές θα χρησιμοποιηθούν.</div>
 
     <div id="map"></div>
 
@@ -1144,7 +1143,7 @@
         ];
 
         // ============================================================
-        // ★★★ OFFLINE MAP MANAGER (μόνο για αγαπημένες - χωρίς tiles) ★★★
+        // ★★★ OFFLINE FAVORITES MANAGER ★★★
         // ============================================================
         class OfflineFavManager {
             constructor() {
@@ -1504,14 +1503,12 @@
         // ============================================================
         function initMap() {
             try {
-                // Έλεγχος αν το MapLibre φορτώθηκε
                 if (typeof maplibregl === 'undefined') {
-                    // Προσπάθεια επαναφόρτωσης
                     document.getElementById('loadingMessage').classList.add('hidden');
                     document.getElementById('errorMessage').classList.remove('hidden');
                     document.getElementById('errorDetail')
                         .textContent =
-                        'Το MapLibre δεν φορτώθηκε. Ελέγξτε τη σύνδεσή σας ή ανοίξτε online μία φορά για να φορτωθούν οι βιβλιοθήκες.';
+                        'Το MapLibre δεν φορτώθηκε. Ανοίξτε online μία φορά για να φορτωθούν οι βιβλιοθήκες.';
                     return;
                 }
 
@@ -1542,7 +1539,7 @@
                     style: style,
                     center: [24.32, 40.16],
                     zoom: 12
-                    // pixelRatio αφαιρέθηκε
+                    // ★★★ pixelRatio ΑΦΑΙΡΕΘΗΚΕ – ο χάρτης είναι κρυστάλλινος ★★★
                 });
 
                 state.map.addControl(new maplibregl.NavigationControl());
@@ -1783,9 +1780,8 @@
         function loadRouteFromUrl(url, name, dist, time) {
             if (!state.map) { showToast('⚠️ Χάρτης μη έτοιμος', '#FF9800'); return; }
 
-            // Έλεγχος αν είμαστε offline
+            // Αν είμαστε offline, ψάχνουμε σε αποθηκευμένες offline διαδρομές
             if (!navigator.onLine) {
-                // Ψάχνουμε σε offline αγαπημένες
                 offlineManager.getOfflineFavorites().then(favs => {
                     const found = favs.find(f => f.name === name);
                     if (found && found.gpxData) {
@@ -2066,18 +2062,6 @@
                 if (e.target.files[0]) { loadGpxFile(e.target.files[0]);
                     e.target.value = ''; }
             });
-
-            // ★★★ WiFi button ★★★
-            const wifiBtn = document.getElementById('wifiBtn');
-            if (wifiBtn) {
-                wifiBtn.addEventListener('click', function() {
-                    if (!navigator.onLine) {
-                        showToast('🌐 Είστε offline. Οι αποθηκευμένες διαδρομές λειτουργούν.', '#FF9800');
-                        return;
-                    }
-                    showToast('📶 Online λειτουργία', '#2196F3');
-                });
-            }
 
             // ★★★ SPEED BUTTONS ★★★
             document.querySelectorAll('[data-speed]').forEach(btn => {
