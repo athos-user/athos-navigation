@@ -32,6 +32,10 @@
             z-index: 1;
             background: #0d1117;
         }
+        /* ★★★ ΒΕΛΤΙΩΣΗ: Υψηλότερη ανάλυση για τα tiles ★★★ */
+        .maplibregl-canvas {
+            image-rendering: auto !important;
+        }
 
         .header-wrapper {
             position: fixed;
@@ -976,7 +980,7 @@
             <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – 152 διαδρομές στο Άγιο Όρος.</div></div>
             <div class="help-item"><span class="icon">⭐</span><div><span class="label">Online Αγαπημένες</span> – Αποθήκευση ονόματος.</div></div>
             <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span> – Κατεβάζει ολόκληρη τη διαδρομή.</div></div>
-            <div class="help-item"><span class="icon">📶</span><div><span class="label">Offline Χάρτης</span> – Κατεβάζει tiles για zoom 8‑14. Long press για επαναφορά.</div></div>
+            <div class="help-item"><span class="icon">📶</span><div><span class="label">Offline Χάρτης</span> – Κατεβάζει tiles για zoom 8‑16. Long press για επαναφορά.</div></div>
             <div style="font-size:10px;color:#666;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;">Athos Maps · Offline</div>
         </div>
     </div>
@@ -1517,20 +1521,27 @@
                     updateOfflineFavCount();
                 });
 
+                // ★★★ ΒΕΛΤΙΩΣΗ: Source με υψηλότερη ανάλυση ★★★
                 const style = {
                     version: 8,
                     sources: {
                         'osm': {
                             type: 'raster',
                             tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                            tileSize: 256,
-                            attribution: '© OpenStreetMap'
+                            tileSize: 512,
+                            attribution: '© OpenStreetMap',
+                            maxzoom: 19,
+                            minzoom: 0
                         }
                     },
                     layers: [{
                         id: 'osm',
                         type: 'raster',
-                        source: 'osm'
+                        source: 'osm',
+                        paint: {
+                            'raster-fade-duration': 0,
+                            'raster-resampling': 'linear'
+                        }
                     }]
                 };
 
@@ -1539,30 +1550,10 @@
                     style: style,
                     center: [24.32, 40.16],
                     zoom: 12,
-                    // ★★★ transformRequest με forced pixel_ratio=2 ★★★
-                    transformRequest: async (url, resourceType) => {
-                        if (resourceType === 'Tile' && url.includes('tile.openstreetmap.org')) {
-                            const match = url.match(/\/(\d+)\/(\d+)\/(\d+)\.png$/);
-                            if (match && offlineManager) {
-                                const z = parseInt(match[1]),
-                                    x = parseInt(match[2]),
-                                    y = parseInt(match[3]);
-                                const key = `${z}/${x}/${y}`;
-                                try {
-                                    const cached = await offlineManager.getTile(key);
-                                    if (cached) {
-                                        const blob = new Blob([cached], { type: 'image/png' });
-                                        return { url: URL.createObjectURL(blob) };
-                                    }
-                                } catch (e) { /* ignore */ }
-                            }
-                            // ★★★ ΑΝΑΓΚΑΖΟΥΜΕ 2x ΑΝΑΛΥΣΗ ΓΙΑ RETINA ★★★
-                            if (!url.includes('?') && !url.includes('&')) {
-                                return { url: url + '?pixel_ratio=2' };
-                            }
-                        }
-                        return { url };
-                    }
+                    // ★★★ Αυξημένο max zoom για καλύτερη ανάλυση ★★★
+                    maxZoom: 19,
+                    // ★★★ Αναλογία οθόνης για καθαρή εμφάνιση ★★★
+                    renderWorldCopies: false
                 });
 
                 state.map.addControl(new maplibregl.NavigationControl());
