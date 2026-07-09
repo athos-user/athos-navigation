@@ -169,6 +169,12 @@
             font-weight: 700;
             margin-top: 2px;
         }
+        .info-bar .remaining {
+            font-size: 11px;
+            color: #FF5722;
+            font-weight: 600;
+            margin-top: 2px;
+        }
 
         .bottom-bar {
             position: fixed;
@@ -777,8 +783,6 @@
             cursor: pointer;
         }
 
-        /* ★★★ ΑΦΑΙΡΕΘΗΚΕ το offlineNotification ★★★ */
-
         @media(max-width:600px) {
             .header-wrapper {
                 height: 40px;
@@ -891,6 +895,7 @@
     <div class="info-bar" id="infoBar">
         <div><span class="dist" id="distDisplay">0.00</span> km · <span class="time" id="timeDisplay">--:--</span></div>
         <div class="speed" id="speedDisplay"></div>
+        <div class="remaining" id="remainingDisplay"></div>
         <div class="status" id="statusDisplay">Πατήστε 📍 για GPS</div>
     </div>
 
@@ -1234,7 +1239,10 @@
             wakeLock: null,
             isScreenOn: false,
             currentSpeedKmh: 0,
-            currentRouteName: ''
+            currentRouteName: '',
+            routeCoords: [],
+            routeProgress: 0,
+            remainingDist: 0
         };
 
         let offlineManager = null;
@@ -1534,8 +1542,7 @@
                     state.map.resize();
                     showToast('✅ Χάρτης έτοιμος!', '#4CAF50');
                     document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
-                    
-                    // ★★★ ΕΝΗΜΕΡΩΣΗ OFFLINE STATUS ★★★
+
                     if (!navigator.onLine) {
                         document.getElementById('offlineStatus').textContent = '📡 Offline';
                         document.getElementById('offlineStatus').classList.add('active', 'offline');
@@ -1543,9 +1550,9 @@
                         document.getElementById('offlineStatus').textContent = '🌐 Online';
                         document.getElementById('offlineStatus').classList.add('active', 'online');
                     }
-                    
+
                     updateOfflineFavCount();
-                    
+
                     // ★★★ ΑΥΤΟΜΑΤΗ ΦΟΡΤΩΣΗ ΤΕΛΕΥΤΑΙΑΣ ΔΙΑΔΡΟΜΗΣ ★★★
                     setTimeout(() => {
                         const saved = localStorage.getItem('athos_last_route');
@@ -1553,13 +1560,18 @@
                             try {
                                 const r = JSON.parse(saved);
                                 if (r.url && r.name) {
-                                    // Αν είμαστε offline και η διαδρομή είναι αποθηκευμένη
+                                    // Έλεγχος αν υπάρχει ήδη διαδρομή φορτωμένη
+                                    if (state.routeDistance > 0) {
+                                        // Ήδη φορτωμένη, μην εμφανίσεις modal
+                                        return;
+                                    }
                                     if (!navigator.onLine) {
                                         offlineManager.getOfflineFavorites().then(favs => {
                                             const found = favs.find(f => f.name === r.name);
                                             if (found && found.gpxData) {
                                                 loadGpxFromData(found.gpxData, r.name);
-                                                showToast('📱 Φορτώθηκε offline: ' + r.name, '#27ae60');
+                                                showToast('📱 Φορτώθηκε offline: ' + r.name,
+                                                    '#27ae60');
                                             }
                                         });
                                     } else {
@@ -1658,6 +1670,10 @@
                         if (speedEl) speedEl.textContent = state.currentSpeedKmh > 0.3 ? state.currentSpeedKmh.toFixed(
                             1) + ' km/h' : '';
                     }
+                    // ★★★ ΥΠΟΛΟΓΙΣΜΟΣ ΥΠΟΛΕΙΠΟΜΕΝΗΣ ΑΠΟΣΤΑΣΗΣ ★★★
+                    if (state.routeCoords.length > 1 && state.lastPosition) {
+                        updateRemainingDistance();
+                    }
                     if (state.isNavigating) {
                         state.map.flyTo({ center: [lng, lat], zoom: 18, essential: true, duration: 800 });
                     }
@@ -1693,6 +1709,52 @@
                     state.map);
             } else {
                 state.userMarker.setLngLat([lng, lat]);
+            }
+        }
+
+        // ============================================================
+        // ★★★ ΥΠΟΛΟΓΙΣΜΟΣ ΥΠΟΛΕΙΠΟΜΕΝΗΣ ΑΠΟΣΤΑΣΗΣ ★★★
+        // ============================================================
+        function updateRemainingDistance() {
+            if (!state.lastPosition || state.routeCoords.length < 2) return;
+            
+            const lat = state.lastPosition.lat;
+            const lng = state.lastPosition.lng;
+            
+            // Βρίσκουμε το κοντινότερο σημείο στη διαδρομή
+            let minDist = Infinity;
+            let minIndex = 0;
+            
+            for (let i = 0; i < state.routeCoords.length; i++) {
+                const d = haversine(lat, lng, state.routeCoords[i][0], state.routeCoords[i][1]);
+                if (d < minDist) {
+                    minDist = d;
+                    minIndex = i;
+                }
+            }
+            
+            // Υπολογίζουμε την απόσταση από το κοντινότερο σημείο μέχρι το τέλος
+            let remaining = 0;
+            for (let i = minIndex; i < state.routeCoords.length - 1; i++) {
+                remaining += haversine(
+                    state.routeCoords[i][0], state.routeCoords[i][1],
+                    state.routeCoords[i + 1][0], state.routeCoords[i + 1][1]
+                );
+            }
+            
+            state.remainingDist = remaining;
+            const remainingEl = document.getElementById('remainingDisplay');
+            if (remainingEl && remaining > 0) {
+                const timeRemaining = (remaining / state.currentSpeed) * 60;
+                const h = Math.floor(timeRemaining / 60);
+                const m = Math.round(timeRemaining % 60);
+                const timeStr = h > 0 ? h + 'h ' + m + 'm' : m + 'm';
+                remainingEl.textContent = '⏳ Υπόλοιπο: ' + remaining.toFixed(1) + ' km · ' + timeStr;
+                remainingEl.style.display = 'block';
+            } else if (remainingEl) {
+                remainingEl.textContent = '✅ Φτάσατε!';
+                remainingEl.style.color = '#4CAF50';
+                remainingEl.style.display = 'block';
             }
         }
 
@@ -1786,7 +1848,6 @@
         function loadRouteFromUrl(url, name, dist, time) {
             if (!state.map) { showToast('⚠️ Χάρτης μη έτοιμος', '#FF9800'); return; }
 
-            // Αν είμαστε offline, ψάχνουμε σε αποθηκευμένες offline διαδρομές
             if (!navigator.onLine) {
                 offlineManager.getOfflineFavorites().then(favs => {
                     const found = favs.find(f => f.name === name);
@@ -1824,6 +1885,7 @@
                 if (data.tracks.length === 0) throw new Error('No tracks found');
                 const coords = [];
                 data.tracks.forEach(t => t.forEach(c => coords.push(c)));
+                state.routeCoords = coords;
                 const geoCoords = coords.map(c => [c[1], c[0]]);
                 state.routeDistance = computeDist(coords);
                 if (state.map.getLayer('route')) state.map.removeLayer('route');
@@ -1848,6 +1910,14 @@
                 if (centerBtn) centerBtn.classList.add('active');
                 if (centerHeader) centerHeader.classList.add('active');
                 state.currentRouteName = name;
+                
+                // ★★★ ΕΝΗΜΕΡΩΣΗ ΥΠΟΛΟΙΠΟΜΕΝΗΣ ΑΠΟΣΤΑΣΗΣ ★★★
+                const remainingEl = document.getElementById('remainingDisplay');
+                if (remainingEl) {
+                    remainingEl.textContent = '⏳ Υπόλοιπο: ' + state.routeDistance.toFixed(1) + ' km';
+                    remainingEl.style.display = 'block';
+                }
+                
                 localStorage.setItem('athos_last_route', JSON.stringify({ url: 'local', name, dist: state.routeDistance,
                     time: null }));
                 showToast('✅ ' + name, '#4CAF50');
@@ -1867,6 +1937,7 @@
                     if (data.tracks.length === 0) throw new Error('No tracks');
                     const coords = [];
                     data.tracks.forEach(tr => tr.forEach(c => coords.push(c)));
+                    state.routeCoords = coords;
                     const geoCoords = coords.map(c => [c[1], c[0]]);
                     state.routeDistance = computeDist(coords);
                     if (state.map.getLayer('route')) state.map.removeLayer('route');
@@ -1892,6 +1963,13 @@
                     if (centerBtn) centerBtn.classList.add('active');
                     if (centerHeader) centerHeader.classList.add('active');
                     state.currentRouteName = file.name.replace('.gpx', '');
+                    
+                    const remainingEl = document.getElementById('remainingDisplay');
+                    if (remainingEl) {
+                        remainingEl.textContent = '⏳ Υπόλοιπο: ' + state.routeDistance.toFixed(1) + ' km';
+                        remainingEl.style.display = 'block';
+                    }
+                    
                     localStorage.setItem('athos_last_route', JSON.stringify({ url: 'file:' + file.name, name: file.name
                             .replace('.gpx', ''), dist: state.routeDistance, time: null }));
                     localStorage.setItem('athos_last_gpx_data', t);
@@ -1919,8 +1997,15 @@
             if (state.map.getSource('route')) state.map.removeSource('route');
             state.routeGeometry = null;
             state.routeDistance = 0;
+            state.routeCoords = [];
+            state.remainingDist = 0;
             document.getElementById('distDisplay').textContent = '0.00';
             document.getElementById('timeDisplay').textContent = '--:--';
+            const remainingEl = document.getElementById('remainingDisplay');
+            if (remainingEl) {
+                remainingEl.textContent = '';
+                remainingEl.style.display = 'none';
+            }
             const centerBtn = document.getElementById('centerBtn');
             const centerHeader = document.getElementById('centerBtnHeader');
             if (centerBtn) centerBtn.classList.remove('active');
@@ -2011,13 +2096,14 @@
                 if (pendingResume) {
                     const r = pendingResume;
                     hideResumeModal();
+                    // Διορθωμένο: χρησιμοποιούμε toggleGps αντί για startGps
                     if (r.url && r.url.startsWith('file:')) {
                         const gpxData = localStorage.getItem('athos_last_gpx_data');
                         if (gpxData) loadGpxFromData(gpxData, r.name);
                     } else if (r.url) {
                         loadRouteFromUrl(r.url, r.name, r.dist, r.time);
                     }
-                    setTimeout(() => { startGps();
+                    setTimeout(() => { toggleGps();
                         setTimeout(() => { toggleNav();
                             toggleScreen(); }, 1500); }, 1000);
                     showToast('🔄 Συνέχεια: ' + r.name, '#4CAF50');
@@ -2076,6 +2162,8 @@
                     this.classList.add('active');
                     state.currentSpeed = parseInt(this.dataset.speed);
                     updateTimeDisplay();
+                    // Ενημέρωση και του υπολειπόμενου χρόνου
+                    if (state.lastPosition) updateRemainingDistance();
                     showToast('⚡ Ταχύτητα: ' + state.currentSpeed + ' km/h', '#4CAF50');
                 });
             });
