@@ -719,6 +719,69 @@
             border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
+        #offlineModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9997;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #offlineModal.active {
+            display: flex;
+        }
+        #offlineModal .offline-content {
+            background: rgba(13, 17, 23, 0.98);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 360px;
+            width: 100%;
+            border: 2px solid #FF9800;
+            color: #eee;
+            text-align: center;
+        }
+        #offlineModal .offline-content .offline-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        #offlineModal .offline-content h2 {
+            color: #FF9800;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        #offlineModal .offline-content p {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        #offlineModal .offline-content .offline-actions {
+            display: flex;
+            gap: 10px;
+        }
+        #offlineModal .offline-content .offline-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        #offlineModal .offline-content .offline-actions .btn-offline {
+            background: #FF9800;
+            color: white;
+        }
+        #offlineModal .offline-content .offline-actions .btn-retry {
+            background: #555;
+            color: white;
+        }
+
         #loadingMessage,
         #errorMessage {
             position: fixed;
@@ -840,6 +903,9 @@
                 padding: 4px 6px;
                 min-height: 30px;
             }
+            #offlineModal .offline-content {
+                padding: 18px;
+            }
         }
     </style>
 </head>
@@ -855,6 +921,19 @@
         <div class="err-text">Σφάλμα φόρτωσης χάρτη</div>
         <div class="err-detail" id="errorDetail">Παρακαλώ ελέγξτε τη σύνδεσή σας.</div>
         <button onclick="location.reload()">🔄 Επανάληψη</button>
+    </div>
+
+    <!-- ★★★ OFFLINE MODAL ★★★ -->
+    <div id="offlineModal">
+        <div class="offline-content">
+            <div class="offline-icon">📡</div>
+            <h2>Εκτός Σύνδεσης</h2>
+            <p>Δεν υπάρχει σύνδεση στο διαδίκτυο.<br>Θέλετε να συνεχίσετε σε <strong>Offline Mode</strong> με τις αποθηκευμένες διαδρομές;</p>
+            <div class="offline-actions">
+                <button class="btn-offline" id="offlineContinue">✅ Offline Mode</button>
+                <button class="btn-retry" id="offlineRetry">🔄 Επανάληψη</button>
+            </div>
+        </div>
     </div>
 
     <div id="map"></div>
@@ -1243,11 +1322,13 @@
             routeCoords: [],
             routeProgress: 0,
             remainingDist: 0,
-            savedRouteData: null // Αποθηκεύει τα δεδομένα της διαδρομής για resume
+            savedRouteData: null,
+            isOfflineMode: false,
+            mapLoaded: false
         };
 
         let offlineManager = null;
-        let isResuming = false; // Αποτρέπει πολλαπλές φορτώσεις
+        let isResuming = false;
 
         // ============================================================
         // ★★★ ΒΟΗΘΗΤΙΚΕΣ ★★★
@@ -1315,6 +1396,36 @@
             } else {
                 console.warn('Element not found:', id);
                 return false;
+            }
+        }
+
+        // ============================================================
+        // ★★★ OFFLINE MODAL ★★★
+        // ============================================================
+        function showOfflineModal() {
+            const modal = document.getElementById('offlineModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function hideOfflineModal() {
+            const modal = document.getElementById('offlineModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function continueOffline() {
+            hideOfflineModal();
+            state.isOfflineMode = true;
+            document.getElementById('offlineStatus').textContent = '📡 Offline';
+            document.getElementById('offlineStatus').classList.add('active', 'offline');
+            showToast('📡 Offline Mode', '#FF9800');
+            // Φόρτωση της τελευταίας διαδρομής αν υπάρχει
+            const savedGpx = localStorage.getItem('athos_last_gpx_data');
+            const savedRoute = localStorage.getItem('athos_last_route');
+            if (savedGpx && savedRoute) {
+                try {
+                    const r = JSON.parse(savedRoute);
+                    loadGpxFromData(savedGpx, r.name);
+                } catch (e) {}
             }
         }
 
@@ -1504,90 +1615,18 @@
                     updateOfflineFavCount();
                 });
 
-                const style = {
-                    version: 8,
-                    sources: {
-                        'osm': {
-                            type: 'raster',
-                            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                            tileSize: 512,
-                            attribution: '© OpenStreetMap',
-                            maxzoom: 19,
-                            minzoom: 0
-                        }
-                    },
-                    layers: [{
-                        id: 'osm',
-                        type: 'raster',
-                        source: 'osm',
-                        paint: {
-                            'raster-fade-duration': 0,
-                            'raster-resampling': 'linear'
-                        }
-                    }]
-                };
-
-                state.map = new maplibregl.Map({
-                    container: 'map',
-                    style: style,
-                    center: [24.32, 40.16],
-                    zoom: 12,
-                    maxZoom: 19,
-                    renderWorldCopies: false
-                });
-
-                state.map.addControl(new maplibregl.NavigationControl());
-
-                state.map.on('load', function() {
-                    console.log('Map loaded');
+                // ★★★ ΕΛΕΓΧΟΣ ΣΥΝΔΕΣΗΣ ★★★
+                if (!navigator.onLine) {
+                    // Είμαστε offline - εμφάνισε το modal
                     document.getElementById('loadingMessage').classList.add('hidden');
-                    state.map.resize();
-                    showToast('✅ Χάρτης έτοιμος!', '#4CAF50');
-                    document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+                    showOfflineModal();
+                    // Φορτώνουμε τον χάρτη με offline τρόπο
+                    createOfflineMap();
+                    return;
+                }
 
-                    if (!navigator.onLine) {
-                        document.getElementById('offlineStatus').textContent = '📡 Offline';
-                        document.getElementById('offlineStatus').classList.add('active', 'offline');
-                    } else {
-                        document.getElementById('offlineStatus').textContent = '🌐 Online';
-                        document.getElementById('offlineStatus').classList.add('active', 'online');
-                    }
-
-                    updateOfflineFavCount();
-
-                    // ★★★ ΕΛΕΓΧΟΣ ΓΙΑ ΑΠΟΘΗΚΕΥΜΕΝΗ ΔΙΑΔΡΟΜΗ ★★★
-                    setTimeout(() => {
-                        // Αν ήδη έχει φορτωθεί διαδρομή (π.χ. από offline), μην εμφανίσεις modal
-                        if (state.routeDistance > 0 || isResuming) return;
-                        
-                        const savedGpx = localStorage.getItem('athos_last_gpx_data');
-                        const savedRoute = localStorage.getItem('athos_last_route');
-                        
-                        if (savedGpx && savedRoute) {
-                            try {
-                                const r = JSON.parse(savedRoute);
-                                if (r.name) {
-                                    // Αποθήκευση για resume
-                                    state.savedRouteData = { name: r.name, dist: r.dist || 0 };
-                                    showResumeModal({ name: r.name, dist: r.dist || 0, time: r.time || '--:--' });
-                                }
-                            } catch (e) {
-                                console.warn('Error parsing saved route:', e);
-                            }
-                        }
-                    }, 1500);
-                });
-
-                state.map.on('error', function(e) {
-                    console.warn('Map error:', e);
-                });
-
-                setTimeout(() => {
-                    if (state.map) {
-                        state.map.resize();
-                        document.getElementById('loadingMessage').classList.add('hidden');
-                    }
-                }, 5000);
+                // Online - κανονική φόρτωση
+                createOnlineMap();
 
             } catch (err) {
                 console.error(err);
@@ -1595,6 +1634,146 @@
                 document.getElementById('errorMessage').classList.remove('hidden');
                 document.getElementById('errorDetail').textContent = err.message || 'Άγνωστο σφάλμα';
             }
+        }
+
+        function createOnlineMap() {
+            const style = {
+                version: 8,
+                sources: {
+                    'osm': {
+                        type: 'raster',
+                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                        tileSize: 512,
+                        attribution: '© OpenStreetMap',
+                        maxzoom: 19,
+                        minzoom: 0
+                    }
+                },
+                layers: [{
+                    id: 'osm',
+                    type: 'raster',
+                    source: 'osm',
+                    paint: {
+                        'raster-fade-duration': 0,
+                        'raster-resampling': 'linear'
+                    }
+                }]
+            };
+
+            state.map = new maplibregl.Map({
+                container: 'map',
+                style: style,
+                center: [24.32, 40.16],
+                zoom: 12,
+                maxZoom: 19,
+                renderWorldCopies: false
+            });
+
+            state.map.addControl(new maplibregl.NavigationControl());
+
+            state.map.on('load', function() {
+                state.mapLoaded = true;
+                console.log('Map loaded');
+                document.getElementById('loadingMessage').classList.add('hidden');
+                state.map.resize();
+                showToast('✅ Χάρτης έτοιμος!', '#4CAF50');
+                document.getElementById('statusDisplay').textContent = 'Πατήστε 📍 για GPS';
+                document.getElementById('offlineStatus').textContent = '🌐 Online';
+                document.getElementById('offlineStatus').classList.add('active', 'online');
+                updateOfflineFavCount();
+                checkForSavedRoute();
+            });
+
+            state.map.on('error', function(e) {
+                console.warn('Map error:', e);
+                if (!state.isOfflineMode && !navigator.onLine) {
+                    showOfflineModal();
+                }
+            });
+
+            setTimeout(() => {
+                if (state.map) {
+                    state.map.resize();
+                    document.getElementById('loadingMessage').classList.add('hidden');
+                }
+            }, 5000);
+        }
+
+        function createOfflineMap() {
+            // Offline map με απλό στυλ
+            const style = {
+                version: 8,
+                sources: {
+                    'osm': {
+                        type: 'raster',
+                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                        tileSize: 512,
+                        attribution: '© OpenStreetMap',
+                        maxzoom: 19,
+                        minzoom: 0
+                    }
+                },
+                layers: [{
+                    id: 'osm',
+                    type: 'raster',
+                    source: 'osm',
+                    paint: {
+                        'raster-fade-duration': 0,
+                        'raster-resampling': 'linear'
+                    }
+                }]
+            };
+
+            state.map = new maplibregl.Map({
+                container: 'map',
+                style: style,
+                center: [24.32, 40.16],
+                zoom: 12,
+                maxZoom: 19,
+                renderWorldCopies: false
+            });
+
+            state.map.addControl(new maplibregl.NavigationControl());
+
+            state.map.on('load', function() {
+                state.mapLoaded = true;
+                console.log('Offline map loaded');
+                document.getElementById('loadingMessage').classList.add('hidden');
+                state.map.resize();
+                document.getElementById('statusDisplay').textContent = '📡 Offline Mode';
+                document.getElementById('offlineStatus').textContent = '📡 Offline';
+                document.getElementById('offlineStatus').classList.add('active', 'offline');
+                updateOfflineFavCount();
+                checkForSavedRoute();
+            });
+
+            setTimeout(() => {
+                if (state.map) {
+                    state.map.resize();
+                    document.getElementById('loadingMessage').classList.add('hidden');
+                }
+            }, 5000);
+        }
+
+        function checkForSavedRoute() {
+            setTimeout(() => {
+                if (state.routeDistance > 0 || isResuming) return;
+
+                const savedGpx = localStorage.getItem('athos_last_gpx_data');
+                const savedRoute = localStorage.getItem('athos_last_route');
+
+                if (savedGpx && savedRoute) {
+                    try {
+                        const r = JSON.parse(savedRoute);
+                        if (r.name) {
+                            state.savedRouteData = { name: r.name, dist: r.dist || 0 };
+                            showResumeModal({ name: r.name, dist: r.dist || 0, time: r.time || '--:--' });
+                        }
+                    } catch (e) {
+                        console.warn('Error parsing saved route:', e);
+                    }
+                }
+            }, 1500);
         }
 
         // ============================================================
@@ -1626,17 +1805,16 @@
         function loadSavedRouteForResume() {
             if (isResuming) return;
             isResuming = true;
-            
+
             const savedGpx = localStorage.getItem('athos_last_gpx_data');
             const savedRoute = localStorage.getItem('athos_last_route');
-            
+
             if (savedGpx && savedRoute) {
                 try {
                     const r = JSON.parse(savedRoute);
                     loadGpxFromData(savedGpx, r.name);
                     showToast('🔄 Συνέχεια: ' + r.name, '#4CAF50');
-                    
-                    // Ενεργοποίηση GPS και πλοήγησης μετά από 1.5 δευτερόλεπτα
+
                     setTimeout(() => {
                         if (!state.isGpsOn) toggleGps();
                         setTimeout(() => {
@@ -1644,7 +1822,7 @@
                             toggleScreen();
                         }, 1500);
                     }, 1000);
-                    
+
                     return true;
                 } catch (e) {
                     console.error('Error loading saved route:', e);
@@ -1746,13 +1924,13 @@
         // ============================================================
         function updateRemainingDistance() {
             if (!state.lastPosition || state.routeCoords.length < 2) return;
-            
+
             const lat = state.lastPosition.lat;
             const lng = state.lastPosition.lng;
-            
+
             let minDist = Infinity;
             let minIndex = 0;
-            
+
             for (let i = 0; i < state.routeCoords.length; i++) {
                 const d = haversine(lat, lng, state.routeCoords[i][0], state.routeCoords[i][1]);
                 if (d < minDist) {
@@ -1760,7 +1938,7 @@
                     minIndex = i;
                 }
             }
-            
+
             let remaining = 0;
             for (let i = minIndex; i < state.routeCoords.length - 1; i++) {
                 remaining += haversine(
@@ -1768,7 +1946,7 @@
                     state.routeCoords[i + 1][0], state.routeCoords[i + 1][1]
                 );
             }
-            
+
             state.remainingDist = remaining;
             const remainingEl = document.getElementById('remainingDisplay');
             if (remainingEl && remaining > 0) {
@@ -1876,7 +2054,7 @@
         function loadRouteFromUrl(url, name, dist, time) {
             if (!state.map) { showToast('⚠️ Χάρτης μη έτοιμος', '#FF9800'); return; }
 
-            if (!navigator.onLine) {
+            if (!navigator.onLine || state.isOfflineMode) {
                 offlineManager.getOfflineFavorites().then(favs => {
                     const found = favs.find(f => f.name === name);
                     if (found && found.gpxData) {
@@ -1938,21 +2116,20 @@
                 if (centerBtn) centerBtn.classList.add('active');
                 if (centerHeader) centerHeader.classList.add('active');
                 state.currentRouteName = name;
-                
-                // ★★★ ΑΠΟΘΗΚΕΥΣΗ GPX DATA ΓΙΑ RESUME ★★★
+
                 localStorage.setItem('athos_last_gpx_data', gpxData);
-                localStorage.setItem('athos_last_route', JSON.stringify({ 
-                    name: name, 
-                    dist: state.routeDistance, 
-                    time: null 
+                localStorage.setItem('athos_last_route', JSON.stringify({
+                    name: name,
+                    dist: state.routeDistance,
+                    time: null
                 }));
-                
+
                 const remainingEl = document.getElementById('remainingDisplay');
                 if (remainingEl) {
                     remainingEl.textContent = '⏳ Υπόλοιπο: ' + state.routeDistance.toFixed(1) + ' km';
                     remainingEl.style.display = 'block';
                 }
-                
+
                 isResuming = false;
                 showToast('✅ ' + name, '#4CAF50');
             } catch (err) {
@@ -1998,20 +2175,20 @@
                     if (centerBtn) centerBtn.classList.add('active');
                     if (centerHeader) centerHeader.classList.add('active');
                     state.currentRouteName = file.name.replace('.gpx', '');
-                    
+
                     localStorage.setItem('athos_last_gpx_data', t);
-                    localStorage.setItem('athos_last_route', JSON.stringify({ 
-                        name: file.name.replace('.gpx', ''), 
-                        dist: state.routeDistance, 
-                        time: null 
+                    localStorage.setItem('athos_last_route', JSON.stringify({
+                        name: file.name.replace('.gpx', ''),
+                        dist: state.routeDistance,
+                        time: null
                     }));
-                    
+
                     const remainingEl = document.getElementById('remainingDisplay');
                     if (remainingEl) {
                         remainingEl.textContent = '⏳ Υπόλοιπο: ' + state.routeDistance.toFixed(1) + ' km';
                         remainingEl.style.display = 'block';
                     }
-                    
+
                     showToast('✅ Φορτώθηκε: ' + state.currentRouteName, '#4CAF50');
                 } catch (err) { showToast('❌ ' + err.message, '#f44336'); }
             };
@@ -2130,10 +2307,16 @@
             loadFavs();
             initMap();
 
+            // ★★★ OFFLINE MODAL EVENTS ★★★
+            safeAddListener('offlineContinue', 'click', continueOffline);
+            safeAddListener('offlineRetry', 'click', function() {
+                hideOfflineModal();
+                location.reload();
+            });
+
             // ★★★ RESUME MODAL EVENTS ★★★
             safeAddListener('resumeYes', 'click', function() {
                 hideResumeModal();
-                // Φόρτωση της αποθηκευμένης διαδρομής
                 const success = loadSavedRouteForResume();
                 if (!success) {
                     showToast('⚠️ Δεν βρέθηκε αποθηκευμένη διαδρομή', '#FF9800');
