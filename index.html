@@ -28,6 +28,7 @@
     .header-wrapper button.fav { background:#f39c12; font-size:10px; }
     .header-wrapper button.fav.active { background:#e67e22; }
     .header-wrapper button.load { background:#4CAF50; font-size:10px; }
+    .header-wrapper button.help { background:#9C27B0; font-size:15px; }
     
     .info-bar { position:fixed; bottom:56px; left:50%; transform:translateX(-50%); z-index:900; background:rgba(13,17,23,0.95); padding:8px 16px; border-radius:12px; text-align:center; min-width:160px; max-width:95%; border:2px solid #2196F3; color:#eee; }
     .info-bar .dist { font-size:24px; font-weight:800; color:#4CAF50; }
@@ -84,6 +85,20 @@
     #helpModal .help-item .icon { font-size:16px; width:24px; text-align:center; }
     #helpModal .help-item .label { color:#eee; font-weight:600; }
     
+    #resumeModal { position:fixed; top:0; left:0; right:0; bottom:0; z-index:9998; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; padding:20px; }
+    #resumeModal.active { display:flex; }
+    #resumeModal .resume-content { background:rgba(13,17,23,0.98); border-radius:16px; padding:24px; max-width:360px; width:100%; border:2px solid #8e44ad; color:#eee; text-align:center; }
+    #resumeModal .resume-content .resume-icon { font-size:48px; margin-bottom:8px; }
+    #resumeModal .resume-content h2 { color:#bb86fc; font-size:18px; margin-bottom:4px; }
+    #resumeModal .resume-content .route-name { color:#eee; font-size:16px; font-weight:600; margin:6px 0; padding:8px 12px; background:rgba(255,255,255,0.06); border-radius:8px; }
+    #resumeModal .resume-content .route-info { font-size:13px; color:#aaa; margin:6px 0; }
+    #resumeModal .resume-content .route-info span { color:#4CAF50; font-weight:700; }
+    #resumeModal .resume-content .resume-actions { display:flex; gap:10px; margin-top:16px; }
+    #resumeModal .resume-content .resume-actions button { flex:1; padding:10px; border-radius:8px; border:none; font-size:13px; font-weight:700; cursor:pointer; }
+    #resumeModal .resume-content .resume-actions .btn-yes { background:#4CAF50; color:white; }
+    #resumeModal .resume-content .resume-actions .btn-no { background:#555; color:white; }
+    #resumeModal .resume-content .resume-extra { font-size:11px; color:#666; margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); }
+    
     #loadingMessage, #errorMessage { position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:rgba(0,0,0,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; padding:20px; text-align:center; }
     #loadingMessage.hidden, #errorMessage.hidden { display:none; }
     #loadingMessage .spinner { width:36px; height:36px; border:4px solid #333; border-top:4px solid #2196F3; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:12px; }
@@ -123,6 +138,21 @@
 
   <div id="map"></div>
 
+  <!-- ★★★ RESUME MODAL ★★★ -->
+  <div id="resumeModal">
+    <div class="resume-content">
+      <div class="resume-icon">🗺️</div>
+      <h2>Συνέχεια διαδρομής;</h2>
+      <div class="route-name" id="resumeRouteName">--</div>
+      <div class="route-info">📏 <span id="resumeDist">--</span> χλμ · ⏱️ <span id="resumeTime">--</span></div>
+      <div class="resume-actions">
+        <button class="btn-yes" id="resumeYes">✅ Ναι</button>
+        <button class="btn-no" id="resumeNo">❌ Όχι</button>
+      </div>
+      <div class="resume-extra">Θα ενεργοποιηθεί αυτόματα το GPS και η πλοήγηση</div>
+    </div>
+  </div>
+
   <div class="offline-status" id="offlineStatus">📡 Offline</div>
   
   <button class="rotate-btn" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
@@ -136,7 +166,7 @@
     <button class="fav" id="favBtn">⭐</button>
     <button class="load" id="loadBtn">📂</button>
     <button class="clear" id="clearBtn">🗑️</button>
-    <button style="background:#9C27B0;" id="helpBtn">❓</button>
+    <button class="help" id="helpBtn">❓</button>
     <input type="file" id="fileInput" accept=".gpx" style="display:none">
   </div>
 
