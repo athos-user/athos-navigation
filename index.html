@@ -128,21 +128,6 @@
             background: #9C27B0;
             font-size: 15px;
         }
-        /* ★ ΝΕΟ ★ Offline Mode Button */
-        .header-wrapper button.offline-mode {
-            background: #e74c3c;
-            font-size: 10px;
-        }
-        .header-wrapper button.offline-mode.active {
-            background: #c0392b;
-            box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
-            animation: pulse-red 1.5s infinite;
-        }
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.6); }
-            50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.9); }
-            100% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.6); }
-        }
 
         .info-bar {
             position: fixed;
@@ -245,12 +230,12 @@
             display: block;
         }
         .offline-status.offline {
-            border-color: #e74c3c;
-            color: #e74c3c;
-        }
-        .offline-status.online {
             border-color: #4CAF50;
             color: #4CAF50;
+        }
+        .offline-status.online {
+            border-color: #2196F3;
+            color: #2196F3;
         }
 
         .arrow-dot {
@@ -810,47 +795,6 @@
             display: block;
         }
 
-        /* ★ ΝΕΟ ★ Offline Overlay */
-        #offlineOverlay {
-            position: fixed;
-            top: 44px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 500;
-            background: rgba(13, 17, 23, 0.88);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            pointer-events: none;
-        }
-        #offlineOverlay.active {
-            display: flex;
-        }
-        #offlineOverlay .icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-        }
-        #offlineOverlay h2 {
-            color: #e74c3c;
-            margin-bottom: 8px;
-            font-size: 22px;
-        }
-        #offlineOverlay p {
-            color: #aaa;
-            font-size: 14px;
-            max-width: 400px;
-        }
-        #offlineOverlay .info {
-            margin-top: 12px;
-            font-size: 12px;
-            color: #666;
-        }
-
         @media(max-width:600px) {
             .header-wrapper {
                 height: 40px;
@@ -913,12 +857,6 @@
                 font-size: 10px;
                 padding: 6px 12px;
             }
-            #offlineOverlay .icon {
-                font-size: 48px;
-            }
-            #offlineOverlay h2 {
-                font-size: 18px;
-            }
         }
     </style>
 </head>
@@ -954,15 +892,7 @@
         </div>
     </div>
 
-    <div class="offline-status" id="offlineStatus">📡 Online</div>
-
-    <!-- ★ ΝΕΟ ★ Offline Overlay -->
-    <div id="offlineOverlay">
-        <div class="icon">📴</div>
-        <h2>Offline Mode</h2>
-        <p>Χρησιμοποιείτε την εφαρμογή χωρίς σύνδεση στο διαδίκτυο.<br>Οι διαδρομές και τα αγαπημένα σας είναι αποθηκευμένα τοπικά.</p>
-        <div class="info">📍 GPS λειτουργεί κανονικά · 🗺️ Οι διαδρομές φορτώνονται από τη μνήμη</div>
-    </div>
+    <div class="offline-status" id="offlineStatus">📡 Offline</div>
 
     <button class="rotate-btn" id="rotateBtn" title="Περιστροφή 90°">🔄</button>
     <button class="center-btn-fixed" id="centerBtn" title="Κέντρο στη διαδρομή">🎯</button>
@@ -975,8 +905,6 @@
         <button class="fav" id="favBtn">⭐</button>
         <button class="offline-fav" id="offlineFavBtn">💾</button>
         <button class="wifi" id="wifiBtn">📶</button>
-        <!-- ★ ΝΕΟ ★ Offline Mode Button -->
-        <button class="offline-mode" id="offlineModeBtn">📴 Offline</button>
         <button class="load" id="loadBtn">📂</button>
         <button class="clear" id="clearBtn">🗑️</button>
         <button class="help" id="helpBtn">❓</button>
@@ -1045,11 +973,10 @@
             </div>
             <div class="help-item"><span class="icon">📍</span><div><span class="label">GPS</span> – Ενεργοποιεί τον δέκτη GPS.</div></div>
             <div class="help-item"><span class="icon">🧭</span><div><span class="label">Follow</span> – Ο χάρτης ακολουθεί την κίνησή σας.</div></div>
-            <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – 152 διαδρομές στο Άγιο Όρος (αλφαβητικές).</div></div>
+            <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – 152 διαδρομές στο Άγιο Όρος.</div></div>
             <div class="help-item"><span class="icon">⭐</span><div><span class="label">Online Αγαπημένες</span> – Αποθήκευση ονόματος.</div></div>
             <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span> – Κατεβάζει ολόκληρη τη διαδρομή.</div></div>
             <div class="help-item"><span class="icon">📶</span><div><span class="label">Offline Χάρτης</span> – Κατεβάζει tiles για zoom 8‑14. Long press για επαναφορά.</div></div>
-            <div class="help-item"><span class="icon">📴</span><div><span class="label">Offline Mode</span> – Ενεργοποιεί/απενεργοποιεί τη λειτουργία εκτός σύνδεσης.</div></div>
             <div style="font-size:10px;color:#666;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;">Athos Maps · Offline</div>
         </div>
     </div>
@@ -1337,7 +1264,6 @@
         };
 
         let offlineManager = null;
-        let isOfflineMode = false;
 
         // ============================================================
         // ★★★ ΒΟΗΘΗΤΙΚΕΣ ★★★
@@ -1767,65 +1693,7 @@
         }
 
         // ============================================================
-        // ★★★ OFFLINE MODE ★★★
-        // ============================================================
-        function toggleOfflineMode() {
-            isOfflineMode = !isOfflineMode;
-            const btn = document.getElementById('offlineModeBtn');
-            const status = document.getElementById('offlineStatus');
-            const notification = document.getElementById('offlineNotification');
-            const overlay = document.getElementById('offlineOverlay');
-
-            if (isOfflineMode) {
-                // Ενεργοποίηση Offline Mode
-                btn.classList.add('active');
-                btn.textContent = '📴 Online';
-                status.textContent = '📴 Offline Mode';
-                status.classList.add('active', 'offline');
-                status.classList.remove('online');
-                notification.classList.add('active');
-                notification.textContent = '📴 Offline Mode ενεργό - Χρήση αποθηκευμένων δεδομένων';
-                overlay.classList.add('active');
-
-                // Απενεργοποίηση online λειτουργιών του χάρτη
-                if (state.map) {
-                    try {
-                        state.map.setStyle({
-                            'version': 8,
-                            'sources': {},
-                            'layers': []
-                        });
-                    } catch (e) {
-                        console.warn('Could not set empty style:', e);
-                    }
-                }
-
-                showToast('📴 Offline Mode ΕΝΕΡΓΟ', '#e74c3c');
-            } else {
-                // Απενεργοποίηση Offline Mode
-                btn.classList.remove('active');
-                btn.textContent = '📴 Offline';
-                status.textContent = '📡 Online';
-                status.classList.remove('offline');
-                status.classList.add('online');
-                notification.classList.remove('active');
-                overlay.classList.remove('active');
-
-                // Επαναφορά κανονικού χάρτη
-                if (state.map) {
-                    try {
-                        state.map.setStyle('https://demotiles.maplibre.org/style.json');
-                    } catch (e) {
-                        console.warn('Could not reload map style:', e);
-                    }
-                }
-
-                showToast('🌐 Online Mode ΕΝΕΡΓΟ', '#4CAF50');
-            }
-        }
-
-        // ============================================================
-        // ★★★ INIT MAP ★★★
+        // ★★★ INIT MAP (ΔΙΟΡΘΩΜΕΝΟ) ★★★
         // ============================================================
         function initMap() {
             try {
@@ -1835,38 +1703,44 @@
                     center: [24.3, 40.2],
                     zoom: 10,
                     attributionControl: false,
+                    failIfMajorPerformanceCaveat: false,
                 });
 
                 state.map = map;
 
-                map.on('load', () => {
+                // ★ ΑΓΝΟΗΣΗ ΣΦΑΛΜΑΤΩΝ ΔΙΚΤΥΟΥ ★
+                map.on('error', (e) => {
+                    if (e.error && (e.error.status === 404 || e.error.status === 0 || e.error.status === 503)) {
+                        console.warn('⏳ Network error ignored:', e);
+                        return;
+                    }
+                    console.warn('Map error:', e);
+                });
+
+                // Όταν φορτώσει το στυλ
+                map.on('style.load', () => {
+                    console.log('✅ Map loaded');
                     document.getElementById('loadingMessage').classList.add('hidden');
-                    showToast('🗺️ Χάρτης φορτώθηκε', '#4CAF50');
                     updateInfoBar();
                 });
 
-                map.on('error', (e) => {
-                    console.warn('Map error:', e);
-                    if (e.error && e.error.status === 404) {
-                        // Απλό σφάλμα tiles, αγνοούμε
-                    } else {
-                        document.getElementById('errorDetail').textContent = e.error ? e.error.message :
-                            'Άγνωστο σφάλμα';
-                        document.getElementById('errorMessage').classList.remove('hidden');
+                // ★ ΑΝ ΔΕΝ ΦΟΡΤΩΣΕΙ ΣΕ 5'', ΣΥΝΕΧΙΣΕ ★
+                setTimeout(() => {
+                    if (!map.isStyleLoaded()) {
+                        console.warn('⚠️ Style not loaded, continuing anyway');
+                        document.getElementById('loadingMessage').classList.add('hidden');
+                        showToast('⏳ Χάρτης σε αναμονή...', '#FF9800');
                     }
-                });
+                }, 5000);
 
-                // Προσθήκη ελέγχου zoom
                 map.addControl(new maplibregl.NavigationControl(), 'top-right');
-
-                // Προσθήκη κουμπιού fullscreen
                 map.addControl(new maplibregl.FullscreenControl(), 'top-right');
 
                 return map;
             } catch (e) {
-                console.error('Error initializing map:', e);
-                document.getElementById('errorDetail').textContent = e.message;
-                document.getElementById('errorMessage').classList.remove('hidden');
+                console.warn('Map init error:', e);
+                document.getElementById('loadingMessage').classList.add('hidden');
+                showToast('⚠️ Ο χάρτης δεν φορτώθηκε, αλλά η πλοήγηση λειτουργεί', '#FF9800');
                 return null;
             }
         }
@@ -1881,7 +1755,6 @@
             }
 
             if (state.isGpsOn) {
-                // Απενεργοποίηση GPS
                 if (state.gpsWatchId) {
                     navigator.geolocation.clearWatch(state.gpsWatchId);
                     state.gpsWatchId = null;
@@ -1898,7 +1771,6 @@
                 return;
             }
 
-            // Ενεργοποίηση GPS
             showToast('📍 Ενεργοποίηση GPS...', '#FF9800');
             state.isGpsOn = true;
             document.getElementById('gpsBtn').classList.add('active');
@@ -1912,7 +1784,6 @@
                         state.currentSpeedKmh = speed * 3.6;
                     }
 
-                    // Ενημέρωση marker
                     if (!state.userMarker) {
                         const el = document.createElement('div');
                         el.className = 'arrow-dot';
@@ -1932,14 +1803,12 @@
                         state.map.panTo([longitude, latitude], { duration: 500 });
                     }
 
-                    // Έλεγχος απόστασης από διαδρομή
                     if (state.routeGeometry && state.routeGeometry.length > 1) {
                         let minDist = Infinity;
                         for (const c of state.routeGeometry) {
                             const d = haversine(latitude, longitude, c[0], c[1]);
                             if (d < minDist) minDist = d;
                         }
-                        // Ενημέρωση info με απόσταση
                         const distEl = document.getElementById('distDisplay');
                         if (distEl) {
                             const remaining = state.routeDistance - minDist;
@@ -2093,37 +1962,11 @@
         // ★★★ EVENT LISTENERS ★★★
         // ============================================================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize offline manager
             offlineManager = new OfflineFavManager();
             await offlineManager.initDB();
-
-            // Load favorites
             loadFavs();
-
-            // Initialize map
             initMap();
-
-            // Update offline favorites count
             await updateOfflineFavCount();
-
-            // Check if offline initially
-            if (!navigator.onLine) {
-                setTimeout(() => toggleOfflineMode(), 1000);
-            }
-
-            // Listen for online/offline events
-            window.addEventListener('online', () => {
-                if (isOfflineMode) {
-                    showToast('🌐 Συνδεθήκατε! Πατήστε "📴 Online" για έξοδο από offline mode', '#4CAF50');
-                }
-            });
-
-            window.addEventListener('offline', () => {
-                if (!isOfflineMode) {
-                    showToast('📴 Χάθηκε η σύνδεση. Μπαίνουμε σε offline mode...', '#e74c3c');
-                    setTimeout(() => toggleOfflineMode(), 500);
-                }
-            });
 
             // Route search
             const searchInput = document.getElementById('routeSearch');
@@ -2180,7 +2023,6 @@
             });
             safeAddListener('closeFav', 'click', hideFavs);
             safeAddListener('closeFavBtn2', 'click', hideFavs);
-            safeAddListener('offlineModeBtn', 'click', toggleOfflineMode);
             safeAddListener('loadBtn', 'click', loadGpxFile);
             safeAddListener('clearBtn', 'click', clearRoute);
             safeAddListener('rotateBtn', 'click', rotateMap);
@@ -2218,7 +2060,6 @@
                         text: msg,
                     }).catch(() => {});
                 } else {
-                    // Fallback: ανοίγουμε SMS ή email
                     if (phone && phone !== '112') {
                         window.location.href = smsUrl;
                     } else {
@@ -2283,16 +2124,14 @@
                 }
             });
 
-            // Initial render of routes
             renderRoutes();
 
             console.log('✅ Athos Maps loaded successfully!');
-            console.log('📊 Total routes:', ROUTES.length);
-            console.log('📴 Offline mode available');
+            console.log('📊 Total routes:', ROUTES.length, '(sorted alphabetically)');
             console.log('⭐ Favorites loaded:', state.favorites.length);
         });
 
-        console.log('✅ Athos Maps - Complete with Offline Mode');
+        console.log('✅ Athos Maps - Complete');
     </script>
 </body>
 </html>
