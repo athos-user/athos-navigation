@@ -116,13 +116,6 @@
         .header-wrapper button.offline-fav.active {
             background: #2ecc71;
         }
-        .header-wrapper button.wifi {
-            background: #2196F3;
-            font-size: 15px;
-        }
-        .header-wrapper button.wifi.active {
-            background: #4CAF50;
-        }
         .header-wrapper button.load {
             background: #4CAF50;
             font-size: 10px;
@@ -390,9 +383,9 @@
             background: rgba(255, 255, 255, 0.05);
         }
         #routeDropdown .route-item .rnum {
-            color: #888;
+            color: #f1c40f;
             font-size: 10px;
-            min-width: 28px;
+            min-width: 30px;
             font-weight: 700;
         }
         #routeDropdown .route-item .rname {
@@ -869,8 +862,7 @@
             }
             .header-wrapper button.gps,
             .header-wrapper button.nav,
-            .header-wrapper button.help,
-            .header-wrapper button.wifi {
+            .header-wrapper button.help {
                 font-size: 13px;
             }
             .info-bar {
@@ -910,7 +902,7 @@
             }
             #routeDropdown .route-item .rnum {
                 font-size: 9px;
-                min-width: 22px;
+                min-width: 24px;
             }
             #favDropdown .fav-item {
                 font-size: 11px;
@@ -979,7 +971,6 @@
         <button class="routes" id="routesBtn">🗺️</button>
         <button class="fav" id="favBtn">⭐</button>
         <button class="offline-fav" id="offlineFavBtn">💾</button>
-        <button class="wifi" id="wifiBtn">📶</button>
         <button class="load" id="loadBtn">📂</button>
         <button class="clear" id="clearBtn">🗑️</button>
         <button class="help" id="helpBtn">❓</button>
@@ -1051,8 +1042,8 @@
             <div class="help-item"><span class="icon">🧭</span><div><span class="label">Follow</span> – Ο χάρτης ακολουθεί την κίνησή σας.</div></div>
             <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – 152 διαδρομές στο Άγιο Όρος.</div></div>
             <div class="help-item"><span class="icon">⭐</span><div><span class="label">Online Αγαπημένες</span> – Αποθήκευση ονόματος.</div></div>
-            <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span> – Κατεβάζει ολόκληρη τη διαδρομή.</div></div>
-            <div class="help-item"><span class="icon">📶</span><div><span class="label">Offline Χάρτης</span> – Κατεβάζει tiles για zoom 8‑16. Long press για επαναφορά.</div></div>
+            <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span> – Κατεβάζει ολόκληρη τη διαδρομή για offline χρήση.</div></div>
+            <div class="help-item"><span class="icon">📂</span><div><span class="label">Φόρτωση GPX</span> – Ανεβάστε δικό σας αρχείο διαδρομής.</div></div>
             <div style="font-size:10px;color:#666;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;">Athos Maps · Offline</div>
         </div>
     </div>
