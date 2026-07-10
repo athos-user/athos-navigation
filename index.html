@@ -389,6 +389,12 @@
         #routeDropdown .route-item:hover {
             background: rgba(255, 255, 255, 0.05);
         }
+        #routeDropdown .route-item .rnum {
+            color: #888;
+            font-size: 10px;
+            min-width: 28px;
+            font-weight: 700;
+        }
         #routeDropdown .route-item .rname {
             flex: 1;
             min-width: 0;
@@ -781,6 +787,10 @@
             background: #555;
             color: white;
         }
+        #offlineModal .offline-content .offline-actions .btn-dismiss {
+            background: #4CAF50;
+            color: white;
+        }
 
         #loadingMessage,
         #errorMessage {
@@ -898,6 +908,10 @@
                 padding: 4px 6px;
                 min-height: 30px;
             }
+            #routeDropdown .route-item .rnum {
+                font-size: 9px;
+                min-width: 22px;
+            }
             #favDropdown .fav-item {
                 font-size: 11px;
                 padding: 4px 6px;
@@ -928,9 +942,10 @@
         <div class="offline-content">
             <div class="offline-icon">📡</div>
             <h2>Εκτός Σύνδεσης</h2>
-            <p>Δεν υπάρχει σύνδεση στο διαδίκτυο.<br>Θέλετε να συνεχίσετε σε <strong>Offline Mode</strong> με τις αποθηκευμένες διαδρομές;</p>
+            <p>Δεν υπάρχει σύνδεση στο διαδίκτυο.<br>Μπορείτε να συνεχίσετε σε <strong>Offline Mode</strong> με τις αποθηκευμένες διαδρομές.</p>
             <div class="offline-actions">
                 <button class="btn-offline" id="offlineContinue">✅ Offline Mode</button>
+                <button class="btn-dismiss" id="offlineDismiss">✕ Παράβλεψη</button>
                 <button class="btn-retry" id="offlineRetry">🔄 Επανάληψη</button>
             </div>
         </div>
@@ -1170,12 +1185,12 @@
             { "name": "Καρυές → Καλύβα Αναστάσεως του Κυρίου Γέροντας Ευθύμιος", "dist": 2.5, "time": "0:45-0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Pater%20Efthimios.gpx" },
             { "name": "Καρυές → Μαρουδά", "dist": 2.0, "time": "0:45-0:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Marouda.gpx" },
             { "name": "Καρυές → Μπουραζέρη", "dist": 1.3, "time": "0:20-0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Mpourazeri.gpx" },
-            { "name": "Καρυές → Άξιον Εστί Κελί", "dist": 1.5, "time": "0:20-0:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes_Aksion_Esti.gpx" },
+            { "name": "Καρυές → Άξιον Εστί Κελί", "dist": 1.5, "time": "0:20-0:25", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Aksion%20Esti%202.gpx" },
             { "name": "Καρυές → Βατοπαιδίου", "dist": 10.0, "time": "3:15-3:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Batopediou.gpx" },
             { "name": "Καρυές → Σταυρονικήτα", "dist": 4.3, "time": "1:30-1:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Stavronikita.gpx" },
             { "name": "Καρυές → Ιβήρων", "dist": 5.0, "time": "1:35-1:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Iviron.gpx" },
             { "name": "Καρυές → Σιμωνόπετρα", "dist": 12.0, "time": "4:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Simonopetra.gpx" },
-            { "name": "Καρυές → Παντοκράτορος", "dist": 5.6, "time": "1:40-2:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Pantokratoros%20Karyes.gpx" },
+            { "name": "Καρυές → Παντοκράτορος", "dist": 5.6, "time": "1:40-2:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgBasileios%20Arsanas%20Karoulia.gpx" },
             { "name": "Άγ. Βασίλειος → Κατουνάκια - Καρούλια", "dist": 3.0, "time": "1:45-2:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgBasileios%20Arsanas%20Karoulia.gpx" },
             { "name": "Άγ. Βασίλειος → Πρ. Ηλία Εκκλησάκι Καρμήλιο Όρος", "dist": 1.0, "time": "0:30-0:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Basileios%20Profitis%20Hlias.gpx" },
             { "name": "Άγ. Βασίλειος → Μικρή Αγ. Άννα", "dist": 2.3, "time": "1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Ag%20Basileios%20Mikri%20Ag%20Anna.gpx" },
@@ -1192,7 +1207,7 @@
             { "name": "Κατουνάκια → Αγ. Βασίλειο", "dist": 2.0, "time": "1:30-1:45", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20AgBasileios.gpx" },
             { "name": "Κατουνάκια → Μικρή Αγ. Άννα", "dist": 1.0, "time": "0:25-0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Mikri%20Agianna.gpx" },
             { "name": "Καρούλια → Αγ. Βασίλειο", "dist": 3.0, "time": "2:20-2:40", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/AgBasileios%20Arsanas%20Karoulia.gpx" },
-            { "name": "Καρούλια → Μικρή Αγ. Άννα", "dist": 2.0, "time": "1:20-1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karoulia%20Mikri%20Agianna.gpx" },
+            { "name": "Καρούλια → Μικρή Αγ. Άννα", "dist": 2.0, "time": "1:20-1:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Katounakia%20Mikri%20Agianna.gpx" },
             { "name": "Σταυρός → Καρούλια", "dist": 3.0, "time": "1:40-1:50", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Stavros%20Karoulia.gpx" },
             { "name": "Κερασιά → Καυσοκαλύβια", "dist": 3.5, "time": "1:40-2:00", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kerasia%20Kafsokalyvia.gpx" },
             { "name": "Κερασιά → Σταυρός", "dist": 1.0, "time": "0:30", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Kerasia%20Stavros.gpx" },
@@ -1203,11 +1218,13 @@
             { "name": "Καρυές → Σκήτη Πρ. Ηλία", "dist": "", "time": "", "url": "https://raw.githubusercontent.com/athos-user/gpx-files/refs/heads/main/Karyes%20Profiti%20Hlia.gpx" }
         ];
 
-        // ★★★ ΤΑΞΙΝΟΜΗΣΗ ΤΩΝ ΔΙΑΔΡΟΜΩΝ ΑΛΦΑΒΗΤΙΚΑ ★★★
-        const ROUTES = ROUTES_RAW.sort((a, b) => {
-            // Σύγκριση με ελληνικούς χαρακτήρες (localeCompare)
-            return a.name.localeCompare(b.name, 'el');
-        });
+        // ★★★ ΤΑΞΙΝΟΜΗΣΗ ΚΑΙ ΠΡΟΣΘΗΚΗ ΑΡΙΘΜΗΣΗΣ ★★★
+        const ROUTES = ROUTES_RAW
+            .sort((a, b) => a.name.localeCompare(b.name, 'el'))
+            .map((route, index) => ({
+                ...route,
+                num: index + 1  // Προσθήκη αριθμού
+            }));
 
         // ============================================================
         // ★★★ OFFLINE FAVORITES MANAGER ★★★
@@ -1248,6 +1265,7 @@
                     const entry = {
                         id: 'fav_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
                         name: routeData.name,
+                        num: routeData.num || 0,
                         dist: routeData.dist,
                         time: routeData.time,
                         url: routeData.url,
@@ -1330,7 +1348,8 @@
             remainingDist: 0,
             savedRouteData: null,
             isOfflineMode: false,
-            mapLoaded: false
+            mapLoaded: false,
+            offlineModalShown: false
         };
 
         let offlineManager = null;
@@ -1409,6 +1428,8 @@
         // ★★★ OFFLINE MODAL ★★★
         // ============================================================
         function showOfflineModal() {
+            if (state.offlineModalShown) return;
+            state.offlineModalShown = true;
             const modal = document.getElementById('offlineModal');
             if (modal) modal.classList.add('active');
         }
@@ -1433,6 +1454,11 @@
                     loadGpxFromData(savedGpx, r.name);
                 } catch (e) {}
             }
+        }
+
+        function dismissOfflineModal() {
+            hideOfflineModal();
+            showToast('📱 Συνεχίζετε χωρίς σύνδεση', '#2196F3');
         }
 
         // ============================================================
@@ -1475,7 +1501,7 @@
                     '<div style="color:#27ae60;font-weight:700;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(39,174,96,0.2);">💾 Offline</div>';
                 offlineFavs.forEach(fav => {
                     html += `<div class="fav-item" style="border-left:3px solid #27ae60;">
-                <span class="fname">${fav.name} <span class="offline-badge">Offline</span></span>
+                <span class="fname">${fav.num ? '#'+fav.num+' ' : ''}${fav.name} <span class="offline-badge">Offline</span></span>
                 <span class="finfo">${fav.dist}km</span>
                 <button class="load-offline" data-id="${fav.id}" style="background:#27ae60;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📂</button>
                 <button class="remove-offline" data-id="${fav.id}" style="background:#e74c3c;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">✕</button>
@@ -1623,11 +1649,11 @@
 
                 // ★★★ ΕΛΕΓΧΟΣ ΣΥΝΔΕΣΗΣ ★★★
                 if (!navigator.onLine) {
-                    // Είμαστε offline - εμφάνισε το modal
+                    // Είμαστε offline - εμφάνισε το modal αλλά μην μπλοκάρεις
                     document.getElementById('loadingMessage').classList.add('hidden');
                     showOfflineModal();
-                    // Φορτώνουμε τον χάρτη με offline τρόπο
-                    createOfflineMap();
+                    // Φορτώνουμε τον χάρτη κανονικά
+                    createOnlineMap();
                     return;
                 }
 
@@ -1692,65 +1718,9 @@
 
             state.map.on('error', function(e) {
                 console.warn('Map error:', e);
-                if (!state.isOfflineMode && !navigator.onLine) {
+                if (!state.isOfflineMode && !navigator.onLine && !state.offlineModalShown) {
                     showOfflineModal();
                 }
-            });
-
-            setTimeout(() => {
-                if (state.map) {
-                    state.map.resize();
-                    document.getElementById('loadingMessage').classList.add('hidden');
-                }
-            }, 5000);
-        }
-
-        function createOfflineMap() {
-            // Offline map με απλό στυλ
-            const style = {
-                version: 8,
-                sources: {
-                    'osm': {
-                        type: 'raster',
-                        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                        tileSize: 512,
-                        attribution: '© OpenStreetMap',
-                        maxzoom: 19,
-                        minzoom: 0
-                    }
-                },
-                layers: [{
-                    id: 'osm',
-                    type: 'raster',
-                    source: 'osm',
-                    paint: {
-                        'raster-fade-duration': 0,
-                        'raster-resampling': 'linear'
-                    }
-                }]
-            };
-
-            state.map = new maplibregl.Map({
-                container: 'map',
-                style: style,
-                center: [24.32, 40.16],
-                zoom: 12,
-                maxZoom: 19,
-                renderWorldCopies: false
-            });
-
-            state.map.addControl(new maplibregl.NavigationControl());
-
-            state.map.on('load', function() {
-                state.mapLoaded = true;
-                console.log('Offline map loaded');
-                document.getElementById('loadingMessage').classList.add('hidden');
-                state.map.resize();
-                document.getElementById('statusDisplay').textContent = '📡 Offline Mode';
-                document.getElementById('offlineStatus').textContent = '📡 Offline';
-                document.getElementById('offlineStatus').classList.add('active', 'offline');
-                updateOfflineFavCount();
-                checkForSavedRoute();
             });
 
             setTimeout(() => {
@@ -2034,7 +2004,9 @@
                 if (fl !== cl) { cl = fl;
                     html += '<div class="letter-header">' + fl + '</div>'; }
                 const fav = isFav(r);
+                const numStr = r.num ? '#' + r.num : '';
                 html += `<div class="route-item" data-url="${r.url}" data-name="${r.name}" data-dist="${r.dist}" data-time="${r.time}">
+              <span class="rnum">${numStr}</span>
               <span class="rname">${r.name}</span>
               <span><span class="rinfo">${r.dist}km</span>
               <button class="fav-star ${fav?'active':'inactive'}" data-idx="${idx}">${fav?'★':'☆'}</button></span>
@@ -2315,6 +2287,7 @@
 
             // ★★★ OFFLINE MODAL EVENTS ★★★
             safeAddListener('offlineContinue', 'click', continueOffline);
+            safeAddListener('offlineDismiss', 'click', dismissOfflineModal);
             safeAddListener('offlineRetry', 'click', function() {
                 hideOfflineModal();
                 location.reload();
