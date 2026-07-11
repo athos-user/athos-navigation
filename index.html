@@ -603,10 +603,10 @@
         #helpModal .content {
             background: rgba(13, 17, 23, 0.98);
             border-radius: 16px;
-            padding: 16px;
-            max-width: 400px;
+            padding: 20px;
+            max-width: 440px;
             width: 100%;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
             border: 2px solid #9C27B0;
             color: #eee;
@@ -614,25 +614,66 @@
         }
         #helpModal .content h2 {
             color: #bb86fc;
-            font-size: 16px;
-            margin-bottom: 6px;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        #helpModal .content h3 {
+            color: #f1c40f;
+            font-size: 14px;
+            margin: 12px 0 6px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
         #helpModal .help-item {
             display: flex;
             gap: 8px;
-            padding: 4px 0;
+            padding: 5px 0;
             font-size: 11px;
-            color: #aaa;
+            color: #ccc;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            line-height: 1.5;
         }
         #helpModal .help-item .icon {
             font-size: 16px;
-            width: 24px;
+            width: 28px;
             text-align: center;
+            flex-shrink: 0;
         }
         #helpModal .help-item .label {
             color: #eee;
             font-weight: 600;
+            min-width: 100px;
+        }
+        #helpModal .help-item .desc {
+            color: #aaa;
+        }
+        #helpModal .disclaimer {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: rgba(244, 67, 54, 0.08);
+            border-radius: 8px;
+            border-left: 3px solid #f44336;
+            font-size: 10px;
+            color: #999;
+            line-height: 1.6;
+        }
+        #helpModal .disclaimer strong {
+            color: #f44336;
+        }
+        #helpModal .disclaimer .title {
+            color: #f44336;
+            font-weight: 700;
+            font-size: 11px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        #helpModal .footer-text {
+            font-size: 9px;
+            color: #555;
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.06);
         }
 
         #resumeModal {
@@ -912,6 +953,12 @@
             #offlineModal .offline-content {
                 padding: 18px;
             }
+            #helpModal .content {
+                padding: 14px;
+            }
+            #helpModal .help-item .label {
+                min-width: 70px;
+            }
         }
     </style>
 </head>
@@ -1032,19 +1079,77 @@
         <button id="sosCall" style="background:#f44336;">📞 112</button>
     </div>
 
+    <!-- ★★★ ΑΝΑΛΥΤΙΚΟ HELP MODAL ★★★ -->
     <div id="helpModal">
         <div class="content">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                 <h2>❓ Οδηγός Χρήσης</h2>
-                <button class="close-btn" id="closeHelp" style="background:#555;color:white;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:13px;">✕</button>
+                <button class="close-btn" id="closeHelp" style="background:#555;color:white;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;">✕</button>
             </div>
-            <div class="help-item"><span class="icon">📍</span><div><span class="label">GPS</span> – Ενεργοποιεί τον δέκτη GPS.</div></div>
-            <div class="help-item"><span class="icon">🧭</span><div><span class="label">Follow</span> – Ο χάρτης ακολουθεί την κίνησή σας.</div></div>
-            <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Διαδρομές</span> – 152 διαδρομές στο Άγιο Όρος.</div></div>
-            <div class="help-item"><span class="icon">⭐</span><div><span class="label">Online Αγαπημένες</span> – Αποθήκευση ονόματος.</div></div>
-            <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span> – Κατεβάζει ολόκληρη τη διαδρομή για offline χρήση.</div></div>
-            <div class="help-item"><span class="icon">📂</span><div><span class="label">Φόρτωση GPX</span> – Ανεβάστε δικό σας αρχείο διαδρομής.</div></div>
-            <div style="font-size:10px;color:#666;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;">Athos Maps · Offline</div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 1: ΒΑΣΙΚΕΣ ΛΕΙΤΟΥΡΓΙΕΣ ★★★★★ -->
+            <h3>📍 Βασικές Λειτουργίες</h3>
+            
+            <div class="help-item"><span class="icon">📍</span><div><span class="label">GPS (Εντοπισμός)</span><span class="desc">Ενεργοποιεί τον δέκτη GPS της συσκευής σας για να δείτε την ακριβή θέση σας στον χάρτη. Πατήστε ξανά το κουμπί για να απενεργοποιήσετε το GPS.</span></div></div>
+            
+            <div class="help-item"><span class="icon">🧭</span><div><span class="label">Follow Mode (Πλοήγηση)</span><span class="desc">Ενεργοποιεί την αυτόματη παρακολούθηση της κίνησής σας. Ο χάρτης κινείται μαζί σας και σας κρατάει πάντα στο κέντρο. <strong>Απαιτεί ενεργό GPS.</strong></span></div></div>
+            
+            <div class="help-item"><span class="icon">🗺️</span><div><span class="label">Κατάλογος Διαδρομών</span><span class="desc">Εμφανίζει όλες τις 152 διαδρομές του Αγίου Όρους, ταξινομημένες αλφαβητικά. Μπορείτε να αναζητήσετε μια διαδρομή ή να την προσθέσετε στα αγαπημένα σας.</span></div></div>
+            
+            <div class="help-item"><span class="icon">🎯</span><div><span class="label">Κέντρο στη Διαδρομή</span><span class="desc">Εστιάζει τον χάρτη στη διαδρομή που έχετε επιλέξει ή φορτώσει. Χρήσιμο αν έχετε χαθεί και θέλετε να δείτε ολόκληρη τη διαδρομή.</span></div></div>
+            
+            <div class="help-item"><span class="icon">🔄</span><div><span class="label">Περιστροφή Χάρτη</span><span class="desc">Περιστρέφει τον χάρτη κατά 90° δεξιόστροφα. Πατήστε το ξανά για να τον επαναφέρετε στην αρχική του θέση.</span></div></div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 2: ΑΓΑΠΗΜΕΝΕΣ ★★★★★ -->
+            <h3>⭐ Αγαπημένες Διαδρομές</h3>
+            
+            <div class="help-item"><span class="icon">⭐</span><div><span class="label">Online Αγαπημένες</span><span class="desc">Αποθηκεύει το όνομα και τα στοιχεία μιας διαδρομής τοπικά στη συσκευή σας. Χρήσιμο για γρήγορη πρόσβαση στις αγαπημένες σας διαδρομές όταν είστε συνδεδεμένοι στο διαδίκτυο.</span></div></div>
+            
+            <div class="help-item"><span class="icon">💾</span><div><span class="label">Offline Αγαπημένες</span><span class="desc">Κατεβάζει ολόκληρο το αρχείο GPX της διαδρομής και το αποθηκεύει τοπικά. Έτσι μπορείτε να έχετε πρόσβαση στη διαδρομή ακόμα και όταν δεν έχετε σήμα ή internet. <strong>Μέγιστος αριθμός: 10 διαδρομές.</strong></span></div></div>
+            
+            <div class="help-item"><span class="icon">📥</span><div><span class="label">Λήψη Όλων Offline</span><span class="desc">Με ένα κλικ κατεβάζει όλες τις Online Αγαπημένες σας και τις αποθηκεύει ως Offline. Ιδανικό για να προετοιμαστείτε πριν φύγετε για το Άγιο Όρος.</span></div></div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 3: ΔΙΑΧΕΙΡΙΣΗ ★★★★★ -->
+            <h3>📂 Διαχείριση Αρχείων</h3>
+            
+            <div class="help-item"><span class="icon">📂</span><div><span class="label">Φόρτωση GPX</span><span class="desc">Ανεβάστε το δικό σας αρχείο διαδρομής από τον υπολογιστή ή το κινητό σας. Η εφαρμογή θα το εμφανίσει αμέσως στον χάρτη.</span></div></div>
+            
+            <div class="help-item"><span class="icon">🗑️</span><div><span class="label">Καθαρισμός Χάρτη</span><span class="desc">Διαγράφει την τρέχουσα διαδρομή από τον χάρτη και καθαρίζει τις πληροφορίες της (απόσταση, χρόνος, κλπ.)</span></div></div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 4: ΡΥΘΜΙΣΕΙΣ ★★★★★ -->
+            <h3>⚡ Ρυθμίσεις</h3>
+            
+            <div class="help-item"><span class="icon">🐢</span><div><span class="label">Ταχύτητα Βάδισης</span><span class="desc">Επιλέξτε την ταχύτητα με την οποία βαδίζετε (3, 4 ή 5 χλμ/ώρα). Η εφαρμογή υπολογίζει τον χρόνο που θα χρειαστείτε για να ολοκληρώσετε τη διαδρομή.</span></div></div>
+            
+            <div class="help-item"><span class="icon">🔆</span><div><span class="label">Διατήρηση Οθόνης</span><span class="desc">Ενεργοποιεί το Wake Lock και κρατάει την οθόνη της συσκευής σας αναμμένη. Ιδανικό για να μη σβήνει η οθόνη κατά τη διάρκεια της διαδρομής. Πατήστε ξανά για απενεργοποίηση.</span></div></div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 5: SOS ★★★★★ -->
+            <h3>🆘 Έκτακτη Ανάγκη (SOS)</h3>
+            
+            <div class="help-item"><span class="icon">🆘</span><div><span class="label">SOS Έκτακτης Ανάγκης</span><span class="desc">Σε περίπτωση ανάγκης, σας επιτρέπει να στείλετε ένα μήνυμα με τις ακριβείς συντεταγμένες σας. Το μήνυμα μπορεί να σταλεί ως SMS στο 112 (σε κινητά) ή να αντιγραφεί στο πρόχειρο για να το στείλετε όπου θέλετε.</span></div></div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 6: ΣΗΜΕΙΑ ΕΝΔΙΑΦΕΡΟΝΤΟΣ ★★★★★ -->
+            <h3>🏛️ Σημεία Ενδιαφέροντος</h3>
+            
+            <div class="help-item"><span class="icon">🟠</span><div><span class="label">Μονές</span><span class="desc">Οι 20 Ιερές Μονές του Αγίου Όρους εμφανίζονται με πορτοκαλί κύκλους. Κάνοντας κλικ πάνω τους βλέπετε το όνομά τους.</span></div></div>
+            
+            <div class="help-item"><span class="icon">🟢</span><div><span class="label">Σκήτες</span><span class="desc">Οι 12 Σκήτες εμφανίζονται με πράσινους κύκλους. Κάθε σκήτη ανήκει σε μια Μονή.</span></div></div>
+
+            <!-- ★★★★★ ΕΝΟΤΗΤΑ 7: ΑΠΟΠΟΙΗΣΗ ΕΥΘΥΝΗΣ ★★★★★ -->
+            <div class="disclaimer">
+                <span class="title">⚠️ Αποποίηση Ευθύνης (Disclaimer)</span>
+                <strong>Η χρήση της εφαρμογής γίνεται με αποκλειστική σας ευθύνη.</strong><br><br>
+                Οι διαδρομές και οι χάρτες παρέχονται για ενημερωτικούς σκοπούς. Η ακρίβεια των δεδομένων GPS, των χαρτών και των διαδρομών εξαρτάται από πολλούς παράγοντες (καιρικές συνθήκες, σήμα δορυφόρων, ποιότητα αρχείων GPX, κλπ.) και <strong>δεν μπορεί να εγγυηθεί</strong>.<br><br>
+                <strong>Συνιστάται ανεπιφύλακτα:</strong>
+                • <strong>Να έχετε μαζί σας έντυπο χάρτη</strong> ως εφεδρεία για κάθε περίπτωση.<br>
+                • <strong>Να ενημερώνετε τρίτους</strong> για τη διαδρομή και την ώρα επιστροφής σας.<br>
+                • <strong>Να φοράτε κατάλληλο εξοπλισμό</strong> (ανθεκτικά παπούτσια, νερό, φακό, κλπ.) και να έχετε επαρκείς προμήθειες.<br>
+                • <strong>Να σέβεστε το περιβάλλον</strong> και να μην αφήνετε σκουπίδια.<br>
+                • <strong>Να έχετε άδεια εισόδου (Διαμονητήριο)</strong>. Η πρόσβαση σε ορισμένες περιοχές επιτρέπεται μόνο με συνοδεία.<br><br>
+                <strong>Οι διαδρομές στο Άγιο Όρος απαιτούν φυσική κατάσταση και προσοχή.</strong> Η εφαρμογή δεν αντικαθιστά την κοινή λογική και την προσωπική σας κρίση.
+            </div>
+            
+            <div class="footer-text">Athos Maps v2.0 · Offline · © 2026 · <span style="color:#4CAF50;">Όλες οι διαδρομές είναι ελεύθερες προς χρήση</span></div>
         </div>
     </div>
 
@@ -1214,7 +1319,7 @@
             .sort((a, b) => a.name.localeCompare(b.name, 'el'))
             .map((route, index) => ({
                 ...route,
-                num: index + 1  // Προσθήκη αριθμού
+                num: index + 1
             }));
 
         // ============================================================
@@ -1436,7 +1541,6 @@
             document.getElementById('offlineStatus').textContent = '📡 Offline';
             document.getElementById('offlineStatus').classList.add('active', 'offline');
             showToast('📡 Offline Mode', '#FF9800');
-            // Φόρτωση της τελευταίας διαδρομής αν υπάρχει
             const savedGpx = localStorage.getItem('athos_last_gpx_data');
             const savedRoute = localStorage.getItem('athos_last_route');
             if (savedGpx && savedRoute) {
@@ -1638,17 +1742,13 @@
                     updateOfflineFavCount();
                 });
 
-                // ★★★ ΕΛΕΓΧΟΣ ΣΥΝΔΕΣΗΣ ★★★
                 if (!navigator.onLine) {
-                    // Είμαστε offline - εμφάνισε το modal αλλά μην μπλοκάρεις
                     document.getElementById('loadingMessage').classList.add('hidden');
                     showOfflineModal();
-                    // Φορτώνουμε τον χάρτη κανονικά
                     createOnlineMap();
                     return;
                 }
 
-                // Online - κανονική φόρτωση
                 createOnlineMap();
 
             } catch (err) {
@@ -1705,6 +1805,7 @@
                 document.getElementById('offlineStatus').classList.add('active', 'online');
                 updateOfflineFavCount();
                 checkForSavedRoute();
+                loadPOIs();
             });
 
             state.map.on('error', function(e) {
@@ -1766,9 +1867,6 @@
             pendingResume = null;
         }
 
-        // ============================================================
-        // ★★★ ΦΟΡΤΩΣΗ ΑΠΟΘΗΚΕΥΜΕΝΗΣ ΔΙΑΔΡΟΜΗΣ ΓΙΑ RESUME ★★★
-        // ============================================================
         function loadSavedRouteForResume() {
             if (isResuming) return;
             isResuming = true;
@@ -1886,9 +1984,6 @@
             }
         }
 
-        // ============================================================
-        // ★★★ ΥΠΟΛΟΓΙΣΜΟΣ ΥΠΟΛΕΙΠΟΜΕΝΗΣ ΑΠΟΣΤΑΣΗΣ ★★★
-        // ============================================================
         function updateRemainingDistance() {
             if (!state.lastPosition || state.routeCoords.length < 2) return;
 
@@ -2270,13 +2365,115 @@
         }
 
         // ============================================================
+        // ★★★ ΦΟΡΤΩΣΗ ΣΗΜΕΙΩΝ ΕΝΔΙΑΦΕΡΟΝΤΟΣ (POIs) ★★★
+        // ============================================================
+        function loadPOIs() {
+            if (!state.map) return;
+
+            // ★★★ ΧΡΗΣΙΜΟΠΟΙΟΥΜΕ ΤΟ ΔΙΟΡΘΩΜΕΝΟ GeoJSON ★★★
+            const poisUrl = 'https://raw.githubusercontent.com/athos-user/athos-pois/main/athos-pois.geojson';
+
+            fetch(poisUrl)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    // ★★★ ΠΡΟΣΘΗΚΗ "Ι." ΜΠΡΟΣΤΑ ΑΠΟ ΤΑ ΟΝΟΜΑΤΑ ★★★
+                    const updatedFeatures = data.features.map(f => {
+                        const name = f.properties.name || '';
+                        const category = f.properties.category || '';
+                        let newName = name;
+                        
+                        // Αν είναι Μονή και δεν έχει ήδη "Ι.", το προσθέτουμε
+                        if (category === 'Μονή' && !name.startsWith('Ι.')) {
+                            newName = 'Ι. ' + name;
+                        }
+                        // Αν είναι Σκήτη και δεν έχει ήδη "Ι.", το προσθέτουμε
+                        else if (category === 'Σκήτη' && !name.startsWith('Ι.')) {
+                            newName = 'Ι. ' + name;
+                        }
+                        
+                        return {
+                            ...f,
+                            properties: {
+                                ...f.properties,
+                                name: newName
+                            }
+                        };
+                    });
+
+                    state.map.addSource('pois', {
+                        type: 'geojson',
+                        data: {
+                            ...data,
+                            features: updatedFeatures
+                        }
+                    });
+
+                    // ★★★ ΠΡΟΣΘΗΚΗ LAYER ΜΕ ΜΙΚΡΟΤΕΡΟΥΣ ΚΥΚΛΟΥΣ ★★★
+                    state.map.addLayer({
+                        id: 'pois',
+                        type: 'circle',
+                        source: 'pois',
+                        paint: {
+                            'circle-radius': [
+                                'match',
+                                ['get', 'category'],
+                                'Μονή', 6,
+                                'Σκήτη', 5,
+                                4
+                            ],
+                            'circle-color': [
+                                'match',
+                                ['get', 'category'],
+                                'Μονή', '#FF6B00',
+                                'Σκήτη', '#4CAF50',
+                                '#2196F3'
+                            ],
+                            'circle-stroke-width': 2,
+                            'circle-stroke-color': '#ffffff',
+                            'circle-opacity': 0.9
+                        }
+                    });
+
+                    // ★★★ POPUP ΜΕ ΜΟΝΟ ΤΟ ΟΝΟΜΑ (ΧΩΡΙΣ ΚΑΤΗΓΟΡΙΑ) ★★★
+                    state.map.on('click', 'pois', function(e) {
+                        const features = e.features;
+                        if (!features || features.length === 0) return;
+
+                        const props = features[0].properties;
+                        const name = props.name || 'Άγνωστο σημείο';
+
+                        new maplibregl.Popup()
+                            .setLngLat(e.lngLat)
+                            .setHTML('<b>' + name + '</b>')
+                            .addTo(state.map);
+                    });
+
+                    state.map.on('mouseenter', 'pois', function() {
+                        state.map.getCanvas().style.cursor = 'pointer';
+                    });
+
+                    state.map.on('mouseleave', 'pois', function() {
+                        state.map.getCanvas().style.cursor = '';
+                    });
+
+                    console.log('✅ Φορτώθηκαν ' + updatedFeatures.length + ' σημεία ενδιαφέροντος');
+                    showToast('📍 ' + updatedFeatures.length + ' σημεία φορτώθηκαν', '#4CAF50');
+                })
+                .catch(err => {
+                    console.error('Error loading POIs:', err);
+                });
+        }
+
+        // ============================================================
         // ★★★ START ★★★
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadFavs();
             initMap();
 
-            // ★★★ OFFLINE MODAL EVENTS ★★★
             safeAddListener('offlineContinue', 'click', continueOffline);
             safeAddListener('offlineDismiss', 'click', dismissOfflineModal);
             safeAddListener('offlineRetry', 'click', function() {
@@ -2284,7 +2481,6 @@
                 location.reload();
             });
 
-            // ★★★ RESUME MODAL EVENTS ★★★
             safeAddListener('resumeYes', 'click', function() {
                 hideResumeModal();
                 const success = loadSavedRouteForResume();
@@ -2300,7 +2496,6 @@
                 showToast('❌ Ακυρώθηκε', '#888');
             });
 
-            // ★★★ ΟΛΑ ΤΑ ΚΟΥΜΠΙΑ ★★★
             safeAddListener('gpsBtn', 'click', toggleGps);
             safeAddListener('navBtn', 'click', toggleNav);
             safeAddListener('routesBtn', 'click', showRoutes);
@@ -2338,7 +2533,6 @@
                     e.target.value = ''; }
             });
 
-            // ★★★ SPEED BUTTONS ★★★
             document.querySelectorAll('[data-speed]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('[data-speed]').forEach(b => b.classList.remove('active'));
@@ -2352,7 +2546,6 @@
             const defaultSpeed = document.querySelector('[data-speed="4"]');
             if (defaultSpeed) defaultSpeed.classList.add('active');
 
-            // ★★★ KEYBOARD SHORTCUTS ★★★
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'g') toggleGps();
                 else if (e.key === 'n') toggleNav();
@@ -2363,7 +2556,6 @@
                     closeSos(); }
             });
 
-            // ★★★ DRAG AND DROP ★★★
             document.addEventListener('dragover', (e) => e.preventDefault());
             document.addEventListener('drop', function(e) {
                 e.preventDefault();
@@ -2372,7 +2564,6 @@
             });
         });
 
-        // ★★★ GLOBAL ERROR HANDLER ★★★
         window.onerror = function(msg) {
             document.getElementById('loadingMessage').classList.add('hidden');
             document.getElementById('errorMessage').classList.remove('hidden');
