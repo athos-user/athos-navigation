@@ -572,6 +572,18 @@
             font-size: 10px;
             margin: 2px 0;
         }
+        #sosBox textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin: 2px 0;
+            resize: vertical;
+            font-family: inherit;
+        }
         #sosBox button {
             width: 100%;
             padding: 5px;
@@ -959,6 +971,10 @@
             #helpModal .help-item .label {
                 min-width: 70px;
             }
+            #sosBox {
+                max-width: 95%;
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -1066,6 +1082,7 @@
         </div>
     </div>
 
+    <!-- ★★★ ΕΝΗΜΕΡΩΜΕΝΟ SOS BOX ★★★ -->
     <div id="sosBox">
         <div style="display:flex;justify-content:space-between;border-bottom:2px solid #f44336;padding-bottom:4px;margin-bottom:6px;">
             <span style="font-weight:700;color:#f44336;">🆘 SOS</span>
@@ -1075,6 +1092,7 @@
         <input type="text" id="sosName" placeholder="Ονοματεπώνυμο">
         <select id="sosType"><option>Χάθηκα</option><option>Χτύπησα</option><option>Πρόβλημα υγείας</option><option>Έκτακτη ανάγκη</option></select>
         <input type="tel" id="sosPhone" placeholder="Τηλέφωνο">
+        <textarea id="sosDetails" rows="3" placeholder="Ποιος χρειάζεται βοήθεια; Πόσα άτομα κινδυνεύουν; Υπάρχουν τραυματίες;" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:white;padding:5px 8px;border-radius:4px;font-size:10px;margin:2px 0;resize:vertical;font-family:inherit;"></textarea>
         <button id="sosSend" style="background:#4CAF50;">📱 SOS</button>
         <button id="sosCall" style="background:#f44336;">📞 112</button>
     </div>
@@ -1145,6 +1163,7 @@
                 • <strong>Να ενημερώνετε τρίτους</strong> για τη διαδρομή και την ώρα επιστροφής σας.<br>
                 • <strong>Να φοράτε κατάλληλο εξοπλισμό</strong> (ανθεκτικά παπούτσια, νερό, φακό, κλπ.) και να έχετε επαρκείς προμήθειες.<br>
                 • <strong>Να σέβεστε το περιβάλλον</strong> και να μην αφήνετε σκουπίδια.<br>
+                • <strong>Να έχετε άδεια εισόδου (Διαμονητήριο)</strong>. Η πρόσβαση σε ορισμένες περιοχές επιτρέπεται μόνο με συνοδεία.<br><br>
                 <strong>Οι διαδρομές στο Άγιο Όρος απαιτούν φυσική κατάσταση και προσοχή.</strong> Η εφαρμογή δεν αντικαθιστά την κοινή λογική και την προσωπική σας κρίση.
             </div>
             
@@ -2317,6 +2336,13 @@
             const coordsEl = document.getElementById('sosCoords');
             if (coordsEl) coordsEl.textContent = state.lastPosition ? state.lastPosition.lat.toFixed(6) + ', ' + state
                 .lastPosition.lng.toFixed(6) : 'Άγνωστη';
+            
+            // ★★★ ΠΡΟΣΘΗΚΗ ΥΠΟΔΕΙΓΜΑΤΙΚΟΥ ΚΕΙΜΕΝΟΥ ΣΤΟ textarea ★★★
+            const sosDetails = document.getElementById('sosDetails');
+            if (sosDetails) {
+                sosDetails.placeholder = 'Ποιος χρειάζεται βοήθεια;\nΠόσα άτομα κινδυνεύουν;\nΥπάρχουν τραυματίες;';
+                sosDetails.value = '';
+            }
         }
 
         function closeSos() {
@@ -2325,20 +2351,40 @@
         }
 
         function sendSos() {
-            const msg = '🆘 SOS\n👤 ' + (document.getElementById('sosName') ? document.getElementById('sosName').value ||
-                'Ανώνυμος' : 'Ανώνυμος') +
-                '\n🆘 ' + (document.getElementById('sosType') ? document.getElementById('sosType').value : '') +
-                '\n📱 ' + (document.getElementById('sosPhone') ? document.getElementById('sosPhone').value || '-' :
-                '-') +
-                '\n📍 ' + (document.getElementById('sosCoords') ? document.getElementById('sosCoords').textContent :
-                    'Άγνωστη');
-            if (/Android|iPhone/i.test(navigator.userAgent)) { window.location.href = 'sms:112?body=' + encodeURIComponent(
-                    msg); } else { navigator.clipboard.writeText(msg).then(() => showToast('✅ Αντιγράφηκε')); }
+            // ★★★ ΜΗΝΥΜΑ ΕΠΙΒΕΒΑΙΩΣΗΣ ΠΡΙΝ ΤΗΝ ΑΠΟΣΤΟΛΗ ★★★
+            if (!confirm('⚠️ ΠΡΟΣΟΧΗ!\n\nΘα σταλεί μήνυμα SOS στο 112.\n\nΕίστε σίγουρος ότι θέλετε να συνεχίσετε;')) {
+                return;
+            }
+
+            const name = document.getElementById('sosName') ? document.getElementById('sosName').value || 'Ανώνυμος' : 'Ανώνυμος';
+            const type = document.getElementById('sosType') ? document.getElementById('sosType').value : '';
+            const phone = document.getElementById('sosPhone') ? document.getElementById('sosPhone').value || '-' : '-';
+            const details = document.getElementById('sosDetails') ? document.getElementById('sosDetails').value || '' : '';
+            const coords = document.getElementById('sosCoords') ? document.getElementById('sosCoords').textContent : 'Άγνωστη';
+
+            let msg = '🆘 SOS\n';
+            msg += '👤 ' + name + '\n';
+            msg += '🆘 ' + type + '\n';
+            msg += '📱 ' + phone + '\n';
+            if (details) {
+                msg += '📝 ' + details + '\n';
+            }
+            msg += '📍 ' + coords;
+
+            if (/Android|iPhone/i.test(navigator.userAgent)) {
+                window.location.href = 'sms:112?body=' + encodeURIComponent(msg);
+            } else {
+                navigator.clipboard.writeText(msg).then(() => showToast('✅ Το μήνυμα αντιγράφηκε στο πρόχειρο', '#4CAF50'));
+            }
             closeSos();
         }
 
-        function call112() { if (confirm('📞 112;')) window.location.href = 'tel:112';
-            closeSos(); }
+        function call112() { 
+            if (confirm('📞 Θέλετε να καλέσετε το 112;')) {
+                window.location.href = 'tel:112';
+            }
+            closeSos(); 
+        }
 
         function toggleScreen() {
             if (state.wakeLock) { state.wakeLock.release();
@@ -2369,7 +2415,6 @@
         function loadPOIs() {
             if (!state.map) return;
 
-            // ★★★ ΧΡΗΣΙΜΟΠΟΙΟΥΜΕ ΤΟ ΔΙΟΡΘΩΜΕΝΟ GeoJSON ★★★
             const poisUrl = 'https://raw.githubusercontent.com/athos-user/athos-pois/main/athos-pois.geojson';
 
             fetch(poisUrl)
@@ -2384,11 +2429,9 @@
                         const category = f.properties.category || '';
                         let newName = name;
                         
-                        // Αν είναι Μονή και δεν έχει ήδη "Ι.", το προσθέτουμε
                         if (category === 'Μονή' && !name.startsWith('Ι.')) {
                             newName = 'Ι. ' + name;
                         }
-                        // Αν είναι Σκήτη και δεν έχει ήδη "Ι.", το προσθέτουμε
                         else if (category === 'Σκήτη' && !name.startsWith('Ι.')) {
                             newName = 'Ι. ' + name;
                         }
@@ -2410,7 +2453,6 @@
                         }
                     });
 
-                    // ★★★ ΠΡΟΣΘΗΚΗ LAYER ΜΕ ΜΙΚΡΟΤΕΡΟΥΣ ΚΥΚΛΟΥΣ ★★★
                     state.map.addLayer({
                         id: 'pois',
                         type: 'circle',
@@ -2436,7 +2478,7 @@
                         }
                     });
 
-                    // ★★★ POPUP ΜΕ ΜΟΝΟ ΤΟ ΟΝΟΜΑ (ΧΩΡΙΣ ΚΑΤΗΓΟΡΙΑ) ★★★
+                    // ★★★ POPUP ΜΕ ΜΟΝΟ ΤΟ ΟΝΟΜΑ ★★★
                     state.map.on('click', 'pois', function(e) {
                         const features = e.features;
                         if (!features || features.length === 0) return;
