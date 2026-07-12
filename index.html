@@ -36,7 +36,7 @@
             image-rendering: auto !important;
         }
 
-        /* ★★★ ΜΕΓΑΛΥΤΕΡΑ ΚΟΥΜΠΙΑ ★★★ */
+        /* ★★★ ΜΕΓΑΛΥΤΕΡΑ & ΚΕΝΤΡΑΡΙΣΜΕΝΑ ΚΟΥΜΠΙΑ ★★★ */
         .header-wrapper {
             position: fixed;
             top: 0;
@@ -53,8 +53,8 @@
             height: 50px;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            gap: 2px;
+            justify-content: center;
+            gap: 3px;
             flex-wrap: nowrap;
             -webkit-overflow-scrolling: touch;
         }
@@ -1992,7 +1992,7 @@
                         state.map.flyTo({ center: [lng, lat], zoom: 18, essential: true, duration: 800 });
                     }
 
-                    // ★★★ ΕΛΕΓΧΟΣ ΑΠΟΜΑΚΡΥΝΣΗΣ (ΚΑΘΕ ΝΕΑ ΘΕΣΗ) ★★★
+                    // ★★★ ΕΛΕΓΧΟΣ ΑΠΟΜΑΚΡΥΝΣΗΣ ★★★
                     if (state.offRouteEnabled) {
                         checkOffRoute();
                     }
@@ -2110,7 +2110,6 @@
                 if (!offRouteWarningShown) {
                     offRouteWarningShown = true;
                     showToast('⚠️ ΠΡΟΣΟΧΗ! Έχετε απομακρυνθεί από τη διαδρομή!', '#9C27B0');
-                    // ΓΡΗΓΟΡΗ ΕΠΑΝΑΦΟΡΑ ΓΙΑ ΝΑ ΞΑΝΑΕΜΦΑΝΙΣΤΕΙ
                     setTimeout(() => { offRouteWarningShown = false; }, 800);
                 }
             } else {
@@ -2137,7 +2136,6 @@
                 btn.classList.remove('disabled');
                 btn.classList.add('active');
                 showToast('✅ Ειδοποίηση απομάκρυνσης ΕΝΕΡΓΗ', '#4CAF50');
-                // Επαναφορά χρώματος διαδρομής
                 if (state.map.getLayer('route')) {
                     state.map.setPaintProperty('route', 'line-color', '#FF5722');
                     state.map.setPaintProperty('route', 'line-width', 4);
@@ -2149,7 +2147,6 @@
                 btn.classList.add('disabled');
                 btn.classList.remove('active');
                 showToast('⛔ Ειδοποίηση απομάκρυνσης ΑΠΕΝΕΡΓΟΠΟΙΗΘΗΚΕ', '#e74c3c');
-                // Επαναφορά χρώματος διαδρομής
                 if (state.map.getLayer('route')) {
                     state.map.setPaintProperty('route', 'line-color', '#FF5722');
                     state.map.setPaintProperty('route', 'line-width', 4);
