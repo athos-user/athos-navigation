@@ -139,12 +139,6 @@
         .header-wrapper button.offroute.disabled {
             background: #e74c3c;
         }
-        /* Νέο κουμπί OsmAnd */
-        .header-wrapper button.osmand-header {
-            background: #FF9800;
-            font-size: 14px;
-            min-width: 36px;
-        }
 
         /* ★★★ ΚΑΤΩ ΜΠΑΡΑ ★★★ */
         .bottom-bar {
@@ -972,11 +966,6 @@
                 min-width: 28px;
                 padding: 4px 5px;
             }
-            .header-wrapper button.osmand-header {
-                font-size: 12px;
-                min-width: 28px;
-                padding: 4px 5px;
-            }
             .bottom-bar button {
                 padding: 5px 10px;
                 font-size: 10px;
@@ -1109,8 +1098,6 @@
         <button class="clear" id="clearBtn">🗑️</button>
         <button class="help" id="helpBtn">❓</button>
         <button class="offroute active" id="offRouteToggle" title="Ειδοποίηση απομάκρυνσης">🚧</button>
-        <!-- Νέο κουμπί OsmAnd -->
-        <button class="osmand-header" id="osmandHeaderBtn" title="Άνοιγμα τρέχουσας διαδρομής με OsmAnd">📱</button>
         <input type="file" id="fileInput" accept=".gpx" style="display:none">
     </div>
 
@@ -1517,16 +1504,6 @@
         let isResuming = false;
 
         // ============================================================
-        // ★★★ ΝΕΑ ΣΥΝΑΡΤΗΣΗ: ΑΝΟΙΓΜΑ OSMAND ★★★
-        // ============================================================
-        function openInOsmAnd(url, name) {
-            const osmAndUrl = 'osmand://download?url=' + encodeURIComponent(url);
-            // Εναλλακτικά: 'osmand://show?url=' + ...
-            window.location.href = osmAndUrl;
-            showToast('📱 Ανοίγοντας το OsmAnd για: ' + name, '#FF9800');
-        }
-
-        // ============================================================
         // ★★★ ΒΟΗΘΗΤΙΚΕΣ ★★★
         // ============================================================
         function showToast(msg, color = '#4CAF50') {
@@ -1689,8 +1666,6 @@
                 <span class="fname">${r.name}</span>
                 <span class="finfo">${r.dist}km</span>
                 <button class="load-online" data-idx="${originalIdx}" style="background:#4CAF50;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📂</button>
-                <!-- Νέο κουμπί OsmAnd -->
-                <button class="osmand-online" data-idx="${originalIdx}" style="background:#FF9800;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📱</button>
                 <button class="remove-online" data-idx="${originalIdx}" style="background:#e74c3c;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">✕</button>
               </div>`;
                 });
@@ -1727,18 +1702,6 @@
                     const r = state.favorites[idx];
                     if (r) {
                         loadRouteFromUrl(r.url, r.name, r.dist, r.time);
-                        hideFavs();
-                    }
-                });
-            });
-
-            // ★★★ Event listener για το νέο κουμπί OsmAnd στις online αγαπημένες ★★★
-            list.querySelectorAll('.osmand-online').forEach(el => {
-                el.addEventListener('click', function() {
-                    const idx = parseInt(this.dataset.idx);
-                    const r = state.favorites[idx];
-                    if (r) {
-                        openInOsmAnd(r.url, r.name);
                         hideFavs();
                     }
                 });
@@ -2292,7 +2255,6 @@
             });
         }
 
-        // ★★★ ΤΡΟΠΟΠΟΙΗΜΕΝΗ loadRouteFromUrl ★★★
         function loadRouteFromUrl(url, name, dist, time) {
             if (!state.map) { showToast('⚠️ Χάρτης μη έτοιμος', '#FF9800'); return; }
 
@@ -2303,8 +2265,7 @@
                         loadGpxFromData(found.gpxData, name);
                         return;
                     }
-                    // ★★★ ΔΕΝ ΥΠΑΡΧΕΙ ΤΟΠΙΚΟ GPX → ΑΝΟΙΓΜΑ ΜΕ OSMAND ★★★
-                    openInOsmAnd(url, name);
+                    showToast('⚠️ Offline: Δεν βρέθηκε αποθηκευμένη διαδρομή', '#FF9800');
                 });
                 return;
             }
@@ -2737,21 +2698,6 @@
             safeAddListener('fileInput', 'change', function(e) {
                 if (e.target.files[0]) { loadGpxFile(e.target.files[0]);
                     e.target.value = ''; }
-            });
-
-            // ★★★ ΝΕΟ LISTENER ΓΙΑ ΤΟ ΚΟΥΜΠΙ OSMAND ΣΤΗΝ ΚΕΦΑΛΙΔΑ ★★★
-            safeAddListener('osmandHeaderBtn', 'click', function() {
-                if (!state.currentRouteName) {
-                    showToast('⚠️ Δεν υπάρχει φορτωμένη διαδρομή', '#FF9800');
-                    return;
-                }
-                // Βρείτε το URL της τρέχουσας διαδρομής (από τα δεδομένα)
-                const route = ROUTES.find(r => r.name === state.currentRouteName);
-                if (route) {
-                    openInOsmAnd(route.url, route.name);
-                } else {
-                    showToast('⚠️ Δεν βρέθηκε το URL της διαδρομής', '#FF9800');
-                }
             });
 
             document.querySelectorAll('[data-speed]').forEach(btn => {
