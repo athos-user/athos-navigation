@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.6.0/maplibre-gl.min.js"></script>
 
     <style>
+        /* --- ΤΟ IDIO STYLE ME TO PROIGOUMENO --- */
         * {
             margin: 0;
             padding: 0;
@@ -1567,21 +1568,26 @@
         function isFav(r) { return state.favorites.some(f => f.name === r.name && f.url === r.url); }
 
         // ============================================================
-        // ★★★ ΣΥΝΑΡΤΗΣΕΙΣ ΕΞΑΓΩΓΗΣ ★★★
+        // ★★★ ΣΥΝΑΡΤΗΣΕΙΣ ΕΞΑΓΩΓΗΣ (ΜΕ ΦΑΚΕΛΟ & ΟΝΟΜΑ) ★★★
         // ============================================================
         function downloadGpxFile(gpxData, fileName) {
+            // Δημιουργία φακέλου AthosRoutes στο όνομα
+            const folder = 'AthosRoutes/';
+            // Αντικατάσταση μη έγκυρων χαρακτήρων για το όνομα αρχείου
+            const safeName = fileName.replace(/[^a-zA-Z0-9_\-\.\sΆάΈέΉήΊίΌόΎύΏώΑ-Ωα-ω]/g, '_').trim();
+            const fullName = folder + safeName + '.gpx';
             const blob = new Blob([gpxData], { type: 'application/gpx+xml' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = fileName.endsWith('.gpx') ? fileName : fileName + '.gpx';
+            a.download = fullName;  // Το "/" δημιουργεί υποφάκελο κατά την αποθήκευση
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
-        // Λήψη OsmAnd – ανοίγει το κατάλληλο store ανάλογα με το λειτουργικό
+        // Λήψη OsmAnd – ανοίγει το κατάλληλο store
         function downloadOsmAnd() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
             let url = 'https://osmand.net/download';
@@ -1598,13 +1604,13 @@
             const favs = await offlineManager.getOfflineFavorites();
             const fav = favs.find(f => f.id === id);
             if (fav && fav.gpxData) {
-                const name = (fav.name || 'route').replace(/[^a-zA-Z0-9_\-\.\s]/g, '_');
-                downloadGpxFile(fav.gpxData, name + '.gpx');
-                showToast('📥 Το GPX κατέβηκε. Ανοίξτε το με OsmAnd από τα αρχεία σας.', '#4CAF50');
-                // Προτείνουμε λήψη OsmAnd αν δεν το έχει
+                // Χρησιμοποιούμε το όνομα της διαδρομής ως όνομα αρχείου
+                const name = fav.name || 'route';
+                downloadGpxFile(fav.gpxData, name);
+                showToast('📥 Το GPX αποθηκεύτηκε στον φάκελο AthosRoutes', '#4CAF50');
                 setTimeout(() => {
-                    showToast('📲 Δεν έχετε OsmAnd; Πατήστε το κουμπί "Λήψη OsmAnd"', '#FF9800');
-                }, 2500);
+                    showToast('📲 Ανοίξτε το με OsmAnd από τον φάκελό σας', '#FF9800');
+                }, 2000);
             } else {
                 showToast('⚠️ Δεν βρέθηκαν δεδομένα GPX', '#f44336');
             }
@@ -1630,7 +1636,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'offline_routes_backup.json';
+            a.download = 'AthosRoutes/offline_backup.json';  // και το backup σε φάκελο
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
