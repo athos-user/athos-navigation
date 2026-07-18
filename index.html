@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.6.0/maplibre-gl.min.js"></script>
 
     <style>
-        /* ---------- STYLE (ακριβώς όπως ήταν) ---------- */
+        /* ---------- STYLE (ακριβώς όπως πριν) ---------- */
         * { margin:0; padding:0; box-sizing:border-box; }
         html, body { width:100%; height:100%; overflow:hidden; background:#0d1117; font-family:'Segoe UI',sans-serif; }
         #map { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1; background:#0d1117; }
@@ -423,7 +423,7 @@ class OfflineFavManager {
             const tx = db.transaction([this.favStoreName], 'readonly');
             const store = tx.objectStore(this.favStoreName);
             const request = store.getAll();
-            request.onsuccess = () => { const items = request.result || []; items.sort((a, b) => b.timestamp - a.timestamp); resolve(items); };
+            request.onsuccess = () => { const items = request.result || []; items.sort((a,b) => b.timestamp - a.timestamp); resolve(items); };
             request.onerror = () => reject(request.error);
         });
     }
@@ -480,7 +480,7 @@ let state = {
     savedRouteData: null,
     isOfflineMode: false,
     mapLoaded: false,
-    offlineModalShown: false,
+    offlineModalShown: false,  // ← νέα μεταβλητή
     offRouteEnabled: true
 };
 let offlineManager = null;
@@ -536,24 +536,23 @@ function saveFavs() { localStorage.setItem('athos_favs', JSON.stringify(state.fa
 function isFav(r) { return state.favorites.some(f => f.name === r.name && f.url === r.url); }
 
 // ============================================================
-// ★★★ ΝΕΑ ΣΥΝΑΡΤΗΣΗ ΚΑΘΑΡΙΣΜΟΥ ΟΝΟΜΑΤΟΣ (μόνο απαγορευμένους) ★★★
+// ★★★ ΚΑΘΑΡΙΣΜΟΣ ΟΝΟΜΑΤΟΣ (μόνο απαγορευμένους) ★★★
 // ============================================================
 function sanitizeFileName(name) {
-    // Αντικαθιστά μόνο τους χαρακτήρες που απαγορεύονται σε ονόματα αρχείων (Windows/Linux)
     return name.replace(/[\\\/\:\*\?\"\<\>\|]/g, '_');
 }
 
 // ============================================================
-// ★★★ ΣΥΝΑΡΤΗΣΕΙΣ ΕΞΑΓΩΓΗΣ ★★★
+// ★★★ ΣΥΝΑΡΤΗΣΕΙΣ ΕΞΑΓΩΓΗΣ (ΧΩΡΙΣ ΦΑΚΕΛΟ) ★★★
 // ============================================================
 function downloadGpxFile(gpxData, fileName) {
     const safeName = sanitizeFileName(fileName);
-    const fullPath = 'AthosRoutes/' + safeName + '.gpx';
+    const fullName = safeName + '.gpx';   // ← αφαίρεσα το "AthosRoutes/"
     const blob = new Blob([gpxData], { type: 'application/gpx+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = fullPath;
+    a.download = fullName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -576,9 +575,9 @@ async function exportOfflineGpx(id) {
     if (fav && fav.gpxData) {
         const name = fav.name || 'route';
         downloadGpxFile(fav.gpxData, name);
-        showToast('📥 Το GPX αποθηκεύτηκε στον φάκελο AthosRoutes', '#4CAF50');
+        showToast('📥 Το GPX κατέβηκε με το όνομα: ' + name, '#4CAF50');
         setTimeout(() => {
-            showToast('📲 Ανοίξτε το με OsmAnd από τον φάκελό σας', '#FF9800');
+            showToast('📲 Ανοίξτε το με OsmAnd από τον φάκελο λήψεων', '#FF9800');
         }, 2000);
     } else {
         showToast('⚠️ Δεν βρέθηκαν δεδομένα GPX', '#f44336');
@@ -604,7 +603,7 @@ async function exportAllOfflineAsJson() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'AthosRoutes/offline_backup.json';
+    a.download = 'offline_backup.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -627,10 +626,10 @@ function safeAddListener(id, event, handler) {
 }
 
 // ============================================================
-// ★★★ OFFLINE MODAL ★★★
+// ★★★ OFFLINE MODAL (εμφανίζεται ΜΟΝΟ μία φορά) ★★★
 // ============================================================
 function showOfflineModal() {
-    if (state.offlineModalShown) return;
+    if (state.offlineModalShown) return;  // αν έχει ήδη εμφανιστεί, δεν ξαναεμφανίζεται
     state.offlineModalShown = true;
     document.getElementById('offlineModal').classList.add('active');
 }
@@ -658,7 +657,7 @@ function dismissOfflineModal() {
 }
 
 // ============================================================
-// ★★★ OFFLINE FAVORITES UI ★★★
+// ★★★ OFFLINE FAVORITES UI ★★★ (ίδιο με πριν)
 // ============================================================
 async function updateOfflineFavCount() {
     try {
@@ -709,7 +708,6 @@ async function renderOfflineFavs() {
         });
     }
     list.innerHTML = html;
-    // Event listeners
     list.querySelectorAll('.load-offline').forEach(el => {
         el.addEventListener('click', async function() {
             const id = this.dataset.id;
@@ -816,6 +814,7 @@ function initMap() {
         offlineManager.initDB().then(async () => { updateOfflineFavCount(); });
         if (!navigator.onLine) {
             document.getElementById('loadingMessage').classList.add('hidden');
+            // Εμφάνιση offline modal μόνο αν δεν έχει εμφανιστεί ήδη
             showOfflineModal();
             createOnlineMap();
             return;
@@ -867,6 +866,7 @@ function createOnlineMap() {
     });
     state.map.on('error', function(e) {
         console.warn('Map error:', e);
+        // Δεν εμφανίζουμε ξανά το offline modal εδώ, γιατί μπορεί να φορτώσει ο χάρτης και να υπάρξει κάποιο άλλο σφάλμα
         if (!state.isOfflineMode && !navigator.onLine && !state.offlineModalShown) {
             showOfflineModal();
         }
@@ -938,7 +938,7 @@ function loadSavedRouteForResume() {
 }
 
 // ============================================================
-// ★★★ GPS ★★★
+// ★★★ GPS ★★★ (ίδιο με πριν)
 // ============================================================
 function toggleGps() {
     if (state.isGpsOn) { stopGps(); return; }
@@ -1035,7 +1035,7 @@ function updateRemainingDistance() {
 }
 
 // ============================================================
-// ★★★ ΕΛΕΓΧΟΣ ΑΠΟΜΑΚΡΥΝΣΗΣ ΑΠΟ ΤΗ ΔΙΑΔΡΟΜΗ ★★★
+// ★★★ ΕΛΕΓΧΟΣ ΑΠΟΜΑΚΡΥΝΣΗΣ ★★★ (ίδιο)
 // ============================================================
 let offRouteWarningShown = false;
 function checkOffRoute() {
@@ -1101,7 +1101,7 @@ function toggleOffRoute() {
 }
 
 // ============================================================
-// ★★★ NAV ★★★
+// ★★★ NAV ★★★ (ίδιο)
 // ============================================================
 function toggleNav() {
     if (state.isNavigating) { stopNav(); return; }
@@ -1123,7 +1123,7 @@ function stopNav() {
 }
 
 // ============================================================
-// ★★★ ROUTES ★★★
+// ★★★ ROUTES ★★★ (ίδιο)
 // ============================================================
 function showRoutes() {
     document.getElementById('routeDropdown').classList.add('active');
@@ -1338,7 +1338,7 @@ function centerOnRoute() {
 }
 
 // ============================================================
-// ★★★ SOS / HELP / SCREEN ★★★
+// ★★★ SOS / HELP / SCREEN ★★★ (ίδιο)
 // ============================================================
 function openSos() {
     document.getElementById('sosBox').classList.add('active');
@@ -1401,7 +1401,7 @@ function rotateMap() {
 }
 
 // ============================================================
-// ★★★ ΦΟΡΤΩΣΗ ΣΗΜΕΙΩΝ ΕΝΔΙΑΦΕΡΟΝΤΟΣ (POIs) ★★★
+// ★★★ ΦΟΡΤΩΣΗ POIs ★★★ (ίδιο)
 // ============================================================
 function loadPOIs() {
     if (!state.map) return;
