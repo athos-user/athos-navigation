@@ -567,6 +567,12 @@
         #favDropdown .fav-actions .close {
             background: #555;
         }
+        #favDropdown .fav-actions .export-all {
+            background: #8e44ad;
+        }
+        #favDropdown .fav-actions .osmand-download {
+            background: #FF9800;
+        }
         #favDropdown .fav-stats {
             font-size: 10px;
             color: #888;
@@ -1138,6 +1144,8 @@
             <div id="favList"></div>
             <div class="fav-actions">
                 <button class="download" id="downloadOfflineBtn">📥 Λήψη Offline</button>
+                <button class="export-all" id="exportAllJsonBtn">📤 Εξαγωγή όλων (JSON)</button>
+                <button class="osmand-download" id="osmandDownloadBtn" onclick="window.open('https://osmand.net/download','_blank')">📲 Λήψη OsmAnd</button>
                 <button class="clear" id="clearFavsBtn">🧹 Καθαρισμός</button>
                 <button class="close" id="closeFavBtn2">✕ Κλείσιμο</button>
             </div>
@@ -1555,8 +1563,103 @@
             try { const s = localStorage.getItem('athos_favs'); if (s) state.favorites = JSON.parse(s); } catch (e) { state
                     .favorites = []; }
         }
-        saveFavs = function() { localStorage.setItem('athos_favs', JSON.stringify(state.favorites)); };
-        isFav = function(r) { return state.favorites.some(f => f.name === r.name && f.url === r.url); };
+        function saveFavs() { localStorage.setItem('athos_favs', JSON.stringify(state.favorites)); }
+        function isFav(r) { return state.favorites.some(f => f.name === r.name && f.url === r.url); }
+
+        // ============================================================
+        // ★★★ ΣΥΝΑΡΤΗΣΕΙΣ ΕΞΑΓΩΓΗΣ ★★★
+        // ============================================================
+        function downloadGpxFile(gpxData, fileName) {
+            const blob = new Blob([gpxData], { type: 'application/gpx+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName.endsWith('.gpx') ? fileName : fileName + '.gpx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        async function exportOfflineGpx(id) {
+            const favs = await offlineManager.getOfflineFavorites();
+            const fav = favs.find(f => f.id === id);
+            if (fav && fav.gpxData) {
+                const name = (fav.name || 'route').replace(/[^a-zA-Z0-9_\-\.\s]/g, '_');
+                downloadGpxFile(fav.gpxData, name + '.gpx');
+                showToast('📥 Εξήχθη GPX: ' + fav.name, '#4CAF50');
+                // Ενημέρωση για OsmAnd
+                setTimeout(() => {
+                    showToast('📲 Αν δεν έχετε OsmAnd, κατεβάστε το από το κουμπί "Λήψη OsmAnd"', '#FF9800');
+                }, 2000);
+            } else {
+                showToast('⚠️ Δεν βρέθηκαν δεδομένα GPX', '#f44336');
+            }
+        }
+
+        async function exportAllOfflineAsJson() {
+            const favs = await offlineManager.getOfflineFavorites();
+            if (favs.length === 0) {
+                showToast('⚠️ Δεν υπάρχουν offline διαδρομές', '#888');
+                return;
+            }
+            const data = favs.map(f => ({
+                name: f.name,
+                num: f.num,
+                dist: f.dist,
+                time: f.time,
+                url: f.url,
+                gpxData: f.gpxData,
+                timestamp: f.timestamp
+            }));
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'offline_routes_backup.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('✅ Εξήχθησαν ' + data.length + ' διαδρομές', '#4CAF50');
+        }
+
+        async function openInOsmAnd(id) {
+            const favs = await offlineManager.getOfflineFavorites();
+            const fav = favs.find(f => f.id === id);
+            if (!fav || !fav.gpxData) {
+                showToast('⚠️ Δεν βρέθηκαν δεδομένα GPX', '#f44336');
+                return;
+            }
+            const baseName = (fav.name || 'route').replace(/[^a-zA-Z0-9_\-]/g, '_');
+            const fileName = baseName + '.gpx';
+            const file = new File([fav.gpxData], fileName, { type: 'application/gpx+xml' });
+
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        title: 'Άνοιγμα σε OsmAnd',
+                        text: 'Διαδρομή: ' + fav.name,
+                        files: [file]
+                    });
+                    showToast('✅ Το αρχείο στάλθηκε για κοινή χρήση', '#4CAF50');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        showToast('⚠️ Σφάλμα: ' + err.message, '#f44336');
+                        // Πρόταση λήψης OsmAnd
+                        showToast('📲 Δεν έχετε OsmAnd; Κατεβάστε το από το κουμπί "Λήψη OsmAnd"', '#FF9800');
+                    }
+                }
+            } else {
+                // Λήψη GPX
+                downloadGpxFile(fav.gpxData, fileName);
+                showToast('📥 Λήψη GPX – ανοίξτε το με OsmAnd', '#2196F3');
+                setTimeout(() => {
+                    showToast('📲 Αν δεν έχετε OsmAnd, κατεβάστε το από το κουμπί "Λήψη OsmAnd"', '#FF9800');
+                }, 2000);
+            }
+        }
 
         // ============================================================
         // ★★★ SAFE EVENT LISTENER ★★★
@@ -1651,6 +1754,8 @@
                 <span class="fname">${fav.num ? '#'+fav.num+' ' : ''}${fav.name} <span class="offline-badge">Offline</span></span>
                 <span class="finfo">${fav.dist}km</span>
                 <button class="load-offline" data-id="${fav.id}" style="background:#27ae60;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📂</button>
+                <button class="export-offline" data-id="${fav.id}" style="background:#2196F3;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📥</button>
+                <button class="osmand-offline" data-id="${fav.id}" style="background:#FF9800;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📤 OsmAnd</button>
                 <button class="remove-offline" data-id="${fav.id}" style="background:#e74c3c;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">✕</button>
               </div>`;
                 });
@@ -1683,6 +1788,18 @@
                         hideFavs();
                         showToast('📱 Φορτώθηκε offline: ' + fav.name, '#27ae60');
                     }
+                });
+            });
+
+            list.querySelectorAll('.export-offline').forEach(el => {
+                el.addEventListener('click', function() {
+                    exportOfflineGpx(this.dataset.id);
+                });
+            });
+
+            list.querySelectorAll('.osmand-offline').forEach(el => {
+                el.addEventListener('click', function() {
+                    openInOsmAnd(this.dataset.id);
                 });
             });
 
@@ -2089,26 +2206,22 @@
         let offRouteWarningShown = false;
 
         function checkOffRoute() {
-            // Αν δεν υπάρχει διαδρομή ή GPS, σταμάτα
             if (!state.routeCoords || state.routeCoords.length < 2 || !state.lastPosition) return;
 
             const lat = state.lastPosition.lat;
             const lng = state.lastPosition.lng;
 
-            // Βρες την ελάχιστη απόσταση από τη διαδρομή
             let minDist = Infinity;
             for (let i = 0; i < state.routeCoords.length; i++) {
                 const d = haversine(lat, lng, state.routeCoords[i][0], state.routeCoords[i][1]);
                 if (d < minDist) minDist = d;
             }
 
-            // ★★★ ΟΡΙΟ ΑΠΟΜΑΚΡΥΝΣΗΣ: 70 ΜΕΤΡΑ ★★★
-            const OFF_ROUTE_THRESHOLD = 0.07; // 70 μέτρα
+            const OFF_ROUTE_THRESHOLD = 0.07;
 
             const warningEl = document.getElementById('offRouteWarning');
 
             if (minDist > OFF_ROUTE_THRESHOLD) {
-                // ΕΙΜΑΣΤΕ ΕΚΤΟΣ ΔΙΑΔΡΟΜΗΣ - ΜΩΒ ΧΡΩΜΑ
                 if (state.map.getLayer('route')) {
                     state.map.setPaintProperty('route', 'line-color', '#9C27B0');
                     state.map.setPaintProperty('route', 'line-width', 6);
@@ -2123,7 +2236,6 @@
                     setTimeout(() => { offRouteWarningShown = false; }, 800);
                 }
             } else {
-                // ΕΙΜΑΣΤΕ ΣΤΗ ΔΙΑΔΡΟΜΗ - ΕΠΑΝΑΦΟΡΑ ΣΕ ΠΟΡΤΟΚΑΛΙ
                 if (state.map.getLayer('route')) {
                     state.map.setPaintProperty('route', 'line-color', '#FF5722');
                     state.map.setPaintProperty('route', 'line-width', 4);
@@ -2135,7 +2247,6 @@
             }
         }
 
-        // ★★★ TOGGLE OFF-ROUTE ★★★
         function toggleOffRoute() {
             state.offRouteEnabled = !state.offRouteEnabled;
             const btn = document.getElementById('offRouteToggle');
@@ -2638,7 +2749,6 @@
             loadFavs();
             initMap();
 
-            // ★★★ OFF-ROUTE TOGGLE ★★★
             safeAddListener('offRouteToggle', 'click', toggleOffRoute);
 
             safeAddListener('offlineContinue', 'click', continueOffline);
@@ -2699,6 +2809,9 @@
                 if (e.target.files[0]) { loadGpxFile(e.target.files[0]);
                     e.target.value = ''; }
             });
+
+            // Export all JSON
+            safeAddListener('exportAllJsonBtn', 'click', exportAllOfflineAsJson);
 
             document.querySelectorAll('[data-speed]').forEach(btn => {
                 btn.addEventListener('click', function() {
