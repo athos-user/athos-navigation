@@ -1145,7 +1145,7 @@
             <div class="fav-actions">
                 <button class="download" id="downloadOfflineBtn">📥 Λήψη Offline</button>
                 <button class="export-all" id="exportAllJsonBtn">📤 Εξαγωγή όλων (JSON)</button>
-                <button class="osmand-download" id="osmandDownloadBtn" onclick="window.open('https://osmand.net/download','_blank')">📲 Λήψη OsmAnd</button>
+                <button class="osmand-download" id="osmandDownloadBtn">📲 Λήψη OsmAnd</button>
                 <button class="clear" id="clearFavsBtn">🧹 Καθαρισμός</button>
                 <button class="close" id="closeFavBtn2">✕ Κλείσιμο</button>
             </div>
@@ -1581,17 +1581,30 @@
             URL.revokeObjectURL(url);
         }
 
+        // Λήψη OsmAnd – ανοίγει το κατάλληλο store ανάλογα με το λειτουργικό
+        function downloadOsmAnd() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            let url = 'https://osmand.net/download';
+            if (/android/i.test(ua)) {
+                url = 'https://play.google.com/store/apps/details?id=net.osmand';
+            } else if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+                url = 'https://apps.apple.com/app/osmand-maps/id934850257';
+            }
+            window.open(url, '_blank');
+            showToast('📲 Ανοίγει το κατάστημα εφαρμογών για OsmAnd', '#FF9800');
+        }
+
         async function exportOfflineGpx(id) {
             const favs = await offlineManager.getOfflineFavorites();
             const fav = favs.find(f => f.id === id);
             if (fav && fav.gpxData) {
                 const name = (fav.name || 'route').replace(/[^a-zA-Z0-9_\-\.\s]/g, '_');
                 downloadGpxFile(fav.gpxData, name + '.gpx');
-                showToast('📥 Εξήχθη GPX: ' + fav.name, '#4CAF50');
-                // Ενημέρωση για OsmAnd
+                showToast('📥 Το GPX κατέβηκε. Ανοίξτε το με OsmAnd από τα αρχεία σας.', '#4CAF50');
+                // Προτείνουμε λήψη OsmAnd αν δεν το έχει
                 setTimeout(() => {
-                    showToast('📲 Αν δεν έχετε OsmAnd, κατεβάστε το από το κουμπί "Λήψη OsmAnd"', '#FF9800');
-                }, 2000);
+                    showToast('📲 Δεν έχετε OsmAnd; Πατήστε το κουμπί "Λήψη OsmAnd"', '#FF9800');
+                }, 2500);
             } else {
                 showToast('⚠️ Δεν βρέθηκαν δεδομένα GPX', '#f44336');
             }
@@ -1623,42 +1636,6 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showToast('✅ Εξήχθησαν ' + data.length + ' διαδρομές', '#4CAF50');
-        }
-
-        async function openInOsmAnd(id) {
-            const favs = await offlineManager.getOfflineFavorites();
-            const fav = favs.find(f => f.id === id);
-            if (!fav || !fav.gpxData) {
-                showToast('⚠️ Δεν βρέθηκαν δεδομένα GPX', '#f44336');
-                return;
-            }
-            const baseName = (fav.name || 'route').replace(/[^a-zA-Z0-9_\-]/g, '_');
-            const fileName = baseName + '.gpx';
-            const file = new File([fav.gpxData], fileName, { type: 'application/gpx+xml' });
-
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        title: 'Άνοιγμα σε OsmAnd',
-                        text: 'Διαδρομή: ' + fav.name,
-                        files: [file]
-                    });
-                    showToast('✅ Το αρχείο στάλθηκε για κοινή χρήση', '#4CAF50');
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        showToast('⚠️ Σφάλμα: ' + err.message, '#f44336');
-                        // Πρόταση λήψης OsmAnd
-                        showToast('📲 Δεν έχετε OsmAnd; Κατεβάστε το από το κουμπί "Λήψη OsmAnd"', '#FF9800');
-                    }
-                }
-            } else {
-                // Λήψη GPX
-                downloadGpxFile(fav.gpxData, fileName);
-                showToast('📥 Λήψη GPX – ανοίξτε το με OsmAnd', '#2196F3');
-                setTimeout(() => {
-                    showToast('📲 Αν δεν έχετε OsmAnd, κατεβάστε το από το κουμπί "Λήψη OsmAnd"', '#FF9800');
-                }, 2000);
-            }
         }
 
         // ============================================================
@@ -1754,8 +1731,7 @@
                 <span class="fname">${fav.num ? '#'+fav.num+' ' : ''}${fav.name} <span class="offline-badge">Offline</span></span>
                 <span class="finfo">${fav.dist}km</span>
                 <button class="load-offline" data-id="${fav.id}" style="background:#27ae60;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📂</button>
-                <button class="export-offline" data-id="${fav.id}" style="background:#2196F3;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📥</button>
-                <button class="osmand-offline" data-id="${fav.id}" style="background:#FF9800;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📤 OsmAnd</button>
+                <button class="export-offline" data-id="${fav.id}" style="background:#2196F3;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">📥 GPX</button>
                 <button class="remove-offline" data-id="${fav.id}" style="background:#e74c3c;color:white;border:none;border-radius:3px;padding:2px 8px;cursor:pointer;font-size:9px;">✕</button>
               </div>`;
                 });
@@ -1794,12 +1770,6 @@
             list.querySelectorAll('.export-offline').forEach(el => {
                 el.addEventListener('click', function() {
                     exportOfflineGpx(this.dataset.id);
-                });
-            });
-
-            list.querySelectorAll('.osmand-offline').forEach(el => {
-                el.addEventListener('click', function() {
-                    openInOsmAnd(this.dataset.id);
                 });
             });
 
@@ -2812,6 +2782,9 @@
 
             // Export all JSON
             safeAddListener('exportAllJsonBtn', 'click', exportAllOfflineAsJson);
+
+            // Λήψη OsmAnd - σύνδεσμος store
+            safeAddListener('osmandDownloadBtn', 'click', downloadOsmAnd);
 
             document.querySelectorAll('[data-speed]').forEach(btn => {
                 btn.addEventListener('click', function() {
